@@ -7,10 +7,18 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 import io.github.nguyenquephong13062003.course_management_system.models.dtos.wrappers.ApiResponse;
 import lombok.extern.slf4j.Slf4j;
 
+/**
+ * GlobalExceptionHandler
+ */
 @Slf4j
 @RestControllerAdvice
 public class GlobalExceptionHandler {
 
+    /**
+     * Handles all exceptions that are not explicitly handled by other exception handlers.
+     * @param ex The exception that was thrown.
+     * @return A ResponseEntity containing an ApiResponse with error details.
+     */
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ApiResponse<Void>> handleException(Exception ex) {
         log.error("An error occurred: {}", ex.getMessage(), ex);
