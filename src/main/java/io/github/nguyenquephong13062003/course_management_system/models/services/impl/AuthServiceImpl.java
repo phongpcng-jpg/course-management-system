@@ -8,13 +8,17 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import io.github.nguyenquephong13062003.course_management_system.exceptions.AuthException;
-import io.github.nguyenquephong13062003.course_management_system.models.dtos.requests.LoginRequests;
+import io.github.nguyenquephong13062003.course_management_system.models.dtos.requests.LoginRequest;
 import io.github.nguyenquephong13062003.course_management_system.models.dtos.responses.LoginResponse;
 import io.github.nguyenquephong13062003.course_management_system.models.services.IAuthService;
 import io.github.nguyenquephong13062003.course_management_system.security.jwt.JWTUtils;
 import io.github.nguyenquephong13062003.course_management_system.security.principal.CustomUserDetails;
 import lombok.RequiredArgsConstructor;
 
+/**
+ * AuthServiceImpl
+ * Implementation of the IAuthService interface for handling authentication.
+ */
 @Service
 @RequiredArgsConstructor
 public class AuthServiceImpl implements IAuthService {
@@ -22,11 +26,11 @@ public class AuthServiceImpl implements IAuthService {
     private final JWTUtils jwtUtils;
 
     @Override
-    public LoginResponse login(LoginRequests req) {
+    public LoginResponse login(LoginRequest loginRequest) throws AuthException {
         Authentication authentication;
         try {
             authentication = manager.authenticate(
-                    new UsernamePasswordAuthenticationToken(req.getUsername(), req.getPassword())
+                    new UsernamePasswordAuthenticationToken(loginRequest.getUsername(), loginRequest.getPassword())
             );
         } catch (AuthenticationException e) {
             throw new AuthException("Username or password is incorrect");
