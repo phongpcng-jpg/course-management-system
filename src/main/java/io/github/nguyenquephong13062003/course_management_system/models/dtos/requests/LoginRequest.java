@@ -8,7 +8,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 /**
- * LoginRequests
+ * LoginRequest
  * Represents the request payload for user login.
  */
 @NoArgsConstructor
@@ -16,7 +16,7 @@ import lombok.Setter;
 @Getter
 @Setter
 @Builder
-public class LoginRequests {
+public class LoginRequest {
 
     /**
      * The username of the user attempting to log in.
