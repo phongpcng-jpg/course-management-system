@@ -21,11 +21,23 @@ import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
+/**
+ * JwtTokenFilter is a custom filter that intercepts incoming HTTP requests to validate JWT tokens.
+ * It extracts the token from the request header, validates it, and sets the authentication context if valid.
+ */
 @Slf4j
 @Component
 @RequiredArgsConstructor
 public class JwtTokenFilter extends OncePerRequestFilter {
+
+    /**
+     * JWTUtils is a utility class for handling JWT operations such as token extraction and validation.
+     */
     private final JWTUtils jwtUtils;
+
+    /**
+     * CustomUserDetailsService is a service that loads user-specific data.
+     */
     private final CustomUserDetailsService userDetailsService;
 
     @Override
@@ -76,6 +88,11 @@ public class JwtTokenFilter extends OncePerRequestFilter {
 
     }
 
+    /**
+     * Extracts the JWT token from the Authorization header of the HTTP request.
+     * @param request The incoming HTTP request.
+     * @return The JWT token if present, otherwise null.
+     */
     private String getTokenFromRequest(HttpServletRequest request) {
         String header = request.getHeader("Authorization");
         // Token: Bearer édasdsadasdaskfjsdasdl3
