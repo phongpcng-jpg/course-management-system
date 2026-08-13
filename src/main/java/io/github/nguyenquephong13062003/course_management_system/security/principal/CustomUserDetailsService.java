@@ -11,15 +11,24 @@ import org.springframework.stereotype.Service;
 import io.github.nguyenquephong13062003.course_management_system.models.entities.User;
 import io.github.nguyenquephong13062003.course_management_system.models.repositories.IUserRepository;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class CustomUserDetailsService implements UserDetailsService {
     private final IUserRepository userRepository;
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        User user = userRepository.findByUsername(username).orElseThrow(() -> new UsernameNotFoundException("Username not found"));
+
+        log.debug("Loading user details for username={}", username);
+
+        User user = userRepository.findByUsername(username).orElseThrow(() -> {
+            log.warn("User not found with username: {}", username);
+            return new UsernameNotFoundException("Username or password is incorrect");
+        });
+
         CustomUserDetails customUserDetails = CustomUserDetails.builder()
                 .user(user)
                 .authorities(
@@ -28,6 +37,13 @@ public class CustomUserDetailsService implements UserDetailsService {
                         )
                 )
                 .build();
+
+        log.debug(
+                "User loaded successfully: username={}, role={}",
+                user.getUsername(),
+                user.getRole()
+        );
+
         return customUserDetails;
     }
 }

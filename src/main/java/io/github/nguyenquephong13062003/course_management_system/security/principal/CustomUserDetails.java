@@ -12,12 +12,23 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+/**
+ * Custom implementation of UserDetails to represent authenticated user details.
+ */
 @NoArgsConstructor
 @AllArgsConstructor
 @Data
 @Builder
 public class CustomUserDetails implements UserDetails {
+
+    /**
+     * The user entity associated with this CustomUserDetails.
+     */
     private User user;
+
+    /**
+     * The authorities granted to the user.
+     */
     private Collection<? extends GrantedAuthority> authorities;
 
     @Override
@@ -33,5 +44,10 @@ public class CustomUserDetails implements UserDetails {
     @Override
     public String getUsername() {
         return this.user.getUsername();
+    }
+
+    @Override
+    public boolean isEnabled() {
+        return user.getActive();
     }
 }
