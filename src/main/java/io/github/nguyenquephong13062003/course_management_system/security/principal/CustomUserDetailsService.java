@@ -13,10 +13,18 @@ import io.github.nguyenquephong13062003.course_management_system.models.reposito
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
+/**
+ * CustomUserDetailsService is a service that implements UserDetailsService to load user-specific data.
+ * It retrieves user information from the database and constructs a CustomUserDetails object for authentication.
+ */
 @Service
 @RequiredArgsConstructor
 @Slf4j
 public class CustomUserDetailsService implements UserDetailsService {
+
+    /**
+     * IUserRepository is a repository interface for accessing user data from the database.
+     */
     private final IUserRepository userRepository;
 
     @Override
