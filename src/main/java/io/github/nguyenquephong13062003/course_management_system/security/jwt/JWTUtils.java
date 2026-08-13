@@ -21,7 +21,7 @@ public class JWTUtils {
     @Value("${jwt.secret-key}")
     private String secretKey;
 
-    @Value("${jwt.expried}")
+    @Value("${jwt.expiration}")
     private Long expiredTime;
 
     public SecretKey getSignKey() {
@@ -52,25 +52,24 @@ public class JWTUtils {
                 .getPayload();
     }
 
-    public <T> T extractClaim(String token, Function<Claims, T> claimsResolver) {
-        Claims claims = extractAllClaims(token);
+    public <T> T extractClaim(Claims claims, Function<Claims, T> claimsResolver) {
         return claimsResolver.apply(claims);
     }
 
-    public String extractUsername(String token) {
-        return extractAllClaims(token).getSubject();
+    public String extractUsername(Claims claims) {
+        return claims.getSubject();
     }
 
-    public Date extractExpiration(String token) {
-        return extractAllClaims(token).getExpiration();
+    public Date extractExpiration(Claims claims) {
+        return claims.getExpiration();
     }
-    public boolean isTokenExpired(String token) {
-        return extractExpiration(token).before(new Date());
+    public boolean isTokenExpired(Claims claims) {
+        return extractExpiration(claims).before(new Date());
     }
 
-    public boolean validationToken(String token, UserDetails userDetails) {
-        String username = extractUsername(token);
-        return username.equals(userDetails.getUsername()) && !isTokenExpired(token);
+    public boolean validateToken(Claims claims, UserDetails userDetails) {
+        String username = extractUsername(claims);
+        return username.equals(userDetails.getUsername()) && userDetails.isEnabled() && !isTokenExpired(claims);
     }
 
 }
