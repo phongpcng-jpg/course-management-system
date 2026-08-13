@@ -1,7 +1,5 @@
 package io.github.nguyenquephong13062003.course_management_system.models.dtos.responses;
 
-import java.util.Set;
-
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -30,9 +28,10 @@ public class LoginResponse {
     @Builder.Default
     private String type = "Bearer";
    
+
     /**
-     * The username of the authenticated user.
+     * The roles assigned to the authenticated user.
      */
-    private Set<String> roles;
+    private String role;
 
 }

@@ -1,7 +1,5 @@
 package io.github.nguyenquephong13062003.course_management_system.models.services.impl;
 
-import java.util.Set;
-
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -40,11 +38,7 @@ public class AuthServiceImpl implements IAuthService {
 
         return LoginResponse.builder()
                 .accessToken(jwtUtils.generateToken(userDetails.getUsername()))
-                .roles(
-                        Set.of(
-                            userDetails.getUser().getRole().name()
-                        )
-                )
+                .role(userDetails.getUser().getRole().name())
                 .build();
     }
 }
