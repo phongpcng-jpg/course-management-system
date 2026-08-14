@@ -9,8 +9,10 @@ import org.springframework.stereotype.Service;
 import io.github.nguyenquephong13062003.course_management_system.models.constants.UserRole;
 import io.github.nguyenquephong13062003.course_management_system.models.dtos.responses.UserResponse;
 import io.github.nguyenquephong13062003.course_management_system.models.dtos.wrappers.PageResponse;
+import io.github.nguyenquephong13062003.course_management_system.models.entities.User;
 import io.github.nguyenquephong13062003.course_management_system.models.repositories.IUserRepository;
 import io.github.nguyenquephong13062003.course_management_system.models.services.IUserService;
+import io.github.nguyenquephong13062003.course_management_system.exceptions.NotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
@@ -64,6 +66,25 @@ public class UserServiceImpl implements IUserService {
                 .totalItems(userPage.getTotalElements())
                 .totalPages(userPage.getTotalPages())
                 .isLast(userPage.isLast())
+                .build();
+
+    }
+
+    @Override
+    public UserResponse getUserById(Long id) {
+        
+        User user = userRepository.findById(id)
+                .orElseThrow(() -> {
+                    return new NotFoundException("User with id " + id + " not found");
+                });
+
+        return UserResponse.builder()
+                .id(user.getId())
+                .username(user.getUsername())
+                .email(user.getEmail())
+                .fullName(user.getFullName())
+                .active(user.getActive())
+                .role(user.getRole())
                 .build();
 
     }

@@ -32,4 +32,12 @@ public interface IUserService {
         UserRole role
     );
 
+    /**
+     * Retrieves a user by their unique identifier.
+     *
+     * @param id the unique identifier of the user
+     * @return a UserResponse object representing the user
+     */
+    UserResponse getUserById(Long id);
+
 }
