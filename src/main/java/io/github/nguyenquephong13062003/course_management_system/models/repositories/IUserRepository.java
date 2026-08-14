@@ -22,5 +22,19 @@ public interface IUserRepository extends JpaRepository<User,Long> {
      */
     Optional<User> findByUsername(String username);
 
+    /**
+     * Find a user by their Role.
+     *
+     * @param role the role of the user to find
+     * @return a list of users with the specified role
+     */
     List<User> findByRole(UserRole role);
+
+    /**
+     * Find all users that are not active.
+     *
+     * @return a list of inactive users
+     */
+    List<User> findByActive(Boolean active);
+
 }
