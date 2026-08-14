@@ -48,7 +48,7 @@
           "bearer": [
             {
               "key": "token",
-              "value": "{{auth_secret_160w}}",
+              "value": "{{supabase_service_role_api_key_0f8c}}",
               "type": "string"
             }
           ]
@@ -86,7 +86,7 @@
           "bearer": [
             {
               "key": "token",
-              "value": "{{json_web_token_0yqw}}",
+              "value": "{{supabase_service_role_api_key_04dr}}",
               "type": "string"
             }
           ]
@@ -112,6 +112,129 @@
         }
       },
       "response": []
+    },
+    {
+      "name": "User All",
+      "protocolProfileBehavior": {
+        "disableBodyPruning": true
+      },
+      "request": {
+        "auth": {
+          "type": "bearer",
+          "bearer": [
+            {
+              "key": "token",
+              "value": "{{auth_secret_04dr}}",
+              "type": "string"
+            }
+          ]
+        },
+        "method": "GET",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n    \"username\": \"student\",\r\n    \"password\": \"Student@123\"\r\n}"
+        },
+        "url": {
+          "raw": "http://localhost:8080/api/users",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "8080",
+          "path": [
+            "api",
+            "users"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "User Status",
+      "protocolProfileBehavior": {
+        "disableBodyPruning": true
+      },
+      "request": {
+        "auth": {
+          "type": "bearer",
+          "bearer": [
+            {
+              "key": "token",
+              "value": "{{json_web_token_0d9f}}",
+              "type": "string"
+            }
+          ]
+        },
+        "method": "GET",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n    \"username\": \"student\",\r\n    \"password\": \"Student@123\"\r\n}"
+        },
+        "url": {
+          "raw": "http://localhost:8080/api/users?status=true",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "8080",
+          "path": [
+            "api",
+            "users"
+          ],
+          "query": [
+            {
+              "key": "status",
+              "value": "true"
+            }
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "User Role",
+      "protocolProfileBehavior": {
+        "disableBodyPruning": true
+      },
+      "request": {
+        "auth": {
+          "type": "bearer",
+          "bearer": [
+            {
+              "key": "token",
+              "value": "{{json_web_token_0d9f}}",
+              "type": "string"
+            }
+          ]
+        },
+        "method": "GET",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n    \"username\": \"student\",\r\n    \"password\": \"Student@123\"\r\n}"
+        },
+        "url": {
+          "raw": "http://localhost:8080/api/users?role=STUDENT",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "8080",
+          "path": [
+            "api",
+            "users"
+          ],
+          "query": [
+            {
+              "key": "role",
+              "value": "STUDENT"
+            }
+          ]
+        }
+      },
+      "response": []
     }
   ],
   "variable": [
@@ -121,6 +244,26 @@
     },
     {
       "key": "auth_secret_160w",
+      "secret": true
+    },
+    {
+      "key": "supabase_service_role_api_key_0f8c",
+      "secret": true
+    },
+    {
+      "key": "supabase_service_role_api_key_04dr",
+      "secret": true
+    },
+    {
+      "key": "json_web_token_0f8c",
+      "secret": true
+    },
+    {
+      "key": "auth_secret_04dr",
+      "secret": true
+    },
+    {
+      "key": "json_web_token_0d9f",
       "secret": true
     }
   ]
