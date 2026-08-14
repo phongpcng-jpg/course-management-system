@@ -34,7 +34,7 @@ public class CustomUserDetailsService implements UserDetailsService {
 
         User user = userRepository.findByUsername(username).orElseThrow(() -> {
             log.warn("User not found with username: {}", username);
-            return new UsernameNotFoundException("Username or password is incorrect");
+            return new UsernameNotFoundException("User not found");
         });
 
         CustomUserDetails customUserDetails = CustomUserDetails.builder()

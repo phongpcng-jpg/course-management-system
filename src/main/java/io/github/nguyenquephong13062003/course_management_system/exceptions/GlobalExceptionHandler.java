@@ -87,10 +87,10 @@ public class GlobalExceptionHandler {
      */
     @ExceptionHandler(UsernameNotFoundException.class)
     public ResponseEntity<ApiResponse<Void>> handleUsernameNotFoundException(UsernameNotFoundException ex) {
-        return ResponseEntity.status(401).body(
+        return ResponseEntity.status(404).body(
             ApiResponse.<Void>error(
-                401,
-                "BAD_CREDENTIALS",
+                404,
+                "USER_NOT_FOUND",
                 ex.getMessage(),
                 null
             )
