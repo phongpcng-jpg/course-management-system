@@ -35,9 +35,4 @@ public class VerifyResponse {
      */
     private String role;
 
-    /**
-     * The expiration timestamp of the token.
-     */
-    private Instant expiresAt;
-
 }
