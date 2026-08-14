@@ -63,7 +63,7 @@
 | 28  | `/api/courses?search={keyword}`                               | GET    | AUTH           | Search courses by keyword in the title or description                                | ☑ | 2 |   | ☐ |
 | 29  | `/api/courses?teacher_id={teacher_id}`                        | GET    | AUTH           | Filter courses by instructor                                                         | ☑ | 2 |   | ☐ |
 | 30  | `/api/auth/logout`                                            | POST   | AUTH           | Log out and invalidate the authentication token                                      | ☐ |   | 2 | ☐ |
-| 31  | `/api/users?status={status}`                                  | GET    | ADMIN          | Filter users by account status (`active` / `inactive`)                               | ☐ |   | 3 | ☐ |
+| 31  | `/api/users?status={status}`                                  | GET    | ADMIN          | Filter users by account status (`active` / `inactive`)                               | ☐ |   | 3 | ☑ |
 | 32  | `/api/courses?status={status}`                                | GET    | AUTH           | Filter courses by status (ADMIN sees all; others see only `PUBLISHED`)               | ☐ |   | 3 | ☐ |
 | 33  | `/api/notifications`                                          | GET    | AUTH           | Retrieve the current user's notifications                                            | ☐ |   | 3 | ☐ |
 | 34  | `/api/notifications/{notification_id}/read`                   | PUT    | AUTH           | Mark a notification as read                                                          | ☐ |   | 3 | ☐ |
