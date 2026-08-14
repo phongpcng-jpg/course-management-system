@@ -59,7 +59,8 @@ public class UserController {
             @RequestParam(name = "keyword", required = false)
             String keyword,
 
-            @RequestParam(name = "active", required = false)
+            // Note: The parameter name is changed to "status" for matching 31 endpoint
+            @RequestParam(name = "status", required = false) 
             Boolean active,
 
             @RequestParam(name = "role", required = false)
