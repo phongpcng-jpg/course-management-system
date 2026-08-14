@@ -23,6 +23,9 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class UserServiceImpl implements IUserService {
 
+    /**
+     * The user repository used for accessing user data.
+     */
     private final IUserRepository userRepository;
 
     @Override
