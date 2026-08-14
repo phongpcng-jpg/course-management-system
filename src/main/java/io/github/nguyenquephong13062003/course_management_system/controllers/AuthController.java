@@ -14,14 +14,26 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
+/**
+ * Controller for handling authentication-related requests.
+ */
 @RestController
 @RequestMapping("/api/auth")
 @RequiredArgsConstructor
 @Slf4j
 public class AuthController {
 
+    /**
+     * The authentication service used for handling login requests.
+     */
     private final IAuthService authService;
 
+    /**
+     * Handles user login requests.
+     *
+     * @param request The login request containing username and password.
+     * @return A ResponseEntity containing the login response wrapped in an ApiResponse.
+     */
     @PostMapping("/login")
     public ResponseEntity<ApiResponse<LoginResponse>> login(@Valid @RequestBody LoginRequest request) {
         log.info("Attempting login for user: {}", request.getUsername());
