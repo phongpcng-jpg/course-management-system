@@ -40,3 +40,8 @@ out/
 .env
 .env.*
 !.env.template
+
+#### Application logs ###
+logs/
+*.log
+*.log.gz
