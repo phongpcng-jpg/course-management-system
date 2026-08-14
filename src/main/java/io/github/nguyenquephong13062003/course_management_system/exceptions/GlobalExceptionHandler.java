@@ -3,6 +3,7 @@ package io.github.nguyenquephong13062003.course_management_system.exceptions;
 import java.util.List;
 
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -10,6 +11,7 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 import io.github.nguyenquephong13062003.course_management_system.models.dtos.wrappers.ApiError;
 import io.github.nguyenquephong13062003.course_management_system.models.dtos.wrappers.ApiResponse;
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
 
 /**
@@ -108,6 +110,27 @@ public class GlobalExceptionHandler {
             ApiResponse.<Void>error(
                 400,
                 "BAD_REQUEST",
+                ex.getMessage(),
+                null
+            )
+        );
+    }
+
+    /**
+     * Handles AccessDeniedException thrown by Spring Security.
+     * @param ex The AccessDeniedException that was thrown.
+     * @return A ResponseEntity containing an ApiResponse with error details.
+     */
+    @ExceptionHandler(AccessDeniedException.class)
+    public ResponseEntity<ApiResponse<Void>> handleAccessDeniedException(
+            AccessDeniedException ex
+    ) {
+        log.warn("Access denied: {}", ex.getMessage());
+
+        return ResponseEntity.status(HttpServletResponse.SC_FORBIDDEN).body(
+            ApiResponse.<Void>error(
+                HttpServletResponse.SC_FORBIDDEN,
+                "ACCESS_DENIED",
                 ex.getMessage(),
                 null
             )
