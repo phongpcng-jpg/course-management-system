@@ -21,26 +21,59 @@ import io.github.nguyenquephong13062003.course_management_system.security.jwt.Jw
 import io.github.nguyenquephong13062003.course_management_system.security.principal.CustomUserDetailsService;
 import lombok.RequiredArgsConstructor;
 
+/**
+ * SecurityConfig
+ */
 @Configuration
 @EnableWebSecurity
 @EnableMethodSecurity
 @RequiredArgsConstructor
 public class SecurityConfig {
+
+    /**
+     * CustomUserDetailsService is a service that loads user-specific data.
+     */
     private final CustomUserDetailsService userDetailsService;
+
+    /**
+     * JwtEntryPoint is a class that handles unauthorized access attempts.
+     */
     private final JwtEntryPoint entryPoint;
+
+    /**
+     * AccessDenied is a class that handles access denied exceptions.
+     */
     private final AccessDenied accessDenied;
+
+    /**
+     * JwtTokenFilter is a filter that validates JWT tokens in incoming requests.
+     */
     private final JwtTokenFilter jwtTokenFilter;
 
+    /**
+     * PasswordEncoder bean that uses BCrypt hashing algorithm.
+     * @return A PasswordEncoder instance.
+     */
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
 
+    /**
+     * AuthenticationManager bean that is used for authentication.
+     * @param config The AuthenticationConfiguration.
+     * @return An AuthenticationManager instance.
+     * @throws Exception If an error occurs while creating the AuthenticationManager.
+     */
     @Bean
     public AuthenticationManager authenticationManager(AuthenticationConfiguration config) throws Exception {
         return config.getAuthenticationManager();
     }
 
+    /**
+     * AuthenticationProvider bean that uses DaoAuthenticationProvider with the custom UserDetailsService and PasswordEncoder.
+     * @return An AuthenticationProvider instance.
+     */
     @Bean
     public AuthenticationProvider authenticationProvider() {
         DaoAuthenticationProvider provider = new DaoAuthenticationProvider(userDetailsService);
@@ -48,6 +81,12 @@ public class SecurityConfig {
         return provider;
     }
 
+    /**
+     * SecurityFilterChain bean that configures the security filter chain.
+     * @param http The HttpSecurity object.
+     * @return A SecurityFilterChain instance.
+     * @throws Exception If an error occurs while configuring the security filter chain.
+     */
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         return http
