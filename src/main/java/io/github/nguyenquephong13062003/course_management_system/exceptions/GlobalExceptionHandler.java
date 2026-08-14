@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 import io.github.nguyenquephong13062003.course_management_system.models.dtos.wrappers.ApiError;
 import io.github.nguyenquephong13062003.course_management_system.models.dtos.wrappers.ApiResponse;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
 
@@ -22,13 +23,25 @@ import lombok.extern.slf4j.Slf4j;
 public class GlobalExceptionHandler {
 
     /**
-     * Handles all exceptions that are not explicitly handled by other exception handlers.
-     * @param ex The exception that was thrown.
+     * Handles generic exceptions thrown by the application.
+     * @param ex The Exception that was thrown.
      * @return A ResponseEntity containing an ApiResponse with error details.
      */
     @ExceptionHandler(Exception.class)
-    public ResponseEntity<ApiResponse<Void>> handleException(Exception ex) {
-        log.error("An error occurred: {}", ex.getMessage(), ex);
+    public ResponseEntity<ApiResponse<Void>> handleException(
+        HttpServletRequest request,
+        HttpServletResponse response,
+        Exception ex
+    ) {
+
+        log.error(
+            "An error occurred for request {} {}: {}", 
+            request.getMethod(), 
+            request.getRequestURI(), 
+            ex.getMessage(), 
+            ex
+        );
+
         return ResponseEntity.status(500).body(
             ApiResponse.<Void>error(
                 500,
@@ -37,15 +50,21 @@ public class GlobalExceptionHandler {
                 null
             )
         );
+
     }
 
     /**
-     * Handles validation errors raised by @Valid on request DTOs (e.g. LoginRequest).
+     * Handles MethodArgumentNotValidException thrown by the application.
      * @param ex The MethodArgumentNotValidException that was thrown.
-     * @return A ResponseEntity containing an ApiResponse with per-field validation errors.
+     * @return A ResponseEntity containing an ApiResponse with error details.
      */
     @ExceptionHandler(MethodArgumentNotValidException.class)
-    public ResponseEntity<ApiResponse<Void>> handleValidationException(MethodArgumentNotValidException ex) {
+    public ResponseEntity<ApiResponse<Void>> handleValidationException(
+        HttpServletRequest request,
+        HttpServletResponse response,
+        MethodArgumentNotValidException ex
+    ) {
+
         List<ApiError> errors = ex.getBindingResult().getFieldErrors().stream()
                 .map(fieldError -> ApiError.builder()
                         .field(fieldError.getField())
@@ -53,7 +72,12 @@ public class GlobalExceptionHandler {
                         .build())
                 .toList();
 
-        log.warn("Validation failed: {}", errors);
+        log.warn(
+            "Validation failed for request {} {}: {}", 
+            request.getMethod(), 
+            request.getRequestURI(), 
+            errors
+        );
 
         return ResponseEntity.status(422).body(
             ApiResponse.<Void>error(
@@ -63,6 +87,7 @@ public class GlobalExceptionHandler {
                 errors
             )
         );
+
     }
 
     /**
@@ -71,7 +96,19 @@ public class GlobalExceptionHandler {
      * @return A ResponseEntity containing an ApiResponse with error details.
      */
     @ExceptionHandler(NotFoundException.class)
-    public ResponseEntity<ApiResponse<Void>> handleNotFoundException(NotFoundException ex) {
+    public ResponseEntity<ApiResponse<Void>> handleNotFoundException(
+        HttpServletRequest request,
+        HttpServletResponse response,
+        NotFoundException ex
+    ) {
+
+        log.warn(
+            "Resource not found for request {} {}: {}", 
+            request.getMethod(), 
+            request.getRequestURI(), 
+            ex.getMessage()
+        );
+
         return ResponseEntity.status(404).body(
             ApiResponse.<Void>error(
                 404,
@@ -80,15 +117,28 @@ public class GlobalExceptionHandler {
                 null
             )
         );
+        
     }
 
     /**
-     * Handles UsernameNotFoundException thrown by the CustomUserDetailsService.
+     * Handles UsernameNotFoundException thrown by the application.
      * @param ex The UsernameNotFoundException that was thrown.
      * @return A ResponseEntity containing an ApiResponse with error details.
      */
     @ExceptionHandler(UsernameNotFoundException.class)
-    public ResponseEntity<ApiResponse<Void>> handleUsernameNotFoundException(UsernameNotFoundException ex) {
+    public ResponseEntity<ApiResponse<Void>> handleUsernameNotFoundException(
+        HttpServletRequest request,
+        HttpServletResponse response,
+        UsernameNotFoundException ex
+    ) {
+
+        log.warn(
+            "User not found for request {} {}: {}", 
+            request.getMethod(), 
+            request.getRequestURI(), 
+            ex.getMessage()
+        );
+
         return ResponseEntity.status(404).body(
             ApiResponse.<Void>error(
                 404,
@@ -97,6 +147,7 @@ public class GlobalExceptionHandler {
                 null
             )
         );
+
     }
 
     /**
@@ -105,7 +156,19 @@ public class GlobalExceptionHandler {
      * @return A ResponseEntity containing an ApiResponse with error details.
      */
     @ExceptionHandler(AuthException.class)
-    public ResponseEntity<ApiResponse<Void>> handleAuthException(AuthException ex) {
+    public ResponseEntity<ApiResponse<Void>> handleAuthException(
+        HttpServletRequest request,
+        HttpServletResponse response,
+        AuthException ex
+    ) {
+
+        log.warn(
+            "Authentication failed for request {} {}: {}", 
+            request.getMethod(), 
+            request.getRequestURI(), 
+            ex.getMessage()
+        );
+
         return ResponseEntity.status(400).body(
             ApiResponse.<Void>error(
                 400,
@@ -114,18 +177,27 @@ public class GlobalExceptionHandler {
                 null
             )
         );
+
     }
 
     /**
-     * Handles AccessDeniedException thrown by Spring Security.
+     * Handles AccessDeniedException thrown by the application.
      * @param ex The AccessDeniedException that was thrown.
      * @return A ResponseEntity containing an ApiResponse with error details.
      */
     @ExceptionHandler(AccessDeniedException.class)
     public ResponseEntity<ApiResponse<Void>> handleAccessDeniedException(
+            HttpServletRequest request,
+            HttpServletResponse response,
             AccessDeniedException ex
     ) {
-        log.warn("Access denied: {}", ex.getMessage());
+
+        log.warn(
+            "Access denied for request {} {}: {}", 
+            request.getMethod(), 
+            request.getRequestURI(), 
+            ex.getMessage()
+        );
 
         return ResponseEntity.status(HttpServletResponse.SC_FORBIDDEN).body(
             ApiResponse.<Void>error(
