@@ -3,6 +3,7 @@ package io.github.nguyenquephong13062003.course_management_system.models.service
 import io.github.nguyenquephong13062003.course_management_system.exceptions.AuthException;
 import io.github.nguyenquephong13062003.course_management_system.models.dtos.requests.LoginRequest;
 import io.github.nguyenquephong13062003.course_management_system.models.dtos.responses.LoginResponse;
+import io.github.nguyenquephong13062003.course_management_system.models.dtos.responses.VerifyResponse;
 
 /**
  * IAuthService
@@ -19,5 +20,12 @@ public interface IAuthService {
      * @throws AuthException If authentication fails due to incorrect credentials.
      */
     LoginResponse login(LoginRequest loginRequest) throws AuthException;
+
+    /**
+     * Verifies the validity of the access token.
+     *
+     * @return A VerifyResponse indicating whether the token is valid or not.
+     */
+    VerifyResponse verifyToken();
 
 }

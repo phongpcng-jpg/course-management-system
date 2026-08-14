@@ -10,10 +10,12 @@ import org.springframework.stereotype.Service;
 import io.github.nguyenquephong13062003.course_management_system.exceptions.AuthException;
 import io.github.nguyenquephong13062003.course_management_system.models.dtos.requests.LoginRequest;
 import io.github.nguyenquephong13062003.course_management_system.models.dtos.responses.LoginResponse;
+import io.github.nguyenquephong13062003.course_management_system.models.dtos.responses.VerifyResponse;
 import io.github.nguyenquephong13062003.course_management_system.models.services.IAuthService;
 import io.github.nguyenquephong13062003.course_management_system.security.jwt.JWTUtils;
 import io.github.nguyenquephong13062003.course_management_system.security.principal.CustomUserDetails;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * AuthServiceImpl
@@ -21,6 +23,7 @@ import lombok.RequiredArgsConstructor;
  */
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class AuthServiceImpl implements IAuthService {
     private final AuthenticationManager manager;
     private final JWTUtils jwtUtils;
@@ -43,6 +46,38 @@ public class AuthServiceImpl implements IAuthService {
         return LoginResponse.builder()
                 .accessToken(jwtUtils.generateToken(userDetails.getUsername()))
                 .role(userDetails.getUser().getRole().name())
+                .build();
+    }
+
+    @Override
+    public VerifyResponse verifyToken() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+
+        if (authentication == null || !authentication.isAuthenticated()) {
+            log.warn("JWT verification failed: authentication is missing or unauthenticated");
+            throw new IllegalStateException("Authentication is invalid");
+        }
+
+        String username = authentication.getName();
+
+        log.debug(
+                "JWT verification successful for user: {}",
+                username
+        );
+
+        return VerifyResponse.builder()
+                .valid(true)
+                .username(username)
+                .role(
+                    authentication.getAuthorities()
+                    .stream()
+                    .map(authority -> authority.getAuthority())
+                    .map(authority -> authority.startsWith("ROLE_")
+                            ? authority.substring(5)
+                            : authority)
+                    .findFirst()
+                    .orElse(null)
+                )
                 .build();
     }
 }
