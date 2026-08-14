@@ -14,6 +14,10 @@ import io.github.nguyenquephong13062003.course_management_system.models.services
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
+/**
+ * UserServiceImpl
+ * Implementation of IUserService for user-related operations.
+ */
 @Service
 @RequiredArgsConstructor
 @Slf4j
