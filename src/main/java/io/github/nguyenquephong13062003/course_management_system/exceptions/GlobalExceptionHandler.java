@@ -1,10 +1,14 @@
 package io.github.nguyenquephong13062003.course_management_system.exceptions;
 
+import java.util.List;
+
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
+import io.github.nguyenquephong13062003.course_management_system.models.dtos.wrappers.ApiError;
 import io.github.nguyenquephong13062003.course_management_system.models.dtos.wrappers.ApiResponse;
 import lombok.extern.slf4j.Slf4j;
 
@@ -29,6 +33,32 @@ public class GlobalExceptionHandler {
                 "INTERNAL_SERVER_ERROR",
                 "An unexpected error occurred. Please try again later.",
                 null
+            )
+        );
+    }
+
+    /**
+     * Handles validation errors raised by @Valid on request DTOs (e.g. LoginRequest).
+     * @param ex The MethodArgumentNotValidException that was thrown.
+     * @return A ResponseEntity containing an ApiResponse with per-field validation errors.
+     */
+    @ExceptionHandler(MethodArgumentNotValidException.class)
+    public ResponseEntity<ApiResponse<Void>> handleValidationException(MethodArgumentNotValidException ex) {
+        List<ApiError> errors = ex.getBindingResult().getFieldErrors().stream()
+                .map(fieldError -> ApiError.builder()
+                        .field(fieldError.getField())
+                        .message(fieldError.getDefaultMessage())
+                        .build())
+                .toList();
+
+        log.warn("Validation failed: {}", errors);
+
+        return ResponseEntity.status(422).body(
+            ApiResponse.<Void>error(
+                422,
+                "VALIDATION_FAILED",
+                "Validation failed",
+                errors
             )
         );
     }
