@@ -8,11 +8,11 @@ import org.springframework.web.bind.annotation.RestController;
 
 import io.github.nguyenquephong13062003.course_management_system.models.dtos.requests.LoginRequest;
 import io.github.nguyenquephong13062003.course_management_system.models.dtos.responses.LoginResponse;
+import io.github.nguyenquephong13062003.course_management_system.models.dtos.responses.VerifyResponse;
 import io.github.nguyenquephong13062003.course_management_system.models.dtos.wrappers.ApiResponse;
 import io.github.nguyenquephong13062003.course_management_system.models.services.IAuthService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 
 /**
  * Controller for handling authentication-related requests.
@@ -20,7 +20,6 @@ import lombok.extern.slf4j.Slf4j;
 @RestController
 @RequestMapping("/api/auth")
 @RequiredArgsConstructor
-@Slf4j
 public class AuthController {
 
     /**
@@ -36,11 +35,27 @@ public class AuthController {
      */
     @PostMapping("/login")
     public ResponseEntity<ApiResponse<LoginResponse>> login(@Valid @RequestBody LoginRequest request) {
-        log.info("Attempting login for user: {}", request.getUsername());
         return ResponseEntity.status(200).body(ApiResponse.<LoginResponse>success(
             200, 
             "Login successful",
             authService.login(request)
+        ));
+    }
+
+    /**
+     * Verifies the JWT access token carried by the current request.
+     * Reaching this method already implies the token passed JwtTokenFilter validation.
+     *
+     * @param authentication The authenticated principal resolved from the JWT by Spring Security.
+     * @return A ResponseEntity containing the verification result wrapped in an ApiResponse.
+     */
+    @PostMapping("/verify")
+    public ResponseEntity<ApiResponse<VerifyResponse>> verify() {
+        
+        return ResponseEntity.status(200).body(ApiResponse.<VerifyResponse>success(
+            200,
+            "Token is valid",
+            authService.verifyToken()
         ));
     }
 
