@@ -10,7 +10,9 @@ import org.springframework.stereotype.Service;
 import io.github.nguyenquephong13062003.course_management_system.exceptions.AuthException;
 import io.github.nguyenquephong13062003.course_management_system.models.dtos.requests.LoginRequest;
 import io.github.nguyenquephong13062003.course_management_system.models.dtos.responses.LoginResponse;
+import io.github.nguyenquephong13062003.course_management_system.models.dtos.responses.UserResponse;
 import io.github.nguyenquephong13062003.course_management_system.models.dtos.responses.VerifyResponse;
+import io.github.nguyenquephong13062003.course_management_system.models.entities.User;
 import io.github.nguyenquephong13062003.course_management_system.models.services.IAuthService;
 import io.github.nguyenquephong13062003.course_management_system.security.jwt.JWTUtils;
 import io.github.nguyenquephong13062003.course_management_system.security.principal.CustomUserDetails;
@@ -83,6 +85,34 @@ public class AuthServiceImpl implements IAuthService {
                     .findFirst()
                     .orElse(null)
                 )
+                .build();
+    }
+
+    @Override
+    public UserResponse getCurrentUser() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+
+        log.info("Fetching current user profile for: {}", authentication.getName());
+
+        if (authentication == null || !authentication.isAuthenticated()) {
+            log.warn("JWT verification failed: authentication is missing or unauthenticated");
+            throw new IllegalStateException("Authentication is invalid");
+        }
+        
+        CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
+        User user = userDetails.getUser();
+
+        log.debug("Fetching profile for current user: {}", user.getUsername());
+
+        return UserResponse.builder()
+                .id(user.getId())
+                .username(user.getUsername())
+                .email(user.getEmail())
+                .fullName(user.getFullName())
+                .role(user.getRole().name())
+                .active(user.getActive())
+                .createdAt(user.getCreatedAt())
+                .updatedAt(user.getUpdatedAt())
                 .build();
     }
 }

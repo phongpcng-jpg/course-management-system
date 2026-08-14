@@ -3,6 +3,7 @@ package io.github.nguyenquephong13062003.course_management_system.models.service
 import io.github.nguyenquephong13062003.course_management_system.exceptions.AuthException;
 import io.github.nguyenquephong13062003.course_management_system.models.dtos.requests.LoginRequest;
 import io.github.nguyenquephong13062003.course_management_system.models.dtos.responses.LoginResponse;
+import io.github.nguyenquephong13062003.course_management_system.models.dtos.responses.UserResponse;
 import io.github.nguyenquephong13062003.course_management_system.models.dtos.responses.VerifyResponse;
 
 /**
@@ -27,5 +28,12 @@ public interface IAuthService {
      * @return A VerifyResponse indicating whether the token is valid or not.
      */
     VerifyResponse verifyToken();
+
+    /**
+     * Retrieves the profile of the currently authenticated user.
+     *
+     * @return A UserResponse containing the current user's profile.
+     */
+    UserResponse getCurrentUser();
 
 }
