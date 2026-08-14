@@ -2,6 +2,7 @@ package io.github.nguyenquephong13062003.course_management_system.models.dtos.re
 
 import java.time.LocalDateTime;
 
+import io.github.nguyenquephong13062003.course_management_system.models.constants.UserRole;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -43,7 +44,7 @@ public class UserResponse {
     /**
      * The role of the user (ADMIN, TEACHER, STUDENT).
      */
-    private String role;
+    private UserRole role;
 
     /**
      * Whether the user's account is active.
