@@ -235,6 +235,44 @@
         }
       },
       "response": []
+    },
+    {
+      "name": "User ID",
+      "protocolProfileBehavior": {
+        "disableBodyPruning": true
+      },
+      "request": {
+        "auth": {
+          "type": "bearer",
+          "bearer": [
+            {
+              "key": "token",
+              "value": "{{json_web_token_03fz}}",
+              "type": "string"
+            }
+          ]
+        },
+        "method": "GET",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n    \"username\": \"student\",\r\n    \"password\": \"Student@123\"\r\n}"
+        },
+        "url": {
+          "raw": "http://localhost:8080/api/users/5",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "8080",
+          "path": [
+            "api",
+            "users",
+            "5"
+          ]
+        }
+      },
+      "response": []
     }
   ],
   "variable": [
@@ -264,6 +302,10 @@
     },
     {
       "key": "json_web_token_0d9f",
+      "secret": true
+    },
+    {
+      "key": "json_web_token_03fz",
       "secret": true
     }
   ]
