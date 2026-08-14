@@ -27,7 +27,15 @@ import lombok.extern.slf4j.Slf4j;
 @RequiredArgsConstructor
 @Slf4j
 public class AuthServiceImpl implements IAuthService {
+
+    /**
+     * The authentication manager used for authenticating users.
+     */
     private final AuthenticationManager manager;
+
+    /**
+     * The JWT utility used for generating and validating JWT tokens.
+     */
     private final JWTUtils jwtUtils;
 
     @Override
