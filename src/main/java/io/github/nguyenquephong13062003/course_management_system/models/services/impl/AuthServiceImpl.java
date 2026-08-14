@@ -31,6 +31,9 @@ public class AuthServiceImpl implements IAuthService {
     @Override
     public LoginResponse login(LoginRequest loginRequest) throws AuthException {
         Authentication authentication;
+        
+        log.info("Attempting login for user: {}", loginRequest.getUsername());
+        
         try {
             authentication = manager.authenticate(
                     new UsernamePasswordAuthenticationToken(loginRequest.getUsername(), loginRequest.getPassword())
@@ -52,6 +55,8 @@ public class AuthServiceImpl implements IAuthService {
     @Override
     public VerifyResponse verifyToken() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+
+        log.info("Verifying token for user: {}", authentication.getName());
 
         if (authentication == null || !authentication.isAuthenticated()) {
             log.warn("JWT verification failed: authentication is missing or unauthenticated");
