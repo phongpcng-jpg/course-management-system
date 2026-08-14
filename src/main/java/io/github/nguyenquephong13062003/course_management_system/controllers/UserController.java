@@ -1,6 +1,7 @@
 package io.github.nguyenquephong13062003.course_management_system.controllers;
 
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -27,17 +28,19 @@ public class UserController {
     private final IUserService userService;
 
     /**
-     * Retrieves a paginated list of users based on the provided parameters.
+     * Retrieves a paginated list of users based on the provided query parameters.
+     * This endpoint is restricted to users with the 'ADMIN' role.
      *
-     * @param page      the page number to retrieve (0-based)
-     * @param size      the number of users per page
-     * @param sortBy    the field to sort by
-     * @param direction the direction of sorting (ASC or DESC)
-     * @param keyword   a keyword to filter users by username, email, or full name
-     * @param active    a filter for active status (true for active, false for inactive, null for all)
-     * @param role      a filter for user role (null for all roles)
-     * @return a ResponseEntity containing the paginated list of UserResponse objects wrapped in an ApiResponse
+     * @param page      The page number to retrieve (default is 0).
+     * @param size      The number of users per page (default is 10).
+     * @param sortBy    The field to sort by (optional).
+     * @param direction The direction of sorting, either 'asc' or 'desc' (optional).
+     * @param keyword   A keyword to filter users by name or email (optional).
+     * @param active    A flag to filter users by their active status (optional).
+     * @param role      A specific user role to filter by (optional).
+     * @return A ResponseEntity containing the paginated list of users wrapped in an ApiResponse.
      */
+    @PreAuthorize("hasRole('ADMIN')")
     @GetMapping
     public ResponseEntity<?> getPagedUsers(
 
