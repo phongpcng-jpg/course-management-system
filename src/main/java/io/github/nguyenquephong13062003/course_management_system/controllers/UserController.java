@@ -3,6 +3,7 @@ package io.github.nguyenquephong13062003.course_management_system.controllers;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -42,7 +43,7 @@ public class UserController {
      */
     @PreAuthorize("hasRole('ADMIN')")
     @GetMapping
-    public ResponseEntity<?> getPagedUsers(
+    public ResponseEntity<ApiResponse<PageResponse<UserResponse>>> getPagedUsers(
 
             @RequestParam(name = "page", defaultValue = "0")
             int page,
@@ -81,4 +82,23 @@ public class UserController {
         
     }
 
+    /**
+     * Retrieves a user by their unique identifier.
+     * This endpoint is restricted to users with the 'ADMIN' role.
+     *
+     * @param id The unique identifier of the user to retrieve.
+     * @return A ResponseEntity containing the user details wrapped in an ApiResponse.
+     */
+    @PreAuthorize("hasRole('ADMIN')")
+    @GetMapping("/{user_id}")
+    public ResponseEntity<ApiResponse<UserResponse>> getUserById(@PathVariable("user_id") Long id) {
+        UserResponse response = userService.getUserById(id);
+        return ResponseEntity.ok(
+                ApiResponse.success(
+                    200,
+                    "Fetched user successfully",
+                    response
+                )
+        );
+    }
 }
