@@ -3,7 +3,6 @@ package io.github.nguyenquephong13062003.course_management_system.models.dtos.re
 import io.github.nguyenquephong13062003.course_management_system.models.constants.UserRole;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.*;
 
@@ -48,9 +47,10 @@ public class UserRequest {
     private String fullName;
 
     /**
-     * The role of the user. It must not be null and must be one of the predefined roles in UserRole enum.
+     * The role of the user. It must not be null and should be one of the predefined roles in UserRole.
+     * If not provided, it defaults to UserRole.STUDENT.
      */
-    @NotNull(message = "Role must not be null")
-    private UserRole role;
+    @Builder.Default
+    private UserRole role = UserRole.STUDENT;
 
 }
