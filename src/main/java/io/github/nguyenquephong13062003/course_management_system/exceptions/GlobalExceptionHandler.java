@@ -209,4 +209,34 @@ public class GlobalExceptionHandler {
         );
     }
 
+    /**
+     * Handles DuplicateResourceException thrown by the application.
+     * @param ex The DuplicateResourceException that was thrown.
+     * @return A ResponseEntity containing an ApiResponse with error details.
+     */
+    @ExceptionHandler(DuplicateResourceException.class)
+    public ResponseEntity<ApiResponse<Void>> handleDuplicateResourceException(
+            HttpServletRequest request,
+            HttpServletResponse response,
+            DuplicateResourceException ex
+    ) {
+
+        log.warn(
+                "Resource duplicate in request {} {}: {}",
+                request.getMethod(),
+                request.getRequestURI(),
+                ex.getMessage()
+        );
+
+        return  ResponseEntity.status(400).body(
+                ApiResponse.<Void>error(
+                        400,
+                        "DUPLICATE_RESOURCE",
+                        ex.getMessage(),
+                        null
+                )
+        );
+
+    }
+
 }
