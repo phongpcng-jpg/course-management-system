@@ -179,6 +179,20 @@ public class UserServiceImpl implements IUserService {
 
     }
 
+    @Override
+    @Transactional
+    public UserResponse deleteUser(Long id) {
+
+        User user = userRepository.findById(id)
+                .orElseThrow(() -> {
+                    return new NotFoundException("User with id " + id + " not found");
+                });
+
+        userRepository.deleteById(id);
+
+        return toUserResponse(user);
+    }
+
     /**
      * Converts a User entity to a UserResponse DTO.
      *

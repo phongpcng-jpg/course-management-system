@@ -69,4 +69,12 @@ public interface IUserService {
      */
     UserResponse updateUserStatus(Long id, UpdateUserStatusRequest request);
 
+    /**
+     * Deletes a user by their unique identifier.
+     *
+     * @param id the unique identifier of the user to be deleted
+     * @return a UserResponse object representing the deleted user
+     */
+    UserResponse deleteUser(Long id);
+
 }
