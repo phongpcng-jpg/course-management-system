@@ -1,6 +1,7 @@
 package io.github.nguyenquephong13062003.course_management_system.models.services;
 
 import io.github.nguyenquephong13062003.course_management_system.models.constants.UserRole;
+import io.github.nguyenquephong13062003.course_management_system.models.dtos.requests.UserRequest;
 import io.github.nguyenquephong13062003.course_management_system.models.dtos.responses.UserResponse;
 import io.github.nguyenquephong13062003.course_management_system.models.dtos.wrappers.PageResponse;
 
@@ -39,5 +40,13 @@ public interface IUserService {
      * @return a UserResponse object representing the user
      */
     UserResponse getUserById(Long id);
+
+    /**
+     * Creates a new user based on the provided UserRequest.
+     *
+     * @param request the UserRequest containing the details of the user to be created
+     * @return a UserResponse object representing the newly created user
+     */
+    UserResponse createUser(UserRequest request);
 
 }

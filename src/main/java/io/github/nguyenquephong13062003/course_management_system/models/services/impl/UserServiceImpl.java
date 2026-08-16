@@ -1,9 +1,12 @@
 package io.github.nguyenquephong13062003.course_management_system.models.services.impl;
 
+import io.github.nguyenquephong13062003.course_management_system.exceptions.DuplicateResourceException;
+import io.github.nguyenquephong13062003.course_management_system.models.dtos.requests.UserRequest;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import io.github.nguyenquephong13062003.course_management_system.models.constants.UserRole;
@@ -15,6 +18,7 @@ import io.github.nguyenquephong13062003.course_management_system.models.services
 import io.github.nguyenquephong13062003.course_management_system.exceptions.NotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.transaction.annotation.Transactional;
 
 /**
  * UserServiceImpl
@@ -23,12 +27,18 @@ import lombok.extern.slf4j.Slf4j;
 @Service
 @RequiredArgsConstructor
 @Slf4j
+@Transactional(readOnly = true)
 public class UserServiceImpl implements IUserService {
 
     /**
      * The user repository used for accessing user data.
      */
     private final IUserRepository userRepository;
+
+    /**
+     * The password encoder used for encoding user passwords.
+     */
+    private final PasswordEncoder passwordEncoder;
 
     @Override
     public PageResponse<UserResponse> getAllUsers(
@@ -78,6 +88,70 @@ public class UserServiceImpl implements IUserService {
                     return new NotFoundException("User with id " + id + " not found");
                 });
 
+        return toUserResponse(user);
+
+    }
+
+    @Override
+    @Transactional
+    public UserResponse createUser(UserRequest request) {
+
+        log.debug(
+                "Creating new user: username={}, email={}, role={} , fullName={}",
+                request.getUsername(),
+                request.getEmail(),
+                request.getRole(),
+                request.getFullName()
+        );
+
+        if (userRepository.existsByUsername(request.getUsername())) {
+
+            throw new DuplicateResourceException(
+                    "Username '" + request.getUsername() + "' already exists"
+            );
+
+        }
+
+        if (userRepository.existsByEmail(request.getEmail())) {
+
+            throw new DuplicateResourceException(
+                    "Email '" + request.getEmail() + "' already exists"
+            );
+
+        }
+
+        User user = userRepository.save(
+                User.builder()
+                        .username(request.getUsername())
+                        .passwordHash(passwordEncoder.encode(
+                                request.getPassword()
+                        )).email(request.getEmail())
+                        .fullName(request.getFullName())
+                        .role(
+                                request.getRole() != null
+                                ? request.getRole() : UserRole.STUDENT
+                        )
+                        .build()
+        );
+
+        log.info(
+                "User created successfully: userId={}, username={}, role={}",
+                user.getId(),
+                user.getUsername(),
+                user.getRole()
+        );
+
+        return toUserResponse(user);
+    }
+
+    /**
+     * Converts a User entity to a UserResponse DTO.
+     *
+     * @param user the User entity to convert
+     * @return the corresponding UserResponse DTO
+     */
+    private UserResponse toUserResponse(User user) {
+
         return UserResponse.builder()
                 .id(user.getId())
                 .username(user.getUsername())
@@ -85,6 +159,8 @@ public class UserServiceImpl implements IUserService {
                 .fullName(user.getFullName())
                 .active(user.getActive())
                 .role(user.getRole())
+                .createdAt(user.getCreatedAt())
+                .updatedAt(user.getUpdatedAt())
                 .build();
 
     }
