@@ -1,6 +1,8 @@
 package io.github.nguyenquephong13062003.course_management_system.models.services;
 
 import io.github.nguyenquephong13062003.course_management_system.models.constants.UserRole;
+import io.github.nguyenquephong13062003.course_management_system.models.dtos.requests.UpdateUserRoleRequest;
+import io.github.nguyenquephong13062003.course_management_system.models.dtos.requests.UpdateUserStatusRequest;
 import io.github.nguyenquephong13062003.course_management_system.models.dtos.requests.UserRequest;
 import io.github.nguyenquephong13062003.course_management_system.models.dtos.responses.UserResponse;
 import io.github.nguyenquephong13062003.course_management_system.models.dtos.wrappers.PageResponse;
@@ -48,5 +50,23 @@ public interface IUserService {
      * @return a UserResponse object representing the newly created user
      */
     UserResponse createUser(UserRequest request);
+
+    /**
+     * Updates the role of an existing user based on the provided UpdateUserRoleRequest.
+     *
+     * @param id      the unique identifier of the user to be updated
+     * @param request the UpdateUserRoleRequest containing the new role information
+     * @return a UserResponse object representing the updated user
+     */
+    UserResponse updateUserRole(Long id, UpdateUserRoleRequest request);
+
+    /**
+     * Updates the status (active/inactive) of an existing user based on the provided UpdateUserStatusRequest.
+     *
+     * @param id      the unique identifier of the user to be updated
+     * @param request the UpdateUserStatusRequest containing the new status information
+     * @return a UserResponse object representing the updated user
+     */
+    UserResponse updateUserStatus(Long id, UpdateUserStatusRequest request);
 
 }

@@ -1,11 +1,16 @@
 package io.github.nguyenquephong13062003.course_management_system.models.services.impl;
 
 import io.github.nguyenquephong13062003.course_management_system.exceptions.DuplicateResourceException;
+import io.github.nguyenquephong13062003.course_management_system.models.dtos.requests.UpdateUserRoleRequest;
+import io.github.nguyenquephong13062003.course_management_system.models.dtos.requests.UpdateUserStatusRequest;
 import io.github.nguyenquephong13062003.course_management_system.models.dtos.requests.UserRequest;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.security.access.AccessDeniedException;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -96,14 +101,6 @@ public class UserServiceImpl implements IUserService {
     @Transactional
     public UserResponse createUser(UserRequest request) {
 
-        log.debug(
-                "Creating new user: username={}, email={}, role={} , fullName={}",
-                request.getUsername(),
-                request.getEmail(),
-                request.getRole(),
-                request.getFullName()
-        );
-
         if (userRepository.existsByUsername(request.getUsername())) {
 
             throw new DuplicateResourceException(
@@ -134,14 +131,52 @@ public class UserServiceImpl implements IUserService {
                         .build()
         );
 
-        log.info(
-                "User created successfully: userId={}, username={}, role={}",
-                user.getId(),
-                user.getUsername(),
-                user.getRole()
-        );
-
         return toUserResponse(user);
+    }
+
+    @Override
+    @Transactional
+    public UserResponse updateUserRole(Long id, UpdateUserRoleRequest request) {
+
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+
+        if (authentication == null || !authentication.isAuthenticated()) {
+            log.warn("JWT verification failed: authentication is missing or unauthenticated");
+            throw new IllegalStateException("Authentication is invalid");
+        }
+
+        User user = userRepository.findById(id)
+                .orElseThrow(() -> {
+                    return new NotFoundException("User with id " + id + " not found");
+                });
+
+        if (user.getRole() == UserRole.ADMIN && !user.getUsername().equals(authentication.getName())) {
+            throw new AccessDeniedException("Admin cannot modify the role of another admin.");
+        }
+
+        user.setRole(request.getRole());
+
+        User savedUser = userRepository.save(user);
+
+        return toUserResponse(savedUser);
+
+    }
+
+    @Override
+    @Transactional
+    public UserResponse updateUserStatus(Long id, UpdateUserStatusRequest request) {
+
+        User user = userRepository.findById(id)
+                .orElseThrow(() -> {
+                    return new NotFoundException("User with id " + id + " not found");
+                });
+
+        user.setActive(request.getIsActive());
+
+        User savedUser = userRepository.save(user);
+
+        return toUserResponse(savedUser);
+
     }
 
     /**
