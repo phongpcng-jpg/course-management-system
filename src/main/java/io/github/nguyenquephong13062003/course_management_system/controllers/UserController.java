@@ -1,12 +1,11 @@
 package io.github.nguyenquephong13062003.course_management_system.controllers;
 
+import io.github.nguyenquephong13062003.course_management_system.models.dtos.requests.UserRequest;
+import jakarta.validation.Valid;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import io.github.nguyenquephong13062003.course_management_system.models.constants.UserRole;
 import io.github.nguyenquephong13062003.course_management_system.models.dtos.responses.UserResponse;
@@ -101,4 +100,22 @@ public class UserController {
                 )
         );
     }
+
+    @PreAuthorize("hasRole('ADMIN')")
+    @PostMapping()
+    public ResponseEntity<ApiResponse<UserResponse>> createUser(
+            @Valid @RequestBody UserRequest request
+    ) {
+
+        UserResponse response = userService.createUser(request);
+
+        return ResponseEntity.status(HttpStatus.CREATED)
+                .body(ApiResponse.<UserResponse>success(
+                        HttpStatus.CREATED.value(),
+                        "User created successfully",
+                        response
+                ));
+
+    }
+
 }
