@@ -1,10 +1,11 @@
 {
   "info": {
-    "_postman_id": "dd00d2a9-4d89-4d55-9d7e-74bbb815d0ff",
+    "_postman_id": "8068b5cd-aa10-4ba5-bc0b-dbfb80a87f55",
     "name": "Course Management System",
     "description": "IOC-Final: Course Management System\n\nGithub: [https://github.com/phongpcng-jpg/course-management-system.git](https://github.com/phongpcng-jpg/course-management-system.git)",
     "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
-    "_exporter_id": "56296091"
+    "_exporter_id": "46424266",
+    "_collection_link": "https://go.postman.co/collection/46424266-8068b5cd-aa10-4ba5-bc0b-dbfb80a87f55?source=collection_link"
   },
   "item": [
     {
@@ -273,40 +274,71 @@
         }
       },
       "response": []
+    },
+    {
+      "name": "User Create",
+      "request": {
+        "auth": {
+          "type": "bearer",
+          "bearer": [
+            {
+              "key": "token",
+              "value": "",
+              "type": "string"
+            }
+          ]
+        },
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n    \"username\": \"teacher01\",\r\n    \"password\": \"Teacher@123\",\r\n    \"email\": \"teacher01@example.com\",\r\n    \"fullName\": \"Nguyen Van A\",\r\n    \"role\": \"TEACHER\"\r\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "http://localhost:8080/api/users",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "8080",
+          "path": [
+            "api",
+            "users"
+          ]
+        }
+      },
+      "response": []
     }
   ],
   "variable": [
     {
-      "key": "json_web_token_0yqw",
-      "secret": true
+      "key": "json_web_token_0yqw"
     },
     {
-      "key": "auth_secret_160w",
-      "secret": true
+      "key": "auth_secret_160w"
     },
     {
-      "key": "supabase_service_role_api_key_0f8c",
-      "secret": true
+      "key": "supabase_service_role_api_key_0f8c"
     },
     {
-      "key": "supabase_service_role_api_key_04dr",
-      "secret": true
+      "key": "supabase_service_role_api_key_04dr"
     },
     {
-      "key": "json_web_token_0f8c",
-      "secret": true
+      "key": "json_web_token_0f8c"
     },
     {
-      "key": "auth_secret_04dr",
-      "secret": true
+      "key": "auth_secret_04dr"
     },
     {
-      "key": "json_web_token_0d9f",
-      "secret": true
+      "key": "json_web_token_0d9f"
     },
     {
-      "key": "json_web_token_03fz",
-      "secret": true
+      "key": "json_web_token_03fz"
     }
   ]
 }
