@@ -223,4 +223,32 @@ public class UserController {
 
     }
 
+    /**
+     * Deletes a user by their unique identifier.
+     * This endpoint is restricted to users with the 'ADMIN' role.
+     *
+     * @param id The unique identifier of the user to delete.
+     * @return A ResponseEntity indicating the result of the deletion operation wrapped in an ApiResponse.
+     */
+    @PreAuthorize("hasRole('ADMIN')")
+    @DeleteMapping("/{user_id}")
+    public ResponseEntity<ApiResponse<Void>> deleteUser(
+            @PathVariable("user_id") Long id
+    ) {
+
+        log.info("Deleting user: userId={}", id);
+
+        UserResponse response = userService.deleteUser(id);
+
+        log.info("User deleted successfully: userId={}", id);
+
+        return  ResponseEntity.ok(
+                ApiResponse.success(
+                        HttpStatus.OK.value(),
+                        "User deleted successfully",
+                        null
+                )
+        );
+    }
+
 }
