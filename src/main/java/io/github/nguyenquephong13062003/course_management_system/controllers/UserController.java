@@ -1,7 +1,10 @@
 package io.github.nguyenquephong13062003.course_management_system.controllers;
 
+import io.github.nguyenquephong13062003.course_management_system.models.dtos.requests.UpdateUserRoleRequest;
+import io.github.nguyenquephong13062003.course_management_system.models.dtos.requests.UpdateUserStatusRequest;
 import io.github.nguyenquephong13062003.course_management_system.models.dtos.requests.UserRequest;
 import jakarta.validation.Valid;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -20,6 +23,7 @@ import lombok.RequiredArgsConstructor;
 @RestController
 @RequestMapping("/api/users")
 @RequiredArgsConstructor
+@Slf4j
 public class UserController {
 
     /**
@@ -67,8 +71,20 @@ public class UserController {
             UserRole role
 
     ) {
+
+        log.info(
+                "Fetching paginated users: page={}, size={}, sortBy={}, direction={}, keyword={}, active={}, role={}",
+                page, size, sortBy, direction, keyword, active, role
+        );
+
         PageResponse<UserResponse> response = userService.getAllUsers(
             page, size, sortBy, direction, keyword, active, role
+        );
+
+        log.info(
+                "Fetched paginated users: page={}, size={}, totalItems={}, totalPages={}, isLast={}",
+                response.getPage(), response.getSize(), response.getTotalItems(),
+                response.getTotalPages(), response.getIsLast()
         );
 
         return ResponseEntity.ok(
@@ -91,7 +107,13 @@ public class UserController {
     @PreAuthorize("hasRole('ADMIN')")
     @GetMapping("/{user_id}")
     public ResponseEntity<ApiResponse<UserResponse>> getUserById(@PathVariable("user_id") Long id) {
+
+        log.info("Fetching user by ID: {}", id);
+
         UserResponse response = userService.getUserById(id);
+
+        log.info("Fetched user by ID: {}", id);
+
         return ResponseEntity.ok(
                 ApiResponse.success(
                     200,
@@ -99,6 +121,7 @@ public class UserController {
                     response
                 )
         );
+
     }
 
     /**
@@ -114,14 +137,89 @@ public class UserController {
             @Valid @RequestBody UserRequest request
     ) {
 
+        log.info("Creating new user: username={}, email={}, role={} , fullName={}",
+                request.getUsername(),
+                request.getEmail(),
+                request.getRole(),
+                request.getFullName()
+        );
+
         UserResponse response = userService.createUser(request);
 
+        log.info("User created successfully: userId={}, username={}, role={}",
+                response.getId(),
+                response.getUsername(),
+                response.getRole()
+        );
+
         return ResponseEntity.status(HttpStatus.CREATED)
-                .body(ApiResponse.<UserResponse>success(
+                .body(ApiResponse.success(
                         HttpStatus.CREATED.value(),
                         "User created successfully",
                         response
                 ));
+
+    }
+
+    /**
+     * Updates the role of an existing user based on the provided request data.
+     * This endpoint is restricted to users with the 'ADMIN' role.
+     *
+     * @param id      The unique identifier of the user to update.
+     * @param request The request body containing the new role information.
+     * @return A ResponseEntity containing the updated user details wrapped in an ApiResponse.
+     */
+    @PreAuthorize("hasRole('ADMIN')")
+    @PutMapping("/{user_id}/role")
+    public ResponseEntity<ApiResponse<UserResponse>> updateUserRole(
+            @PathVariable("user_id") Long id,
+            @Valid @RequestBody UpdateUserRoleRequest request
+    ) {
+
+        log.info("Updating user role: userId={}, role={}", id, request.getRole());
+
+        UserResponse response = userService.updateUserRole(id, request);
+
+        log.info("User role updated successfully: userId={}, role={}", id, response.getRole());
+
+        return  ResponseEntity.ok(
+                ApiResponse.success(
+                        HttpStatus.OK.value(),
+                        "User role updated successfully",
+                        response
+                )
+        );
+
+    }
+
+    /**
+     * Updates the status (active/inactive) of an existing user based on the provided request data.
+     * This endpoint is restricted to users with the 'ADMIN' role.
+     *
+     * @param id      The unique identifier of the user to update.
+     * @param request The request body containing the new status information.
+     * @return A ResponseEntity containing the updated user details wrapped in an ApiResponse.
+     */
+    @PreAuthorize("hasRole('ADMIN')")
+    @PutMapping("/{user_id}/status")
+    public ResponseEntity<ApiResponse<UserResponse>> updateUserStatus(
+            @PathVariable("user_id") Long id,
+            @Valid @RequestBody UpdateUserStatusRequest request
+    ) {
+
+        log.info("Updating user status: userId={}, isActive={}", id, request.getIsActive());
+
+        UserResponse response = userService.updateUserStatus(id, request);
+
+        log.info("User status updated successfully: userId={}, isActive={}", id, response.getActive());
+
+        return  ResponseEntity.ok(
+                ApiResponse.success(
+                        HttpStatus.OK.value(),
+                        "User status updated successfully",
+                        response
+                )
+        );
 
     }
 
