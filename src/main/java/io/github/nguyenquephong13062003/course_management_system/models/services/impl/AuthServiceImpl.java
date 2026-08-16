@@ -5,6 +5,7 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 import io.github.nguyenquephong13062003.course_management_system.exceptions.AuthException;
@@ -56,6 +57,10 @@ public class AuthServiceImpl implements IAuthService {
 
         CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
 
+        if (userDetails == null) {
+            throw new UsernameNotFoundException("User details are missing");
+        }
+
         return LoginResponse.builder()
                 .accessToken(jwtUtils.generateToken(userDetails.getUsername()))
                 .role(userDetails.getUser().getRole().name())
@@ -66,16 +71,15 @@ public class AuthServiceImpl implements IAuthService {
     public VerifyResponse verifyToken() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
-        log.info("Verifying token for user: {}", authentication.getName());
-
         if (authentication == null || !authentication.isAuthenticated()) {
-            log.warn("JWT verification failed: authentication is missing or unauthenticated");
-            throw new IllegalStateException("Authentication is invalid");
+            throw new AuthException("JWT verification failed: authentication is missing or unauthenticated");
         }
+
+        log.info("Verifying token for user: {}", authentication.getName());
 
         String username = authentication.getName();
 
-        log.debug(
+        log.info(
                 "JWT verification successful for user: {}",
                 username
         );
@@ -100,17 +104,21 @@ public class AuthServiceImpl implements IAuthService {
     public UserResponse getCurrentUser() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
-        log.info("Fetching current user profile for: {}", authentication.getName());
-
         if (authentication == null || !authentication.isAuthenticated()) {
-            log.warn("JWT verification failed: authentication is missing or unauthenticated");
-            throw new IllegalStateException("Authentication is invalid");
+            throw new AuthException("JWT verification failed: authentication is missing or unauthenticated");
         }
+
+        log.info("Fetching current user profile for: {}", authentication.getName());
         
         CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
+
+        if (userDetails == null) {
+            throw new UsernameNotFoundException("User details are missing");
+        }
+
         User user = userDetails.getUser();
 
-        log.debug("Fetching profile for current user: {}", user.getUsername());
+        log.info("Fetching profile for current user: {}", user.getUsername());
 
         return UserResponse.builder()
                 .id(user.getId())
