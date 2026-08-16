@@ -20,6 +20,22 @@ import io.github.nguyenquephong13062003.course_management_system.models.dtos.res
 public interface IUserRepository extends JpaRepository<User,Long> {
 
     /**
+     * Check if a user exists with the given username.
+     *
+     * @param username the username to check
+     * @return true if a user with the username exists, false otherwise
+     */
+    Boolean existsByUsername(String username);
+
+    /**
+     * Check if a user exists with the given email.
+     *
+     * @param email the email to check
+     * @return true if a user with the email exists, false otherwise
+     */
+    Boolean existsByEmail(String email);
+
+    /**
      * Find a user by their username.
      *
      * @param username the username of the user to find
