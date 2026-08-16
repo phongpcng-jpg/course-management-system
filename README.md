@@ -38,7 +38,7 @@
 | 3   | `/api/auth/me`                                                | GET    | AUTH           | Retrieve the current user's profile information                                      | ☑ | 2 |   | ☑ |
 | 4   | `/api/users`                                                  | GET    | ADMIN          | Retrieve all users (supports filtering by role and account status)                   | ☑ | 2 |   | ☑ |
 | 5   | `/api/users/{user_id}`                                        | GET    | ADMIN          | Retrieve detailed information for a specific user                                    | ☑ | 2 |   | ☑ |
-| 6   | `/api/users`                                                  | POST   | ADMIN          | Create a new user account                                                            | ☑ | 2 |   | ☐ |
+| 6   | `/api/users`                                                  | POST   | ADMIN          | Create a new user account                                                            | ☑ | 2 |   | ☑ |
 | 7   | `/api/users/{user_id}/role`                                   | PUT    | ADMIN          | Update a user's role (an ADMIN cannot update another ADMIN's role)                   | ☑ | 2 |   | ☐ |
 | 8   | `/api/users/{user_id}/status`                                 | PUT    | ADMIN          | Activate or deactivate a user account (`is_active`)                                  | ☑ | 3 |   | ☐ |
 | 9   | `/api/users/{user_id}`                                        | DELETE | ADMIN          | Delete a user from the system                                                        | ☑ | 2 |   | ☐ |
