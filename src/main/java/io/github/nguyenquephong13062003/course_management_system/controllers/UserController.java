@@ -101,6 +101,13 @@ public class UserController {
         );
     }
 
+    /**
+     * Creates a new user based on the provided request data.
+     * This endpoint is restricted to users with the 'ADMIN' role.
+     *
+     * @param request The request body containing user details for creation.
+     * @return A ResponseEntity containing the created user details wrapped in an ApiResponse.
+     */
     @PreAuthorize("hasRole('ADMIN')")
     @PostMapping()
     public ResponseEntity<ApiResponse<UserResponse>> createUser(
