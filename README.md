@@ -39,9 +39,9 @@
 | 4   | `/api/users`                                                  | GET    | ADMIN          | Retrieve all users (supports filtering by role and account status)                   | ☑ | 2 |   | ☑ |
 | 5   | `/api/users/{user_id}`                                        | GET    | ADMIN          | Retrieve detailed information for a specific user                                    | ☑ | 2 |   | ☑ |
 | 6   | `/api/users`                                                  | POST   | ADMIN          | Create a new user account                                                            | ☑ | 2 |   | ☑ |
-| 7   | `/api/users/{user_id}/role`                                   | PUT    | ADMIN          | Update a user's role (an ADMIN cannot update another ADMIN's role)                   | ☑ | 2 |   | ☐ |
-| 8   | `/api/users/{user_id}/status`                                 | PUT    | ADMIN          | Activate or deactivate a user account (`is_active`)                                  | ☑ | 3 |   | ☐ |
-| 9   | `/api/users/{user_id}`                                        | DELETE | ADMIN          | Delete a user from the system                                                        | ☑ | 2 |   | ☐ |
+| 7   | `/api/users/{user_id}/role`                                   | PUT    | ADMIN          | Update a user's role (an ADMIN cannot update another ADMIN's role)                   | ☑ | 2 |   | ☑ |
+| 8   | `/api/users/{user_id}/status`                                 | PUT    | ADMIN          | Activate or deactivate a user account (`is_active`)                                  | ☑ | 3 |   | ☑ |
+| 9   | `/api/users/{user_id}`                                        | DELETE | ADMIN          | Delete a user from the system                                                        | ☑ | 2 |   | ☑ |
 | 10  | `/api/courses`                                                | GET    | AUTH           | Retrieve all courses (supports filtering by `PUBLISHED` status)                      | ☑ | 2 |   | ☐ |
 | 11  | `/api/courses/{course_id}`                                    | GET    | AUTH           | Retrieve detailed course information, including published lessons                    | ☑ | 2 |   | ☐ |
 | 12  | `/api/courses`                                                | POST   | ADMIN          | Create a new course, assign an instructor, initial status is `DRAFT`                 | ☑ | 3 |   | ☐ |
