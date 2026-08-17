@@ -1,14 +1,20 @@
 package io.github.nguyenquephong13062003.course_management_system.controllers;
 
 import io.github.nguyenquephong13062003.course_management_system.models.constants.CourseStatus;
+import io.github.nguyenquephong13062003.course_management_system.models.dtos.requests.CourseCreateRequest;
+import io.github.nguyenquephong13062003.course_management_system.models.dtos.requests.CourseStatusUpdateRequest;
+import io.github.nguyenquephong13062003.course_management_system.models.dtos.requests.CourseUpdateRequest;
 import io.github.nguyenquephong13062003.course_management_system.models.dtos.responses.CourseDetailResponse;
 import io.github.nguyenquephong13062003.course_management_system.models.dtos.responses.CourseResponse;
 import io.github.nguyenquephong13062003.course_management_system.models.dtos.wrappers.ApiResponse;
 import io.github.nguyenquephong13062003.course_management_system.models.dtos.wrappers.PageResponse;
 import io.github.nguyenquephong13062003.course_management_system.models.services.ICourseService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.math.BigDecimal;
@@ -128,6 +134,155 @@ public class CourseController {
                         response
                 )
         );
+    }
+
+    /**
+     * Handles POST requests to create a new course.
+     * This endpoint is restricted to users with the 'ADMIN' role.
+     *
+     * @param request The CourseCreateRequest object containing the details of the course to be created.
+     * @return A ResponseEntity containing an ApiResponse with a CourseResponse object representing the newly created course.
+     */
+    @PostMapping
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<ApiResponse<CourseResponse>> createCourse(
+            @Valid @RequestBody CourseCreateRequest request
+    ) {
+        log.info(
+                "Received create course request: title={}, teacherId={}",
+                request.getTitle(),
+                request.getTeacherId()
+        );
+
+        CourseResponse response = courseService.createCourse(request);
+
+        log.info(
+                "Course created successfully: courseId={}",
+                response.getId()
+        );
+
+        return ResponseEntity.status(HttpStatus.CREATED).body(
+                ApiResponse.success(
+                        HttpStatus.CREATED.value(),
+                        "Course created successfully",
+                        response
+                )
+        );
+    }
+
+    /**
+     * Handles PUT requests to update an existing course.
+     * This endpoint is restricted to users with the 'ADMIN' role.
+     *
+     * @param courseId The ID of the course to be updated.
+     * @param request  The CourseUpdateRequest object containing the updated details of the course.
+     * @return A ResponseEntity containing an ApiResponse with a CourseResponse object representing the updated course.
+     */
+    @PutMapping("/{courseId}")
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<ApiResponse<CourseResponse>> updateCourse(
+            @PathVariable Long courseId,
+            @Valid @RequestBody CourseUpdateRequest request
+    ) {
+        log.info(
+                "Received update course request: courseId={}, teacherId={}",
+                courseId,
+                request.getTeacherId()
+        );
+
+        CourseResponse response = courseService.updateCourse(
+                courseId,
+                request
+        );
+
+        log.info(
+                "Course updated successfully: courseId={}",
+                courseId
+        );
+
+        return ResponseEntity.ok(
+                ApiResponse.success(
+                        200,
+                        "Course updated successfully",
+                        response
+                )
+        );
+
+    }
+
+    /**
+     * Handles PUT requests to update the status of an existing course.
+     * This endpoint is restricted to users with the 'ADMIN' role.
+     *
+     * @param courseId The ID of the course to be updated.
+     * @param request  The CourseStatusUpdateRequest object containing the new status of the course.
+     * @return A ResponseEntity containing an ApiResponse with a CourseResponse object representing the updated course status.
+     */
+    @PutMapping("/{courseId}/status")
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<ApiResponse<CourseResponse>> updateCourseStatus(
+            @PathVariable Long courseId,
+            @Valid @RequestBody CourseStatusUpdateRequest request
+    ) {
+        log.info(
+                "Received update course status request: courseId={}, status={}",
+                courseId,
+                request.getStatus()
+        );
+
+        CourseResponse response = courseService.updateCourseStatus(
+                courseId,
+                request
+        );
+
+        log.info(
+                "Course status updated successfully: courseId={}, status={}",
+                courseId,
+                response.getStatus()
+        );
+
+        return ResponseEntity.ok(
+                ApiResponse.success(
+                        200,
+                        "Course status updated successfully",
+                        response
+                )
+        );
+
+    }
+
+    /**
+     * Handles DELETE requests to remove an existing course.
+     * This endpoint is restricted to users with the 'ADMIN' role.
+     *
+     * @param courseId The ID of the course to be deleted.
+     * @return A ResponseEntity containing an ApiResponse indicating the success of the deletion operation.
+     */
+    @DeleteMapping("/{courseId}")
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<ApiResponse<Void>> deleteCourse(
+            @PathVariable Long courseId
+    ) {
+        log.info(
+                "Received delete course request: courseId={}",
+                courseId
+        );
+
+        courseService.deleteCourse(courseId);
+
+        log.info(
+                "Course deleted successfully: courseId={}",
+                courseId
+        );
+
+        return  ResponseEntity.ok(
+                ApiResponse.success(
+                        HttpStatus.OK.value(),
+                        "Course deleted successfully",
+                        null
+                )
+        );
+
     }
 
 }
