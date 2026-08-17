@@ -1,5 +1,6 @@
 package io.github.nguyenquephong13062003.course_management_system.models.services.impl;
 
+import io.github.nguyenquephong13062003.course_management_system.exceptions.AuthException;
 import io.github.nguyenquephong13062003.course_management_system.models.constants.CourseStatus;
 import io.github.nguyenquephong13062003.course_management_system.models.dtos.responses.CourseResponse;
 import io.github.nguyenquephong13062003.course_management_system.models.dtos.wrappers.PageResponse;
@@ -11,10 +12,14 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.security.access.AccessDeniedException;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
+import java.util.Objects;
 
 /**
  * Implementation of the ICourseService interface, providing course-related services in the course management system.
@@ -45,6 +50,21 @@ public class CourseServiceImpl implements ICourseService {
             Integer durationHoursMin,
             Integer durationHoursMax
     ) {
+
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+
+        if (authentication == null || !authentication.isAuthenticated()) {
+            throw new AuthException("JWT verification failed: authentication is missing or unauthenticated");
+        }
+
+        if (authentication.getAuthorities().stream()
+                .noneMatch(authority -> Objects.equals(authority.getAuthority(), "ROLE_ADMIN"))) {
+            if (status == null) {
+                status = CourseStatus.PUBLISHED;
+            } else if (status == CourseStatus.ARCHIVED || status == CourseStatus.DRAFT) {
+                throw new AccessDeniedException("Student and Teacher cannot see Draft courses and Archived courses");
+            }
+        }
 
         if (page < 0) {
             page = 0;
