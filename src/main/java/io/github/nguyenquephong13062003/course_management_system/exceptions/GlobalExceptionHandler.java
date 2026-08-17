@@ -2,6 +2,7 @@ package io.github.nguyenquephong13062003.course_management_system.exceptions;
 
 import java.util.List;
 
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -262,6 +263,91 @@ public class GlobalExceptionHandler {
                 ApiResponse.<Void>error(
                         400,
                         "INVALID_INPUT_DATA",
+                        ex.getMessage(),
+                        null
+                )
+        );
+
+    }
+
+    /**
+     * Handles InvalidStateTransitionException thrown by the application.
+     * @param ex The InvalidStateTransitionException that was thrown.
+     * @return A ResponseEntity containing an ApiResponse with error details.
+     */
+    @ExceptionHandler(InvalidStateTransitionException.class)
+    public ResponseEntity<ApiResponse<Void>> handleInvalidStateTransitionException(
+            HttpServletRequest request,
+            HttpServletResponse response,
+            InvalidStateTransitionException ex
+    ) {
+
+        log.warn(
+                "Invalid state transition in request {} {}: {}",
+                request.getMethod(),
+                request.getRequestURI(),
+                ex.getMessage()
+        );
+
+        return  ResponseEntity.status(HttpStatus.CONFLICT).body(
+                ApiResponse.<Void>error(
+                        HttpStatus.CONFLICT.value(),
+                        "INVALID_STATE_TRANSITION",
+                        ex.getMessage(),
+                        null
+                )
+        );
+
+    }
+
+    /**
+     * Handles IllegalArgumentException thrown by the application.
+     * @param ex The IllegalArgumentException that was thrown.
+     * @return A ResponseEntity containing an ApiResponse with error details.
+     */
+    @ExceptionHandler(IllegalArgumentException.class)
+    public ResponseEntity<ApiResponse<Void>> handleIllegalArgumentException(
+            HttpServletRequest request,
+            HttpServletResponse response,
+            IllegalArgumentException ex
+    ) {
+
+        log.warn(
+                "Illegal argument in request {} {}: {}",
+                request.getMethod(),
+                request.getRequestURI(),
+                ex.getMessage()
+        );
+
+        return  ResponseEntity.status(400).body(
+                ApiResponse.<Void>error(
+                        400,
+                        "ILLEGAL_ARGUMENT",
+                        ex.getMessage(),
+                        null
+                )
+        );
+
+    }
+
+    @ExceptionHandler(CourseHasDependentDataException.class)
+    public ResponseEntity<ApiResponse<Void>> handleCourseHasDependentDataException(
+            HttpServletRequest request,
+            HttpServletResponse response,
+            CourseHasDependentDataException ex
+    ) {
+
+        log.warn(
+                "Course has dependent data in request {} {}: {}",
+                request.getMethod(),
+                request.getRequestURI(),
+                ex.getMessage()
+        );
+
+        return  ResponseEntity.status(HttpStatus.CONFLICT).body(
+                ApiResponse.<Void>error(
+                        HttpStatus.CONFLICT.value(),
+                        "COURSE_HAS_DEPENDENT_DATA",
                         ex.getMessage(),
                         null
                 )
