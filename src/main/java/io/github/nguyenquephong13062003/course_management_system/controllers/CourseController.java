@@ -1,6 +1,7 @@
 package io.github.nguyenquephong13062003.course_management_system.controllers;
 
 import io.github.nguyenquephong13062003.course_management_system.models.constants.CourseStatus;
+import io.github.nguyenquephong13062003.course_management_system.models.dtos.responses.CourseDetailResponse;
 import io.github.nguyenquephong13062003.course_management_system.models.dtos.responses.CourseResponse;
 import io.github.nguyenquephong13062003.course_management_system.models.dtos.wrappers.ApiResponse;
 import io.github.nguyenquephong13062003.course_management_system.models.dtos.wrappers.PageResponse;
@@ -8,10 +9,7 @@ import io.github.nguyenquephong13062003.course_management_system.models.services
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.math.BigDecimal;
 
@@ -104,6 +102,32 @@ public class CourseController {
                 )
         );
 
+    }
+
+    /**
+     * Handles GET requests to retrieve detailed information about a specific course by its ID.
+     *
+     * @param id The ID of the course to retrieve details for.
+     * @return A ResponseEntity containing an ApiResponse with a CourseDetailResponse object representing the course details.
+     */
+    @GetMapping("/{course_id}")
+    public ResponseEntity<ApiResponse<CourseDetailResponse>> getCourseDetail(
+            @PathVariable("course_id") Long id
+    ) {
+
+        log.info("Received request to get course detail for course ID: {}", id);
+
+        CourseDetailResponse response = courseService.getCourseDetail(id);
+
+        log.info("Successfully fetched course detail for course ID: {}", id);
+
+        return ResponseEntity.ok(
+                ApiResponse.success(
+                        200,
+                        "Fetched course details successfully",
+                        response
+                )
+        );
     }
 
 }
