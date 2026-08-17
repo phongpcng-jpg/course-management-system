@@ -30,6 +30,22 @@ public class CourseController {
      */
     private final ICourseService courseService;
 
+    /**
+     * Handles GET requests to retrieve a paginated list of courses based on the provided filtering and sorting criteria.
+     *
+     * @param page               The page number to retrieve (0-based index).
+     * @param size               The number of courses per page.
+     * @param sortBy             The field to sort the courses by (e.g., "title", "price").
+     * @param direction          The sorting direction ("asc" for ascending, "desc" for descending).
+     * @param keyword            The keyword to search for in course titles (optional).
+     * @param status             The status of the courses to filter by (optional).
+     * @param teacherId          The ID of the teacher to filter courses by (optional).
+     * @param priceMin           The minimum price of the courses to filter by (optional).
+     * @param priceMax           The maximum price of the courses to filter by (optional).
+     * @param durationHoursMin   The minimum duration in hours of the courses to filter by (optional).
+     * @param durationHoursMax   The maximum duration in hours of the courses to filter by (optional).
+     * @return A ResponseEntity containing an ApiResponse with a PageResponse of CourseResponse objects matching the specified criteria.
+     */
     @GetMapping
     public ResponseEntity<ApiResponse<PageResponse<CourseResponse>>> getPagedCourse(
 
@@ -49,7 +65,7 @@ public class CourseController {
             String keyword,
 
             // Note: Status is All/null if hasRole('ADMIN')
-            // Else PUBLISHED and DRAFT/ARCHIVED is locked
+            // Else PUBLISHED+ARCHIVED and DRAFT is locked
             @RequestParam(name = "status", required = false)
             CourseStatus status,
 
