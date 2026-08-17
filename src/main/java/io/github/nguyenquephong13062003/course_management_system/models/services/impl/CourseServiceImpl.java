@@ -22,15 +22,11 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
-import org.springframework.security.access.AccessDeniedException;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 import java.util.List;
-import java.util.Objects;
 
 /**
  * Implementation of the ICourseService interface, providing course-related services in the course management system.
@@ -82,23 +78,6 @@ public class CourseServiceImpl implements ICourseService {
             Integer durationHoursMax
     ) {
 
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-
-        if (authentication == null || !authentication.isAuthenticated()) {
-            throw new AuthException("JWT verification failed: authentication is missing or unauthenticated");
-        }
-
-        CourseStatus exceptStatus = null;
-
-        if (authentication.getAuthorities().stream()
-                .noneMatch(authority -> Objects.equals(authority.getAuthority(), "ROLE_ADMIN"))) {
-            if (status == null) {
-                status = CourseStatus.PUBLISHED;
-            } else if (status != CourseStatus.PUBLISHED) {
-                throw new AccessDeniedException("Student and Teacher can only see PUBLISHED Courses");
-            }
-        }
-
         if (page < 0) {
             page = 0;
         }
@@ -116,7 +95,7 @@ public class CourseServiceImpl implements ICourseService {
         Pageable pageable = PageRequest.of(page, size, sort);
 
         Page<CourseResponse> coursePage = courseRepository.findAllCourseWithKeywordAndFilters(
-                keyword, status, exceptStatus, teacherId, priceMin, priceMax, durationHoursMin, durationHoursMax, pageable
+                keyword, status, null, teacherId, priceMin, priceMax, durationHoursMin, durationHoursMax, pageable
         );
 
         return PageResponse.<CourseResponse>builder()
@@ -133,24 +112,10 @@ public class CourseServiceImpl implements ICourseService {
     @Override
     public CourseDetailResponse getCourseDetail(Long id) {
 
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-
-        if (authentication == null || !authentication.isAuthenticated()) {
-            throw new AuthException("JWT verification failed: authentication is missing or unauthenticated");
-        }
-
         Course course = courseRepository.findById(id)
                 .orElseThrow(() -> {
                     return new NotFoundException("Course with id " + id + " not found");
                 });
-
-        if (course.getStatus() != CourseStatus.PUBLISHED && (
-                authentication.getAuthorities().stream()
-                        .noneMatch(authority -> Objects.equals(authority.getAuthority(), "ROLE_ADMIN"))
-                || !authentication.getName().equals(course.getTeacher().getUsername()))
-        ) {
-            throw new AccessDeniedException("Student and Teacher (who are not in charge of the course) can only see PUBLISHED Course");
-        }
 
         List<Lesson> lessons = lessonRepository.findByCourse_IdAndIsPublishedTrueOrderByOrderIndexAsc(id);
 
@@ -301,24 +266,10 @@ public class CourseServiceImpl implements ICourseService {
     @Override
     public List<LessonResponse> getAllPublishedLessonByCourseId(Long id) {
 
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-
-        if (authentication == null || !authentication.isAuthenticated()) {
-            throw new AuthException("JWT verification failed: authentication is missing or unauthenticated");
-        }
-
-        Course course = courseRepository.findById(id)
+        courseRepository.findById(id)
                 .orElseThrow(() -> {
                     return new NotFoundException("Course with id " + id + " not found");
                 });
-
-        if (course.getStatus() != CourseStatus.PUBLISHED && (
-                authentication.getAuthorities().stream()
-                        .noneMatch(authority -> Objects.equals(authority.getAuthority(), "ROLE_ADMIN"))
-                        || !authentication.getName().equals(course.getTeacher().getUsername()))
-        ) {
-            throw new AccessDeniedException("Student and Teacher (who are not in charge of the course) can only see PUBLISHED Course");
-        }
 
         List<Lesson> lessons = lessonRepository.findByCourse_IdAndIsPublishedTrueOrderByOrderIndexAsc(id);
 
