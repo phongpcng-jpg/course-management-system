@@ -40,7 +40,7 @@ public class LessonCreateRequest {
             type = "string",
             format = "binary"
     )
-    private MultipartFile contentUrl;
+    private MultipartFile content;
 
     @Size(
             max = 100000,
