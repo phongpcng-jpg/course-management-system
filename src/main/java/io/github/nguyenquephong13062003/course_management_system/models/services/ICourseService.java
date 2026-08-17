@@ -6,9 +6,11 @@ import io.github.nguyenquephong13062003.course_management_system.models.dtos.req
 import io.github.nguyenquephong13062003.course_management_system.models.dtos.requests.CourseUpdateRequest;
 import io.github.nguyenquephong13062003.course_management_system.models.dtos.responses.CourseDetailResponse;
 import io.github.nguyenquephong13062003.course_management_system.models.dtos.responses.CourseResponse;
+import io.github.nguyenquephong13062003.course_management_system.models.dtos.responses.LessonResponse;
 import io.github.nguyenquephong13062003.course_management_system.models.dtos.wrappers.PageResponse;
 
 import java.math.BigDecimal;
+import java.util.List;
 
 /**
  * The ICourseService interface defines the contract for course-related services in the course management system.
@@ -89,5 +91,13 @@ public interface ICourseService {
      * @param courseId The ID of the course to be deleted.
      */
     void deleteCourse(Long courseId);
+
+    /**
+     * Retrieves a list of published lessons associated with a specific course by its ID.
+     *
+     * @param id The ID of the course for which to retrieve published lessons.
+     * @return A list of LessonResponse objects representing the published lessons of the specified course.
+     */
+    List<LessonResponse> getAllPublishedLessonByCourseId(Long id);
 
 }

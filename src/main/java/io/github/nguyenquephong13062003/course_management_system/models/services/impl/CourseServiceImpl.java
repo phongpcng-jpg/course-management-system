@@ -149,8 +149,6 @@ public class CourseServiceImpl implements ICourseService {
             throw new AccessDeniedException("Student and Teacher cannot see Draft course");
         }
 
-        List<Lesson> lessons = lessonRepository.findByCourse_IdAndIsPublishedTrueOrderByOrderIndexAsc(id);
-
         return CourseDetailResponse.builder()
                 .id(course.getId())
                 .title(course.getTitle())
@@ -165,19 +163,7 @@ public class CourseServiceImpl implements ICourseService {
                 .durationHours(course.getDurationHours())
                 .status(course.getStatus())
                 .lessons(
-                        lessons.stream()
-                                .map(
-                                        lesson -> LessonResponse.builder()
-                                                .id(lesson.getLessonId())
-                                                .title(lesson.getTitle())
-                                                .contentUrl(lesson.getContentUrl())
-                                                .textContent(lesson.getTextContent())
-                                                .orderIndex(lesson.getOrderIndex())
-                                                .isPublished(lesson.getIsPublished())
-                                                .createdAt(lesson.getCreatedAt())
-                                                .updatedAt(lesson.getUpdatedAt())
-                                                .build()
-                                ).toList()
+                        getAllPublishedLessonByCourseId(id)
                 ).createdAt(course.getCreatedAt())
                 .updatedAt(course.getUpdatedAt())
                 .build();
@@ -293,6 +279,27 @@ public class CourseServiceImpl implements ICourseService {
 
         courseRepository.deleteById(courseId);
 
+    }
+
+    @Override
+    public List<LessonResponse> getAllPublishedLessonByCourseId(Long id) {
+
+        List<Lesson> lessons = lessonRepository.findByCourse_IdAndIsPublishedTrueOrderByOrderIndexAsc(id);
+
+        return lessons.stream()
+                .map(
+                        lesson -> LessonResponse.builder()
+                                .id(lesson.getLessonId())
+                                .title(lesson.getTitle())
+                                .contentUrl(lesson.getContentUrl())
+                                .textContent(lesson.getTextContent())
+                                .orderIndex(lesson.getOrderIndex())
+                                .isPublished(lesson.getIsPublished())
+                                .createdAt(lesson.getCreatedAt())
+                                .updatedAt(lesson.getUpdatedAt())
+                                .build()
+                ).toList();
+        
     }
 
     /**
