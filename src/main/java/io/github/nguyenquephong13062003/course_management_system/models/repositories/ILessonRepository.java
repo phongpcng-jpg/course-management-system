@@ -21,4 +21,12 @@ public interface ILessonRepository extends JpaRepository<Lesson, Long> {
             Long courseId
     );
 
+    /**
+     * Checks if any lessons exist for a specific course.
+     *
+     * @param courseId The ID of the course to check for existing lessons.
+     * @return true if there are lessons associated with the specified course, false otherwise.
+     */
+    boolean existsByCourseId(Long courseId);
+
 }
