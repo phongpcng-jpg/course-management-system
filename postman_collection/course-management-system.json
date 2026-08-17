@@ -9,7 +9,7 @@
   },
   "item": [
     {
-      "name": "Auth Login",
+      "name": "1. Auth Login",
       "request": {
         "auth": {
           "type": "bearer"
@@ -42,7 +42,7 @@
       "response": []
     },
     {
-      "name": "Auth Student Login",
+      "name": "1. Auth Student Login",
       "request": {
         "auth": {
           "type": "bearer",
@@ -82,7 +82,7 @@
       "response": []
     },
     {
-      "name": "Auth Verify",
+      "name": "2. Auth Verify",
       "request": {
         "auth": {
           "type": "bearer",
@@ -117,7 +117,7 @@
       "response": []
     },
     {
-      "name": "Auth Me",
+      "name": "3. Auth Me",
       "protocolProfileBehavior": {
         "disableBodyPruning": true
       },
@@ -155,7 +155,7 @@
       "response": []
     },
     {
-      "name": "User All",
+      "name": "4. User All",
       "protocolProfileBehavior": {
         "disableBodyPruning": true
       },
@@ -192,7 +192,7 @@
       "response": []
     },
     {
-      "name": "User Status",
+      "name": "31. User Status",
       "protocolProfileBehavior": {
         "disableBodyPruning": true
       },
@@ -235,7 +235,7 @@
       "response": []
     },
     {
-      "name": "User Role",
+      "name": "4. User Role",
       "protocolProfileBehavior": {
         "disableBodyPruning": true
       },
@@ -278,7 +278,7 @@
       "response": []
     },
     {
-      "name": "User ID",
+      "name": "5. User ID",
       "protocolProfileBehavior": {
         "disableBodyPruning": true
       },
@@ -316,7 +316,7 @@
       "response": []
     },
     {
-      "name": "User Create",
+      "name": "6.User Create",
       "request": {
         "auth": {
           "type": "bearer",
@@ -355,7 +355,7 @@
       "response": []
     },
     {
-      "name": "User Role",
+      "name": "7. User Role",
       "request": {
         "auth": {
           "type": "bearer",
@@ -396,7 +396,7 @@
       "response": []
     },
     {
-      "name": "User Status",
+      "name": "8. User Status",
       "request": {
         "auth": {
           "type": "bearer",
@@ -437,7 +437,7 @@
       "response": []
     },
     {
-      "name": "User Delete",
+      "name": "9. User Delete*",
       "request": {
         "auth": {
           "type": "bearer",
@@ -468,7 +468,7 @@
       "response": []
     },
     {
-      "name": "Course All",
+      "name": "10. Course All",
       "request": {
         "auth": {
           "type": "bearer",
@@ -498,7 +498,7 @@
       "response": []
     },
     {
-      "name": "Course Draft",
+      "name": "32. Course Draft",
       "request": {
         "auth": {
           "type": "bearer",
@@ -534,7 +534,7 @@
       "response": []
     },
     {
-      "name": "Course Detail",
+      "name": "11. Course Detail",
       "request": {
         "auth": {
           "type": "bearer",
@@ -565,7 +565,7 @@
       "response": []
     },
     {
-      "name": "CREATE Course",
+      "name": "12. CREATE Course",
       "request": {
         "auth": {
           "type": "bearer",
@@ -604,7 +604,7 @@
       "response": []
     },
     {
-      "name": "Course Update",
+      "name": "13. Course Update",
       "request": {
         "auth": {
           "type": "bearer",
@@ -644,7 +644,7 @@
       "response": []
     },
     {
-      "name": "Course Update Status",
+      "name": "14. Course Update Status",
       "request": {
         "auth": {
           "type": "bearer",
@@ -685,7 +685,7 @@
       "response": []
     },
     {
-      "name": "Course Delete",
+      "name": "15. Course Delete",
       "request": {
         "auth": {
           "type": "bearer",
@@ -716,7 +716,7 @@
       "response": []
     },
     {
-      "name": "Course lessons All",
+      "name": "16. Course lessons All",
       "request": {
         "auth": {
           "type": "bearer",
@@ -742,6 +742,37 @@
             "courses",
             "1",
             "lessons"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "17. Lesson Details",
+      "request": {
+        "auth": {
+          "type": "bearer",
+          "bearer": [
+            {
+              "key": "token",
+              "value": "",
+              "type": "string"
+            }
+          ]
+        },
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "http://localhost:8080/api/lessons/1",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "8080",
+          "path": [
+            "api",
+            "lessons",
+            "1"
           ]
         }
       },
