@@ -93,9 +93,9 @@ public class CourseServiceImpl implements ICourseService {
         if (authentication.getAuthorities().stream()
                 .noneMatch(authority -> Objects.equals(authority.getAuthority(), "ROLE_ADMIN"))) {
             if (status == null) {
-                exceptStatus = CourseStatus.DRAFT;
-            } else if (status == CourseStatus.DRAFT) {
-                throw new AccessDeniedException("Student and Teacher cannot see Draft courses");
+                status = CourseStatus.PUBLISHED;
+            } else if (status != CourseStatus.PUBLISHED) {
+                throw new AccessDeniedException("Student and Teacher can only see PUBLISHED Courses");
             }
         }
 
@@ -144,9 +144,12 @@ public class CourseServiceImpl implements ICourseService {
                     return new NotFoundException("Course with id " + id + " not found");
                 });
 
-        if (course.getStatus() == CourseStatus.DRAFT && authentication.getAuthorities().stream()
-                .noneMatch(authority -> Objects.equals(authority.getAuthority(), "ROLE_ADMIN"))) {
-            throw new AccessDeniedException("Student and Teacher cannot see Draft course");
+        if (course.getStatus() != CourseStatus.PUBLISHED && (
+                authentication.getAuthorities().stream()
+                        .noneMatch(authority -> Objects.equals(authority.getAuthority(), "ROLE_ADMIN"))
+                || !authentication.getName().equals(course.getTeacher().getUsername()))
+        ) {
+            throw new AccessDeniedException("Student and Teacher (who are not in charge of the course) can only see PUBLISHED Course");
         }
 
         List<Lesson> lessons = lessonRepository.findByCourse_IdAndIsPublishedTrueOrderByOrderIndexAsc(id);
@@ -309,9 +312,12 @@ public class CourseServiceImpl implements ICourseService {
                     return new NotFoundException("Course with id " + id + " not found");
                 });
 
-        if (course.getStatus() == CourseStatus.DRAFT && authentication.getAuthorities().stream()
-                .noneMatch(authority -> Objects.equals(authority.getAuthority(), "ROLE_ADMIN"))) {
-            throw new AccessDeniedException("Student and Teacher cannot see Draft course");
+        if (course.getStatus() != CourseStatus.PUBLISHED && (
+                authentication.getAuthorities().stream()
+                        .noneMatch(authority -> Objects.equals(authority.getAuthority(), "ROLE_ADMIN"))
+                        || !authentication.getName().equals(course.getTeacher().getUsername()))
+        ) {
+            throw new AccessDeniedException("Student and Teacher (who are not in charge of the course) can only see PUBLISHED Course");
         }
 
         List<Lesson> lessons = lessonRepository.findByCourse_IdAndIsPublishedTrueOrderByOrderIndexAsc(id);
