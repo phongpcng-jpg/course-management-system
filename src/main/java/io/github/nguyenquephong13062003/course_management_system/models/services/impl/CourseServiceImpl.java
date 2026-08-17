@@ -6,6 +6,7 @@ import io.github.nguyenquephong13062003.course_management_system.models.constant
 import io.github.nguyenquephong13062003.course_management_system.models.dtos.requests.CourseCreateRequest;
 import io.github.nguyenquephong13062003.course_management_system.models.dtos.requests.CourseStatusUpdateRequest;
 import io.github.nguyenquephong13062003.course_management_system.models.dtos.requests.CourseUpdateRequest;
+import io.github.nguyenquephong13062003.course_management_system.models.dtos.requests.LessonCreateRequest;
 import io.github.nguyenquephong13062003.course_management_system.models.dtos.responses.CourseDetailResponse;
 import io.github.nguyenquephong13062003.course_management_system.models.dtos.responses.CourseResponse;
 import io.github.nguyenquephong13062003.course_management_system.models.dtos.responses.CourseTeacherResponse;
@@ -16,17 +17,22 @@ import io.github.nguyenquephong13062003.course_management_system.models.entities
 import io.github.nguyenquephong13062003.course_management_system.models.entities.User;
 import io.github.nguyenquephong13062003.course_management_system.models.repositories.*;
 import io.github.nguyenquephong13062003.course_management_system.models.services.ICourseService;
+import io.github.nguyenquephong13062003.course_management_system.models.services.uploads.UploadService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.security.access.AccessDeniedException;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * Implementation of the ICourseService interface, providing course-related services in the course management system.
@@ -62,6 +68,8 @@ public class CourseServiceImpl implements ICourseService {
      * The IReviewRepository instance used for accessing review data from the database.
      */
     private final IReviewRepository reviewRepository;
+
+    private final UploadService uploadService;
 
     @Override
     public PageResponse<CourseResponse> getAllCourse(
@@ -287,6 +295,51 @@ public class CourseServiceImpl implements ICourseService {
                                 .build()
                 ).toList();
         
+    }
+
+    @Override
+    @Transactional
+    public LessonResponse createLesson(Long course_id, LessonCreateRequest request) {
+
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+
+        if (authentication == null || !authentication.isAuthenticated()) {
+            throw new AuthException("JWT verification failed: authentication is missing or unauthenticated");
+        }
+
+        Course course = courseRepository.findById(course_id)
+                .orElseThrow(() -> {
+                    return new NotFoundException("Course with id " + course_id + " not found");
+                });
+
+        if (!authentication.getName().equals(course.getTeacher().getUsername()) && authentication.getAuthorities().stream()
+                .noneMatch(authority -> Objects.equals(authority.getAuthority(), "ROLE_ADMIN"))) {
+
+            throw new AccessDeniedException("Only Admin and Teacher who is in charge of the course can create lesson of course");
+
+        }
+
+        Lesson lesson = Lesson.builder()
+                .course(course)
+                .title(request.getTitle())
+                .contentUrl(uploadService.upload(
+                        request.getContent()
+                )).textContent(request.getTextContent())
+                .orderIndex(request.getOrderIndex())
+                .build();
+
+        Lesson savedLesson = lessonRepository.save(lesson);
+
+        return LessonResponse.builder()
+                .id(savedLesson.getLessonId())
+                .title(savedLesson.getTitle())
+                .contentUrl(savedLesson.getContentUrl())
+                .textContent(savedLesson.getTextContent())
+                .orderIndex(savedLesson.getOrderIndex())
+                .isPublished(savedLesson.getIsPublished())
+                .createdAt(savedLesson.getCreatedAt())
+                .updatedAt(savedLesson.getUpdatedAt())
+                .build();
     }
 
     /**

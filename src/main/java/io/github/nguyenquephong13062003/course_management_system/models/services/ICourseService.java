@@ -4,6 +4,7 @@ import io.github.nguyenquephong13062003.course_management_system.models.constant
 import io.github.nguyenquephong13062003.course_management_system.models.dtos.requests.CourseCreateRequest;
 import io.github.nguyenquephong13062003.course_management_system.models.dtos.requests.CourseStatusUpdateRequest;
 import io.github.nguyenquephong13062003.course_management_system.models.dtos.requests.CourseUpdateRequest;
+import io.github.nguyenquephong13062003.course_management_system.models.dtos.requests.LessonCreateRequest;
 import io.github.nguyenquephong13062003.course_management_system.models.dtos.responses.CourseDetailResponse;
 import io.github.nguyenquephong13062003.course_management_system.models.dtos.responses.CourseResponse;
 import io.github.nguyenquephong13062003.course_management_system.models.dtos.responses.LessonResponse;
@@ -99,5 +100,7 @@ public interface ICourseService {
      * @return A list of LessonResponse objects representing the published lessons of the specified course.
      */
     List<LessonResponse> getAllPublishedLessonByCourseId(Long id);
+
+    LessonResponse createLesson(Long course_id, LessonCreateRequest request);
 
 }
