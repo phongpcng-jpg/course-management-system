@@ -18,17 +18,18 @@ import java.math.BigDecimal;
 public interface ICourseRepository extends JpaRepository<Course, Long> {
 
     /**
-     * Retrieves a paginated list of CourseResponse objects based on the provided keyword and filters.
+     * Retrieves a paginated list of CourseResponse objects based on the provided filtering and sorting criteria.
      *
      * @param keyword            The keyword to search for in course titles (optional).
      * @param status             The status of the courses to filter by (optional).
+     * @param exceptStatus       The status of the courses to exclude from the results (optional).
      * @param teacherId          The ID of the teacher to filter courses by (optional).
      * @param priceMin           The minimum price of the courses to filter by (optional).
      * @param priceMax           The maximum price of the courses to filter by (optional).
      * @param durationHoursMin   The minimum duration in hours of the courses to filter by (optional).
      * @param durationHoursMax   The maximum duration in hours of the courses to filter by (optional).
-     * @param pageable           The pagination information.
-     * @return A paginated list of CourseResponse objects matching the specified criteria.
+     * @param pageable           The Pageable object containing pagination and sorting information.
+     * @return A Page containing CourseResponse objects matching the specified criteria.
      */
     @Query("""
         SELECT new io.github.nguyenquephong13062003.course_management_system.models.dtos.responses.CourseResponse(
@@ -58,6 +59,10 @@ public interface ICourseRepository extends JpaRepository<Course, Long> {
             OR c.status = :status
         )
         AND (
+            :exceptStatus IS NULL
+            OR c.status != :exceptStatus
+        )
+        AND (
             :teacherId IS NULL
             OR t.id = :teacherId
         )
@@ -81,6 +86,7 @@ public interface ICourseRepository extends JpaRepository<Course, Long> {
     Page<CourseResponse> findAllCourseWithKeywordAndFilters(
             @Param("keyword") String keyword,
             @Param("status") CourseStatus status,
+            @Param("exceptStatus") CourseStatus exceptStatus,
             @Param("teacherId") Long teacherId,
             @Param("priceMin") BigDecimal priceMin,
             @Param("priceMax") BigDecimal priceMax,
