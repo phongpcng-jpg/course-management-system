@@ -57,12 +57,14 @@ public class CourseServiceImpl implements ICourseService {
             throw new AuthException("JWT verification failed: authentication is missing or unauthenticated");
         }
 
+        CourseStatus exceptStatus = null;
+
         if (authentication.getAuthorities().stream()
                 .noneMatch(authority -> Objects.equals(authority.getAuthority(), "ROLE_ADMIN"))) {
             if (status == null) {
-                status = CourseStatus.PUBLISHED;
-            } else if (status == CourseStatus.ARCHIVED || status == CourseStatus.DRAFT) {
-                throw new AccessDeniedException("Student and Teacher cannot see Draft courses and Archived courses");
+                exceptStatus = CourseStatus.DRAFT;
+            } else if (status == CourseStatus.DRAFT) {
+                throw new AccessDeniedException("Student and Teacher cannot see Draft courses");
             }
         }
 
@@ -83,7 +85,7 @@ public class CourseServiceImpl implements ICourseService {
         Pageable pageable = PageRequest.of(page, size, sort);
 
         Page<CourseResponse> coursePage = courseRepository.findAllCourseWithKeywordAndFilters(
-                keyword, status, teacherId, priceMin, priceMax, durationHoursMin, durationHoursMax, pageable
+                keyword, status, exceptStatus, teacherId, priceMin, priceMax, durationHoursMin, durationHoursMax, pageable
         );
 
         return PageResponse.<CourseResponse>builder()
