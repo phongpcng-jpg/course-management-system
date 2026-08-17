@@ -49,7 +49,7 @@
 | 14  | `/api/courses/{course_id}/status`                             | PUT    | ADMIN          | Update the course status (`DRAFT`, `PUBLISHED`, `ARCHIVED`)                          | ☑ | 2 |   | ☑ |
 | 15  | `/api/courses/{course_id}`                                    | DELETE | ADMIN          | Delete a course                                                                      | ☑ | 2 |   | ☑ |
 | 16  | `/api/courses/{course_id}/lessons`                            | GET    | AUTH           | Retrieve all lessons in a course (published lessons only)                            | ☑ | 2 |   | ☑ |
-| 17  | `/api/lessons/{lesson_id}`                                    | GET    | AUTH           | Retrieve detailed information for a published lesson                                 | ☑ | 2 |   | ☐ |
+| 17  | `/api/lessons/{lesson_id}`                                    | GET    | AUTH           | Retrieve detailed information for a published lesson                                 | ☑ | 2 |   | ☑ |
 | 18  | `/api/courses/{course_id}/lessons`                            | POST   | TEACHER, ADMIN | Add a new lesson to a course (teacher must be assigned to the course)                | ☑ | 2 |   | ☐ |
 | 19  | `/api/lessons/{lesson_id}`                                    | PUT    | TEACHER, ADMIN | Update lesson information                                                            | ☑ | 2 |   | ☐ |
 | 20  | `/api/lessons/{lesson_id}/publish`                            | PUT    | TEACHER, ADMIN | Update a lesson's publication status (`is_published`)                                | ☑ | 2 |   | ☐ |
