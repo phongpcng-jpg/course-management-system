@@ -355,4 +355,21 @@ public class GlobalExceptionHandler {
 
     }
 
+    @ExceptionHandler(UploadCloudinaryException.class)
+    public ResponseEntity<ApiResponse<Void>> handleUploadCloudinaryFail(
+            UploadCloudinaryException ex
+    ) {
+
+        return ResponseEntity.status(HttpStatus.BAD_GATEWAY)
+                .body(
+                        ApiResponse.<Void>error(
+                                HttpStatus.BAD_GATEWAY.value(),
+                                "BAD_GATEWAY",
+                                ex.getMessage(),
+                                null
+                        )
+                );
+
+    }
+
 }
