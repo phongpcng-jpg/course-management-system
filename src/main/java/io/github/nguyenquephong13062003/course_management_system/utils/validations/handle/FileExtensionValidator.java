@@ -20,7 +20,11 @@ public class FileExtensionValidator
     @Override
     public boolean isValid(MultipartFile value, ConstraintValidatorContext context) {
 
-        if(value == null || value.isEmpty()){
+        if(value == null) {
+            return true;
+        }
+        
+        if(value.isEmpty()){
             return false;
         }
 
