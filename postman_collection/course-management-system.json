@@ -714,6 +714,38 @@
         }
       },
       "response": []
+    },
+    {
+      "name": "Course lessons All",
+      "request": {
+        "auth": {
+          "type": "bearer",
+          "bearer": [
+            {
+              "key": "token",
+              "value": "",
+              "type": "string"
+            }
+          ]
+        },
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "http://localhost:8080/api/courses/1/lessons",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "8080",
+          "path": [
+            "api",
+            "courses",
+            "1",
+            "lessons"
+          ]
+        }
+      },
+      "response": []
     }
   ],
   "variable": [
