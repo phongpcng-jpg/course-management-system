@@ -1,6 +1,9 @@
 package io.github.nguyenquephong13062003.course_management_system.models.services;
 
 import io.github.nguyenquephong13062003.course_management_system.models.constants.CourseStatus;
+import io.github.nguyenquephong13062003.course_management_system.models.dtos.requests.CourseCreateRequest;
+import io.github.nguyenquephong13062003.course_management_system.models.dtos.requests.CourseStatusUpdateRequest;
+import io.github.nguyenquephong13062003.course_management_system.models.dtos.requests.CourseUpdateRequest;
 import io.github.nguyenquephong13062003.course_management_system.models.dtos.responses.CourseDetailResponse;
 import io.github.nguyenquephong13062003.course_management_system.models.dtos.responses.CourseResponse;
 import io.github.nguyenquephong13062003.course_management_system.models.dtos.wrappers.PageResponse;
@@ -50,5 +53,41 @@ public interface ICourseService {
      * @return A CourseDetailResponse containing detailed information about the specified course.
      */
     CourseDetailResponse getCourseDetail(Long id);
+
+    /**
+     * Creates a new course based on the provided CourseCreateRequest.
+     *
+     * @param request The CourseCreateRequest containing the details of the course to be created.
+     * @return A CourseResponse representing the newly created course.
+     */
+    CourseResponse createCourse(CourseCreateRequest request);
+
+    /**
+     * Updates an existing course identified by its ID based on the provided CourseUpdateRequest.
+     *
+     * @param courseId The ID of the course to be updated.
+     * @param request  The CourseUpdateRequest containing the updated details of the course.
+     * @return A CourseResponse representing the updated course.
+     */
+    CourseResponse updateCourse(Long courseId, CourseUpdateRequest request);
+
+    /**
+     * Updates the status of an existing course identified by its ID based on the provided CourseStatusUpdateRequest.
+     *
+     * @param courseId The ID of the course whose status is to be updated.
+     * @param request  The CourseStatusUpdateRequest containing the new status for the course.
+     * @return A CourseResponse representing the course with the updated status.
+     */
+    CourseResponse updateCourseStatus(
+            Long courseId,
+            CourseStatusUpdateRequest request
+    );
+
+    /**
+     * Deletes an existing course identified by its ID.
+     *
+     * @param courseId The ID of the course to be deleted.
+     */
+    void deleteCourse(Long courseId);
 
 }
