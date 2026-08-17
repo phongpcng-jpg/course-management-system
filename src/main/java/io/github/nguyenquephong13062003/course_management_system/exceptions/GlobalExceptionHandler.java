@@ -239,4 +239,34 @@ public class GlobalExceptionHandler {
 
     }
 
+    /**
+     * Handles InvalidInputDataException thrown by the application.
+     * @param ex The InvalidInputDataException that was thrown.
+     * @return A ResponseEntity containing an ApiResponse with error details.
+     */
+    @ExceptionHandler(InvalidInputDataException.class)
+    public ResponseEntity<ApiResponse<Void>> handleInvalidInputDataException(
+            HttpServletRequest request,
+            HttpServletResponse response,
+            InvalidInputDataException ex
+    ) {
+
+        log.warn(
+                "Invalid input data in request {} {}: {}",
+                request.getMethod(),
+                request.getRequestURI(),
+                ex.getMessage()
+        );
+
+        return  ResponseEntity.status(400).body(
+                ApiResponse.<Void>error(
+                        400,
+                        "INVALID_INPUT_DATA",
+                        ex.getMessage(),
+                        null
+                )
+        );
+
+    }
+
 }
