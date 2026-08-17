@@ -4,6 +4,7 @@ import io.github.nguyenquephong13062003.course_management_system.models.entities
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;
+import java.util.Optional;
 
 /**
  * Repository interface for managing Lesson entities.
@@ -29,4 +30,6 @@ public interface ILessonRepository extends JpaRepository<Lesson, Long> {
      */
     boolean existsByCourseId(Long courseId);
 
+    Optional<Lesson> findBylessonIdAndIsPublishedTrue(Long lessonId);
+    
 }
