@@ -43,7 +43,7 @@
 | 8   | `/api/users/{user_id}/status`                                 | PUT    | ADMIN          | Activate or deactivate a user account (`is_active`)                                  | ☑ | 3 |   | ☑ |
 | 9   | `/api/users/{user_id}`                                        | DELETE | ADMIN          | Delete a user from the system                                                        | ☑ | 2 |   | ☑ |
 | 10  | `/api/courses`                                                | GET    | AUTH           | Retrieve all courses (supports filtering by `PUBLISHED` status)                      | ☑ | 2 |   | ☑ |
-| 11  | `/api/courses/{course_id}`                                    | GET    | AUTH           | Retrieve detailed course information, including published lessons                    | ☑ | 2 |   | ☐ |
+| 11  | `/api/courses/{course_id}`                                    | GET    | AUTH           | Retrieve detailed course information, including published lessons                    | ☑ | 2 |   | ☑ |
 | 12  | `/api/courses`                                                | POST   | ADMIN          | Create a new course, assign an instructor, initial status is `DRAFT`                 | ☑ | 3 |   | ☐ |
 | 13  | `/api/courses/{course_id}`                                    | PUT    | ADMIN          | Update course information                                                            | ☑ | 2 |   | ☐ |
 | 14  | `/api/courses/{course_id}/status`                             | PUT    | ADMIN          | Update the course status (`DRAFT`, `PUBLISHED`, `ARCHIVED`)                          | ☑ | 2 |   | ☐ |
