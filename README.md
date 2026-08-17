@@ -44,10 +44,10 @@
 | 9   | `/api/users/{user_id}`                                        | DELETE | ADMIN          | Delete a user from the system                                                        | ☑ | 2 |   | ☑ |
 | 10  | `/api/courses`                                                | GET    | AUTH           | Retrieve all courses (supports filtering by `PUBLISHED` status)                      | ☑ | 2 |   | ☑ |
 | 11  | `/api/courses/{course_id}`                                    | GET    | AUTH           | Retrieve detailed course information, including published lessons                    | ☑ | 2 |   | ☑ |
-| 12  | `/api/courses`                                                | POST   | ADMIN          | Create a new course, assign an instructor, initial status is `DRAFT`                 | ☑ | 3 |   | ☐ |
-| 13  | `/api/courses/{course_id}`                                    | PUT    | ADMIN          | Update course information                                                            | ☑ | 2 |   | ☐ |
-| 14  | `/api/courses/{course_id}/status`                             | PUT    | ADMIN          | Update the course status (`DRAFT`, `PUBLISHED`, `ARCHIVED`)                          | ☑ | 2 |   | ☐ |
-| 15  | `/api/courses/{course_id}`                                    | DELETE | ADMIN          | Delete a course                                                                      | ☑ | 2 |   | ☐ |
+| 12  | `/api/courses`                                                | POST   | ADMIN          | Create a new course, assign an instructor, initial status is `DRAFT`                 | ☑ | 3 |   | ☑ |
+| 13  | `/api/courses/{course_id}`                                    | PUT    | ADMIN          | Update course information                                                            | ☑ | 2 |   | ☑ |
+| 14  | `/api/courses/{course_id}/status`                             | PUT    | ADMIN          | Update the course status (`DRAFT`, `PUBLISHED`, `ARCHIVED`)                          | ☑ | 2 |   | ☑ |
+| 15  | `/api/courses/{course_id}`                                    | DELETE | ADMIN          | Delete a course                                                                      | ☑ | 2 |   | ☑ |
 | 16  | `/api/courses/{course_id}/lessons`                            | GET    | AUTH           | Retrieve all lessons in a course (published lessons only)                            | ☑ | 2 |   | ☐ |
 | 17  | `/api/lessons/{lesson_id}`                                    | GET    | AUTH           | Retrieve detailed information for a published lesson                                 | ☑ | 2 |   | ☐ |
 | 18  | `/api/courses/{course_id}/lessons`                            | POST   | TEACHER, ADMIN | Add a new lesson to a course (teacher must be assigned to the course)                | ☑ | 2 |   | ☐ |
