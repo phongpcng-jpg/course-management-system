@@ -1,19 +1,14 @@
 package io.github.nguyenquephong13062003.course_management_system.models.entities;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
+import jakarta.persistence.*;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import io.github.nguyenquephong13062003.course_management_system.models.constants.UserRole;
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -120,5 +115,16 @@ public class User {
             nullable = false
     )
     private LocalDateTime updatedAt;
+
+    /**
+     * The list of reviews made by the user.
+     * This is a one-to-many relationship, where one user can have many reviews.
+     */
+    @OneToMany(
+            mappedBy = "student",
+            fetch = FetchType.LAZY
+    )
+    @Builder.Default
+    private List<Review> reviews = new ArrayList<>();
 
 }
