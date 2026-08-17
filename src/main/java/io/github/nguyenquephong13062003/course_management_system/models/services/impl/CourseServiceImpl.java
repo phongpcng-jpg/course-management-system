@@ -1,10 +1,17 @@
 package io.github.nguyenquephong13062003.course_management_system.models.services.impl;
 
 import io.github.nguyenquephong13062003.course_management_system.exceptions.AuthException;
+import io.github.nguyenquephong13062003.course_management_system.exceptions.NotFoundException;
 import io.github.nguyenquephong13062003.course_management_system.models.constants.CourseStatus;
+import io.github.nguyenquephong13062003.course_management_system.models.dtos.responses.CourseDetailResponse;
 import io.github.nguyenquephong13062003.course_management_system.models.dtos.responses.CourseResponse;
+import io.github.nguyenquephong13062003.course_management_system.models.dtos.responses.CourseTeacherResponse;
+import io.github.nguyenquephong13062003.course_management_system.models.dtos.responses.LessonResponse;
 import io.github.nguyenquephong13062003.course_management_system.models.dtos.wrappers.PageResponse;
+import io.github.nguyenquephong13062003.course_management_system.models.entities.Course;
+import io.github.nguyenquephong13062003.course_management_system.models.entities.Lesson;
 import io.github.nguyenquephong13062003.course_management_system.models.repositories.ICourseRepository;
+import io.github.nguyenquephong13062003.course_management_system.models.repositories.ILessonRepository;
 import io.github.nguyenquephong13062003.course_management_system.models.services.ICourseService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -19,6 +26,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
+import java.util.List;
 import java.util.Objects;
 
 /**
@@ -35,6 +43,11 @@ public class CourseServiceImpl implements ICourseService {
      * The ICourseRepository instance used for accessing course data from the database.
      */
     private final ICourseRepository courseRepository;
+
+    /**
+     * The ILessonRepository instance used for accessing lesson data from the database.
+     */
+    private final ILessonRepository lessonRepository;
 
     @Override
     public PageResponse<CourseResponse> getAllCourse(
@@ -97,6 +110,59 @@ public class CourseServiceImpl implements ICourseService {
                 .isLast(coursePage.isLast())
                 .build();
 
+    }
+
+    @Override
+    public CourseDetailResponse getCourseDetail(Long id) {
+
+        Course course = courseRepository.findById(id)
+                .orElseThrow(() -> {
+                    return new NotFoundException("Course with id " + id + " not found");
+                });
+
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+
+        if (authentication == null || !authentication.isAuthenticated()) {
+            throw new AuthException("JWT verification failed: authentication is missing or unauthenticated");
+        }
+
+        if (course.getStatus() == CourseStatus.DRAFT && authentication.getAuthorities().stream()
+                .noneMatch(authority -> Objects.equals(authority.getAuthority(), "ROLE_ADMIN"))) {
+            throw new AccessDeniedException("Student and Teacher cannot see Draft course");
+        }
+
+        List<Lesson> lessons = lessonRepository.findByCourse_IdAndIsPublishedTrueOrderByOrderIndexAsc(id);
+
+        return CourseDetailResponse.builder()
+                .id(course.getId())
+                .title(course.getTitle())
+                .description(course.getDescription())
+                .teacher(
+                        CourseTeacherResponse.builder()
+                                .id(course.getTeacher().getId())
+                                .username(course.getTeacher().getUsername())
+                                .fullName(course.getTeacher().getFullName())
+                                .build()
+                ).price(course.getPrice())
+                .durationHours(course.getDurationHours())
+                .status(course.getStatus())
+                .lessons(
+                        lessons.stream()
+                                .map(
+                                        lesson -> LessonResponse.builder()
+                                                .id(lesson.getLessonId())
+                                                .title(lesson.getTitle())
+                                                .contentUrl(lesson.getContentUrl())
+                                                .textContent(lesson.getTextContent())
+                                                .orderIndex(lesson.getOrderIndex())
+                                                .isPublished(lesson.getIsPublished())
+                                                .createdAt(lesson.getCreatedAt())
+                                                .updatedAt(lesson.getUpdatedAt())
+                                                .build()
+                                ).toList()
+                ).createdAt(course.getCreatedAt())
+                .updatedAt(course.getUpdatedAt())
+                .build();
     }
 
 }

@@ -1,6 +1,7 @@
 package io.github.nguyenquephong13062003.course_management_system.models.services;
 
 import io.github.nguyenquephong13062003.course_management_system.models.constants.CourseStatus;
+import io.github.nguyenquephong13062003.course_management_system.models.dtos.responses.CourseDetailResponse;
 import io.github.nguyenquephong13062003.course_management_system.models.dtos.responses.CourseResponse;
 import io.github.nguyenquephong13062003.course_management_system.models.dtos.wrappers.PageResponse;
 
@@ -41,4 +42,13 @@ public interface ICourseService {
             Integer durationHoursMin,
             Integer durationHoursMax
     );
+
+    /**
+     * Retrieves detailed information about a specific course by its ID.
+     *
+     * @param id The ID of the course to retrieve details for.
+     * @return A CourseDetailResponse containing detailed information about the specified course.
+     */
+    CourseDetailResponse getCourseDetail(Long id);
+
 }
