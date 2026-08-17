@@ -8,6 +8,8 @@ import org.hibernate.annotations.UpdateTimestamp;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Represents a course in the course management system.
@@ -119,5 +121,16 @@ public class Course {
             nullable = false
     )
     private LocalDateTime updatedAt;
+
+    /**
+     * The list of reviews associated with the course.
+     * This is a one-to-many relationship, where one course can have many reviews.
+     */
+    @OneToMany(
+            mappedBy = "course",
+            fetch = FetchType.LAZY
+    )
+    @Builder.Default
+    private List<Review> reviews = new ArrayList<>();
 
 }
