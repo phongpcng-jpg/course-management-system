@@ -2,6 +2,7 @@ package io.github.nguyenquephong13062003.course_management_system.models.service
 
 import io.github.nguyenquephong13062003.course_management_system.exceptions.AuthException;
 import io.github.nguyenquephong13062003.course_management_system.exceptions.NotFoundException;
+import io.github.nguyenquephong13062003.course_management_system.models.dtos.requests.LessonUpdatePublishRequest;
 import io.github.nguyenquephong13062003.course_management_system.models.dtos.requests.LessonUpdateRequest;
 import io.github.nguyenquephong13062003.course_management_system.models.dtos.responses.LessonCourseResponse;
 import io.github.nguyenquephong13062003.course_management_system.models.dtos.responses.LessonDetailResponse;
@@ -74,6 +75,36 @@ public class LessonServiceImpl implements ILessonService {
             lesson.setTextContent(request.getTextContent());
         }
         lesson.setOrderIndex(request.getOrderIndex());
+
+        Lesson savedLesson = lessonRepository.save(lesson);
+
+        return toLessonDetailResponse(savedLesson);
+
+    }
+
+    @Override
+    @Transactional
+    public LessonDetailResponse updateLessonPublish(Long id, LessonUpdatePublishRequest request) {
+
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+
+        if (authentication == null || !authentication.isAuthenticated()) {
+            throw new AuthException("JWT verification failed: authentication is missing or unauthenticated");
+        }
+
+        Lesson lesson = lessonRepository.findById(id)
+                .orElseThrow(() -> {
+                    return new NotFoundException("Lesson with id " + id + " not found");
+                });
+
+        if (!authentication.getName().equals(lesson.getCourse().getTeacher().getUsername()) && authentication.getAuthorities().stream()
+                .noneMatch(authority -> Objects.equals(authority.getAuthority(), "ROLE_ADMIN"))) {
+
+            throw new AccessDeniedException("Only Admin and Teacher who is in charge of the course can create lesson of course");
+
+        }
+
+        lesson.setIsPublished(request.getIsPublished());
 
         Lesson savedLesson = lessonRepository.save(lesson);
 
