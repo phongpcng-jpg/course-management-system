@@ -6,6 +6,7 @@ import io.github.nguyenquephong13062003.course_management_system.models.dtos.req
 import io.github.nguyenquephong13062003.course_management_system.models.dtos.requests.CourseUpdateRequest;
 import io.github.nguyenquephong13062003.course_management_system.models.dtos.responses.CourseDetailResponse;
 import io.github.nguyenquephong13062003.course_management_system.models.dtos.responses.CourseResponse;
+import io.github.nguyenquephong13062003.course_management_system.models.dtos.responses.LessonResponse;
 import io.github.nguyenquephong13062003.course_management_system.models.dtos.wrappers.ApiResponse;
 import io.github.nguyenquephong13062003.course_management_system.models.dtos.wrappers.PageResponse;
 import io.github.nguyenquephong13062003.course_management_system.models.services.ICourseService;
@@ -18,6 +19,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.math.BigDecimal;
+import java.util.List;
 
 /**
  * The CourseController class handles HTTP requests related to courses in the course management system.
@@ -283,6 +285,36 @@ public class CourseController {
                 )
         );
 
+    }
+
+    /**
+     * Handles GET requests to retrieve all published lessons for a specific course.
+     *
+     * @param courseId The ID of the course for which to retrieve published lessons.
+     * @return A ResponseEntity containing an ApiResponse with a list of LessonResponse objects representing the published lessons of the specified course.
+     */
+    @GetMapping("/{courseId}/lessons")
+    public ResponseEntity<ApiResponse<List<LessonResponse>>> getAllPublishedLessons(
+            @PathVariable Long courseId
+    ) {
+        log.info("Received request to get published lessons for courseId={}", courseId);
+
+        List<LessonResponse> lessons =
+                courseService.getAllPublishedLessonByCourseId(courseId);
+
+        log.info(
+                "Successfully retrieved {} published lessons for courseId={}",
+                lessons.size(),
+                courseId
+        );
+
+        return ResponseEntity.ok(
+                ApiResponse.success(
+                        200,
+                        "Successfully retrieved published lessons",
+                        lessons
+                )
+        );
     }
 
 }
