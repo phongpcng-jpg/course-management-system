@@ -45,7 +45,7 @@ public class CourseController {
      * @param size               The number of courses per page.
      * @param sortBy             The field to sort the courses by (e.g., "title", "price").
      * @param direction          The sorting direction ("asc" for ascending, "desc" for descending).
-     * @param keyword            The keyword to search for in course titles (optional).
+     * @param search            The keyword to search for in course titles (optional).
      * @param status             The status of the courses to filter by (optional).
      * @param teacherId          The ID of the teacher to filter courses by (optional).
      * @param priceMin           The minimum price of the courses to filter by (optional).
@@ -69,8 +69,8 @@ public class CourseController {
             @RequestParam(name = "direction", required = false)
             String direction,
 
-            @RequestParam(name = "keyword", required = false)
-            String keyword,
+            @RequestParam(name = "search", required = false)
+            String search,
 
             // Note: Status is All/null if hasRole('ADMIN')
             // Else PUBLISHED+ARCHIVED and DRAFT is locked
@@ -95,10 +95,10 @@ public class CourseController {
     ) {
 
         log.info("Received request to get paginated courses with parameters: page={}, size={}, sortBy={}, direction={}, keyword={}, status={}, teacherId={}, priceMin={}, priceMax={}, durationHoursMin={}, durationHoursMax={}",
-                page, size, sortBy, direction, keyword, status, teacherId, priceMin, priceMax, durationHoursMin, durationHoursMax);
+                page, size, sortBy, direction, search, status, teacherId, priceMin, priceMax, durationHoursMin, durationHoursMax);
 
         PageResponse<CourseResponse> response = courseService.getAllCourse(
-                page, size, sortBy, direction, keyword, status, teacherId,
+                page, size, sortBy, direction, search, status, teacherId,
                 priceMin, priceMax, durationHoursMin, durationHoursMax
         );
 
