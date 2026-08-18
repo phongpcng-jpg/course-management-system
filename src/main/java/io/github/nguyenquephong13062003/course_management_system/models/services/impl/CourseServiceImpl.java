@@ -19,6 +19,7 @@ import io.github.nguyenquephong13062003.course_management_system.models.entities
 import io.github.nguyenquephong13062003.course_management_system.models.repositories.*;
 import io.github.nguyenquephong13062003.course_management_system.models.services.ICourseService;
 import io.github.nguyenquephong13062003.course_management_system.models.services.uploads.UploadService;
+import io.github.nguyenquephong13062003.course_management_system.security.principal.CustomUserDetails;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -89,6 +90,28 @@ public class CourseServiceImpl implements ICourseService {
             Integer durationHoursMin,
             Integer durationHoursMax
     ) {
+
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+
+        if (authentication == null || !authentication.isAuthenticated()) {
+            throw new AuthException("JWT verification failed: authentication is missing or unauthenticated");
+        }
+
+        if (!(authentication.getPrincipal() instanceof CustomUserDetails userDetails)) {
+            throw new AuthException(
+                    "JWT verification failed: invalid authentication principal"
+            );
+        }
+
+        if (userDetails.getUser().getRole() != UserRole.ADMIN) {
+            if (status == null) {
+                status = CourseStatus.PUBLISHED;
+            } else if (status != CourseStatus.PUBLISHED) {
+                throw new InvalidStateTransitionException(
+                        "ADMIN sees all but others see only `PUBLISHED`"
+                );
+            }
+        }
 
         if (page < 0) {
             page = 0;
