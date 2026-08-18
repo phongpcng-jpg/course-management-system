@@ -33,7 +33,6 @@ public class LessonCreateRequest {
     /**
      * Video content of the lesson.
      */
-    @NotNull(message = "Lesson video must not be null")
     @FileExtension(
             allowedExtensions = {
                     ".mp4",
