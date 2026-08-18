@@ -238,7 +238,7 @@ public class UserController {
 
         log.info("Deleting user: userId={}", id);
 
-        UserResponse response = userService.deleteUser(id);
+        userService.deleteUser(id);
 
         log.info("User deleted successfully: userId={}", id);
 
