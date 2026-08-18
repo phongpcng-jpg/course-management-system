@@ -370,6 +370,38 @@ public class GlobalExceptionHandler {
             UploadCloudinaryException ex
     ) {
 
+        log.warn(
+                "Upload to Cloudinary failed: {}",
+                ex.getMessage()
+        );
+
+        return ResponseEntity.status(HttpStatus.BAD_GATEWAY)
+                .body(
+                        ApiResponse.<Void>error(
+                                HttpStatus.BAD_GATEWAY.value(),
+                                "BAD_GATEWAY",
+                                ex.getMessage(),
+                                null
+                        )
+                );
+
+    }
+
+    /**
+     * Handles DeleteCloudinaryException thrown by the application.
+     * @param ex The DeleteCloudinaryException that was thrown.
+     * @return A ResponseEntity containing an ApiResponse with error details.
+     */
+    @ExceptionHandler(DeleteCloudinaryException.class)
+    public ResponseEntity<ApiResponse<Void>> handleDeleteCloudinaryFail(
+            DeleteCloudinaryException ex
+    ) {
+
+        log.warn(
+                "Delete from Cloudinary failed: {}",
+                ex.getMessage()
+        );
+
         return ResponseEntity.status(HttpStatus.BAD_GATEWAY)
                 .body(
                         ApiResponse.<Void>error(
