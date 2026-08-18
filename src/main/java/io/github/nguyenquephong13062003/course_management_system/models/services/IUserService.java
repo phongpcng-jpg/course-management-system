@@ -1,9 +1,7 @@
 package io.github.nguyenquephong13062003.course_management_system.models.services;
 
 import io.github.nguyenquephong13062003.course_management_system.models.constants.UserRole;
-import io.github.nguyenquephong13062003.course_management_system.models.dtos.requests.UpdateUserRoleRequest;
-import io.github.nguyenquephong13062003.course_management_system.models.dtos.requests.UpdateUserStatusRequest;
-import io.github.nguyenquephong13062003.course_management_system.models.dtos.requests.UserRequest;
+import io.github.nguyenquephong13062003.course_management_system.models.dtos.requests.*;
 import io.github.nguyenquephong13062003.course_management_system.models.dtos.responses.UserResponse;
 import io.github.nguyenquephong13062003.course_management_system.models.dtos.wrappers.PageResponse;
 
@@ -75,6 +73,24 @@ public interface IUserService {
      * @param id the unique identifier of the user to be deleted
      * @return a UserResponse object representing the deleted user
      */
-    UserResponse deleteUser(Long id);
+    void deleteUser(Long id);
+
+    /**
+     * Updates the details of an existing user based on the provided UserUpdateRequest.
+     *
+     * @param id      the unique identifier of the user to be updated
+     * @param request the UserUpdateRequest containing the new user details
+     * @return a UserResponse object representing the updated user
+     */
+    UserResponse updateUser(Long id, UserUpdateRequest request);
+
+    /**
+     * Updates the password of an existing user based on the provided UpdateUserPasswordRequest.
+     *
+     * @param id      the unique identifier of the user to be updated
+     * @param request the UpdateUserPasswordRequest containing the new password information
+     * @return a UserResponse object representing the updated user
+     */
+    UserResponse updateUserPassword(Long id, UpdateUserPasswordRequest request);
 
 }
