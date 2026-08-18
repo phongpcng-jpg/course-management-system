@@ -325,9 +325,9 @@ public class CourseServiceImpl implements ICourseService {
         Lesson lesson = Lesson.builder()
                 .course(course)
                 .title(request.getTitle())
-                .contentUrl(uploadService.upload(
+                .contentUrl(request.getContent() != null ? uploadService.upload(
                         request.getContent()
-                )).textContent(request.getTextContent())
+                ) : null).textContent(request.getTextContent())
                 .orderIndex(request.getOrderIndex())
                 .build();
 
