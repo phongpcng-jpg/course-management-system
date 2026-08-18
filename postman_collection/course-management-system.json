@@ -222,49 +222,6 @@
       "response": []
     },
     {
-      "name": "31. User Status",
-      "protocolProfileBehavior": {
-        "disableBodyPruning": true
-      },
-      "request": {
-        "auth": {
-          "type": "bearer",
-          "bearer": [
-            {
-              "key": "token",
-              "value": "{{json_web_token_0d9f}}",
-              "type": "string"
-            }
-          ]
-        },
-        "method": "GET",
-        "header": [],
-        "body": {
-          "mode": "raw",
-          "raw": "{\r\n    \"username\": \"student\",\r\n    \"password\": \"Student@123\"\r\n}"
-        },
-        "url": {
-          "raw": "http://localhost:8080/api/users?status=true",
-          "protocol": "http",
-          "host": [
-            "localhost"
-          ],
-          "port": "8080",
-          "path": [
-            "api",
-            "users"
-          ],
-          "query": [
-            {
-              "key": "status",
-              "value": "true"
-            }
-          ]
-        }
-      },
-      "response": []
-    },
-    {
       "name": "4. User Role",
       "protocolProfileBehavior": {
         "disableBodyPruning": true
@@ -467,7 +424,7 @@
       "response": []
     },
     {
-      "name": "9. User Delete*",
+      "name": "9. User Delete",
       "request": {
         "auth": {
           "type": "bearer",
@@ -522,42 +479,6 @@
           "path": [
             "api",
             "courses"
-          ]
-        }
-      },
-      "response": []
-    },
-    {
-      "name": "32. Course Draft",
-      "request": {
-        "auth": {
-          "type": "bearer",
-          "bearer": [
-            {
-              "key": "token",
-              "value": "",
-              "type": "string"
-            }
-          ]
-        },
-        "method": "GET",
-        "header": [],
-        "url": {
-          "raw": "http://localhost:8080/api/courses?status=DRAFT",
-          "protocol": "http",
-          "host": [
-            "localhost"
-          ],
-          "port": "8080",
-          "path": [
-            "api",
-            "courses"
-          ],
-          "query": [
-            {
-              "key": "status",
-              "value": "DRAFT"
-            }
           ]
         }
       },
@@ -1099,6 +1020,228 @@
             "1",
             "complete_lesson",
             "10"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "26. User Update",
+      "request": {
+        "auth": {
+          "type": "bearer",
+          "bearer": [
+            {
+              "key": "token",
+              "value": "",
+              "type": "string"
+            }
+          ]
+        },
+        "method": "PUT",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n  \"username\": \"nguyenquephong\",\r\n  \"email\": \"nguyenquephong@gmail.com\",\r\n  \"fullName\": \"Nguyễn Quế Phong\"\r\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "http://localhost:8080/api/users/18",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "8080",
+          "path": [
+            "api",
+            "users",
+            "18"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "27. User Update password",
+      "request": {
+        "auth": {
+          "type": "bearer",
+          "bearer": [
+            {
+              "key": "token",
+              "value": "",
+              "type": "string"
+            }
+          ]
+        },
+        "method": "PUT",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n    \"currentPassword\": \"Student@123\",\r\n    \"newPassword\": \"Student@1234\"\r\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "http://localhost:8080/api/users/18/password",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "8080",
+          "path": [
+            "api",
+            "users",
+            "18",
+            "password"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "28. Course Search",
+      "request": {
+        "auth": {
+          "type": "bearer",
+          "bearer": [
+            {
+              "key": "token",
+              "value": "",
+              "type": "string"
+            }
+          ]
+        },
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "http://localhost:8080/api/courses/search=Ad",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "8080",
+          "path": [
+            "api",
+            "courses",
+            "search=Ad"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "29. Course By Teacher ID",
+      "request": {
+        "auth": {
+          "type": "bearer",
+          "bearer": [
+            {
+              "key": "token",
+              "value": "",
+              "type": "string"
+            }
+          ]
+        },
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "http://localhost:8080/api/courses/teacher_id=18",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "8080",
+          "path": [
+            "api",
+            "courses",
+            "teacher_id=18"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "31. User Status",
+      "protocolProfileBehavior": {
+        "disableBodyPruning": true
+      },
+      "request": {
+        "auth": {
+          "type": "bearer",
+          "bearer": [
+            {
+              "key": "token",
+              "value": "{{json_web_token_0d9f}}",
+              "type": "string"
+            }
+          ]
+        },
+        "method": "GET",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n    \"username\": \"student\",\r\n    \"password\": \"Student@123\"\r\n}"
+        },
+        "url": {
+          "raw": "http://localhost:8080/api/users?status=true",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "8080",
+          "path": [
+            "api",
+            "users"
+          ],
+          "query": [
+            {
+              "key": "status",
+              "value": "true"
+            }
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "32. Course Draft",
+      "request": {
+        "auth": {
+          "type": "bearer",
+          "bearer": [
+            {
+              "key": "token",
+              "value": "",
+              "type": "string"
+            }
+          ]
+        },
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "http://localhost:8080/api/courses?status=DRAFT",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "8080",
+          "path": [
+            "api",
+            "courses"
+          ],
+          "query": [
+            {
+              "key": "status",
+              "value": "DRAFT"
+            }
           ]
         }
       },
