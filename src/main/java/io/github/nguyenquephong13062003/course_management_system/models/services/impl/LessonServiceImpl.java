@@ -1,7 +1,9 @@
 package io.github.nguyenquephong13062003.course_management_system.models.services.impl;
 
 import io.github.nguyenquephong13062003.course_management_system.exceptions.AuthException;
+import io.github.nguyenquephong13062003.course_management_system.exceptions.InvalidStateTransitionException;
 import io.github.nguyenquephong13062003.course_management_system.exceptions.NotFoundException;
+import io.github.nguyenquephong13062003.course_management_system.models.constants.CourseStatus;
 import io.github.nguyenquephong13062003.course_management_system.models.dtos.requests.LessonUpdatePublishRequest;
 import io.github.nguyenquephong13062003.course_management_system.models.dtos.requests.LessonUpdateRequest;
 import io.github.nguyenquephong13062003.course_management_system.models.dtos.responses.LessonCourseResponse;
@@ -72,6 +74,10 @@ public class LessonServiceImpl implements ILessonService {
 
         }
 
+        if (lesson.getCourse().getStatus() == CourseStatus.ARCHIVED) {
+            throw new InvalidStateTransitionException("Cannot update lesson for a course that is archived");
+        }
+
         lesson.setTitle(request.getTitle());
         if (request.getContent() != null) {
             lesson.setContentUrl(
@@ -111,6 +117,10 @@ public class LessonServiceImpl implements ILessonService {
 
             throw new AccessDeniedException("Only Admin and Teacher who is in charge of the course can create lesson of course");
 
+        }
+
+        if (lesson.getCourse().getStatus() == CourseStatus.ARCHIVED) {
+            throw new InvalidStateTransitionException("Cannot update lesson for a course that is archived");
         }
 
         lesson.setIsPublished(request.getIsPublished());
