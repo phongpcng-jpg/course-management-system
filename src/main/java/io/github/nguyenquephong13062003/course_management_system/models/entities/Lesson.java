@@ -77,6 +77,13 @@ public class Lesson {
     private String contentUrl;
 
     /**
+     * The public ID of the lesson's content in Cloudinary.
+     * This field is used to identify and manage the content resource in Cloudinary.
+     */
+    @Column(name = "content_public_id")
+    private String contentPublicId;
+
+    /**
      * The text content of the lesson.
      */
     @Column(
