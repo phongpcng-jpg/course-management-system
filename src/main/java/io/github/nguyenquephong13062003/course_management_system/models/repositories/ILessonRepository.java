@@ -2,8 +2,6 @@ package io.github.nguyenquephong13062003.course_management_system.models.reposit
 
 import io.github.nguyenquephong13062003.course_management_system.models.entities.Lesson;
 import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.data.jpa.repository.Query;
-import org.springframework.data.repository.query.Param;
 
 import java.util.List;
 import java.util.Optional;
@@ -67,24 +65,6 @@ public interface ILessonRepository extends JpaRepository<Lesson, Long> {
     Optional<Lesson> findByLessonIdAndCourseIdAndIsPublishedTrue(
         Long lessonId,
         Long courseId
-    );
-
-    /**
-     * Counts the number of published lessons for a specific course.
-     *
-     * @param courseId The ID of the course for which to count published lessons.
-     * @return The count of published lessons associated with the specified course.
-     */
-    @Query("""
-            SELECT COUNT(lp)
-            FROM LessonProgress lp
-            JOIN lp.lesson l
-            WHERE lp.enrollment.id = :enrollmentId
-              AND lp.completed = true
-              AND l.isPublished = true
-            """)
-    long countCompletedPublishedLessons(
-            @Param("enrollmentId") Long enrollmentId
     );
 
 
