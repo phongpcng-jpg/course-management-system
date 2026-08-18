@@ -94,6 +94,10 @@ public class CourseServiceImpl implements ICourseService {
             page = 0;
         }
 
+        if (size <= 0) {
+            size = 20;
+        }
+
         Sort sort = Sort.unsorted();
 
         if (sortBy != null && !sortBy.isBlank()
@@ -125,9 +129,7 @@ public class CourseServiceImpl implements ICourseService {
     public CourseDetailResponse getCourseDetail(Long id) {
 
         Course course = courseRepository.findById(id)
-                .orElseThrow(() -> {
-                    return new NotFoundException("Course with id " + id + " not found");
-                });
+                .orElseThrow(() -> new NotFoundException("Course with id " + id + " not found"));
 
         List<Lesson> lessons = lessonRepository.findByCourse_IdAndIsPublishedTrueOrderByOrderIndexAsc(id);
 
@@ -168,9 +170,7 @@ public class CourseServiceImpl implements ICourseService {
     public CourseResponse createCourse(CourseCreateRequest request) {
 
         User teacher = userRepository.findById(request.getTeacherId())
-                .orElseThrow(() -> {
-                    return new NotFoundException("User with id " + request.getTeacherId() + " not found");
-                });
+                .orElseThrow(() -> new NotFoundException("User with id " + request.getTeacherId() + " not found"));
 
         if (teacher.getRole() != UserRole.TEACHER) {
             throw new InvalidInputDataException("The specified user is not a teacher");
@@ -194,14 +194,10 @@ public class CourseServiceImpl implements ICourseService {
     public CourseResponse updateCourse(Long courseId, CourseUpdateRequest request) {
 
         Course course = courseRepository.findById(courseId)
-                .orElseThrow(() -> {
-                    return new NotFoundException("Course with id " + courseId + " not found");
-                });
+                .orElseThrow(() -> new NotFoundException("Course with id " + courseId + " not found"));
 
         User teacher = userRepository.findById(request.getTeacherId())
-                .orElseThrow(() -> {
-                    return new NotFoundException("User with id " + request.getTeacherId() + " not found");
-                });
+                .orElseThrow(() -> new NotFoundException("User with id " + request.getTeacherId() + " not found"));
 
         if (teacher.getRole() != UserRole.TEACHER) {
             throw new InvalidInputDataException("The specified user is not a teacher");
@@ -223,9 +219,7 @@ public class CourseServiceImpl implements ICourseService {
     public CourseResponse updateCourseStatus(Long courseId, CourseStatusUpdateRequest request) {
 
         Course course = courseRepository.findById(courseId)
-                .orElseThrow(() -> {
-                    return new NotFoundException("Course with id " + courseId + " not found");
-                });
+                .orElseThrow(() -> new NotFoundException("Course with id " + courseId + " not found"));
 
         course.setStatus(request.getStatus());
 
@@ -239,9 +233,7 @@ public class CourseServiceImpl implements ICourseService {
     public void deleteCourse(Long courseId) {
 
         Course course = courseRepository.findById(courseId)
-                .orElseThrow(() -> {
-                    return new NotFoundException("Course with id " + courseId + " not found");
-                });
+                .orElseThrow(() -> new NotFoundException("Course with id " + courseId + " not found"));
 
 
 
@@ -279,9 +271,7 @@ public class CourseServiceImpl implements ICourseService {
     public List<LessonResponse> getAllPublishedLessonByCourseId(Long id) {
 
         courseRepository.findById(id)
-                .orElseThrow(() -> {
-                    return new NotFoundException("Course with id " + id + " not found");
-                });
+                .orElseThrow(() -> new NotFoundException("Course with id " + id + " not found"));
 
         List<Lesson> lessons = lessonRepository.findByCourse_IdAndIsPublishedTrueOrderByOrderIndexAsc(id);
 
@@ -312,9 +302,7 @@ public class CourseServiceImpl implements ICourseService {
         }
 
         Course course = courseRepository.findById(course_id)
-                .orElseThrow(() -> {
-                    return new NotFoundException("Course with id " + course_id + " not found");
-                });
+                .orElseThrow(() -> new NotFoundException("Course with id " + course_id + " not found"));
 
         if (!authentication.getName().equals(course.getTeacher().getUsername()) && authentication.getAuthorities().stream()
                 .noneMatch(authority -> Objects.equals(authority.getAuthority(), "ROLE_ADMIN"))) {

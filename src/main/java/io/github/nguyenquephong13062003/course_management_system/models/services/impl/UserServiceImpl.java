@@ -1,14 +1,11 @@
 package io.github.nguyenquephong13062003.course_management_system.models.services.impl;
 
-import io.github.nguyenquephong13062003.course_management_system.exceptions.DuplicateResourceException;
-import io.github.nguyenquephong13062003.course_management_system.exceptions.InvalidStateTransitionException;
-import io.github.nguyenquephong13062003.course_management_system.exceptions.UserHasDependentDataException;
-import io.github.nguyenquephong13062003.course_management_system.models.dtos.requests.UpdateUserRoleRequest;
-import io.github.nguyenquephong13062003.course_management_system.models.dtos.requests.UpdateUserStatusRequest;
-import io.github.nguyenquephong13062003.course_management_system.models.dtos.requests.UserRequest;
+import io.github.nguyenquephong13062003.course_management_system.exceptions.*;
+import io.github.nguyenquephong13062003.course_management_system.models.dtos.requests.*;
 import io.github.nguyenquephong13062003.course_management_system.models.repositories.ICourseRepository;
 import io.github.nguyenquephong13062003.course_management_system.models.repositories.IEnrollmentRepository;
 import io.github.nguyenquephong13062003.course_management_system.models.repositories.IReviewRepository;
+import io.github.nguyenquephong13062003.course_management_system.security.principal.CustomUserDetails;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -25,7 +22,6 @@ import io.github.nguyenquephong13062003.course_management_system.models.dtos.wra
 import io.github.nguyenquephong13062003.course_management_system.models.entities.User;
 import io.github.nguyenquephong13062003.course_management_system.models.repositories.IUserRepository;
 import io.github.nguyenquephong13062003.course_management_system.models.services.IUserService;
-import io.github.nguyenquephong13062003.course_management_system.exceptions.NotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.transaction.annotation.Transactional;
@@ -73,6 +69,10 @@ public class UserServiceImpl implements IUserService {
             page = 0;
         }
 
+        if (size <= 0) {
+            size = 20;
+        }
+
         Sort sort = Sort.unsorted();
 
         if (sortBy != null && !sortBy.isBlank()
@@ -102,9 +102,7 @@ public class UserServiceImpl implements IUserService {
     public UserResponse getUserById(Long id) {
         
         User user = userRepository.findById(id)
-                .orElseThrow(() -> {
-                    return new NotFoundException("User with id " + id + " not found");
-                });
+                .orElseThrow(() -> new NotFoundException("User with id " + id + " not found"));
 
         return toUserResponse(user);
 
@@ -151,19 +149,20 @@ public class UserServiceImpl implements IUserService {
     @Transactional
     public UserResponse updateUserRole(Long id, UpdateUserRoleRequest request) {
 
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-
-        if (authentication == null || !authentication.isAuthenticated()) {
-            log.warn("JWT verification failed: authentication is missing or unauthenticated");
-            throw new IllegalStateException("Authentication is invalid");
-        }
+        User authenticatedUser = getAuthenticatedUser();
 
         User user = userRepository.findById(id)
-                .orElseThrow(() -> {
-                    return new NotFoundException("User with id " + id + " not found");
-                });
+                .orElseThrow(() -> new NotFoundException("User with id " + id + " not found"));
 
-        if (user.getRole() == UserRole.ADMIN && !user.getUsername().equals(authentication.getName())) {
+        if (Objects.equals(user.getId(), authenticatedUser.getId())
+                && authenticatedUser.getRole() == UserRole.ADMIN
+                && request.getRole() != UserRole.ADMIN) {
+            throw new InvalidStateTransitionException(
+                    "Admin cannot modify the role of their own account"
+            );
+        }
+
+        if (user.getRole() == UserRole.ADMIN && !Objects.equals(user.getId(), authenticatedUser.getId())) {
             throw new AccessDeniedException("Admin cannot modify the role of another admin.");
         }
 
@@ -179,10 +178,16 @@ public class UserServiceImpl implements IUserService {
     @Transactional
     public UserResponse updateUserStatus(Long id, UpdateUserStatusRequest request) {
 
+        User authenticatedUser = getAuthenticatedUser();
+
+        if (!request.getIsActive() && Objects.equals(id, authenticatedUser.getId())) {
+            throw new InvalidStateTransitionException(
+                    "User cannot deactivate their own account"
+            );
+        }
+
         User user = userRepository.findById(id)
-                .orElseThrow(() -> {
-                    return new NotFoundException("User with id " + id + " not found");
-                });
+                .orElseThrow(() -> new NotFoundException("User with id " + id + " not found"));
 
         user.setActive(request.getIsActive());
 
@@ -194,28 +199,21 @@ public class UserServiceImpl implements IUserService {
 
     @Override
     @Transactional
-    public UserResponse deleteUser(Long id) {
+    public void deleteUser(Long id) {
 
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-
-        if (authentication == null || !authentication.isAuthenticated()) {
-            log.warn("JWT verification failed: authentication is missing or unauthenticated");
-            throw new IllegalStateException("Authentication is invalid");
-        }
+        User authenticatedUser = getAuthenticatedUser();
 
         User user = userRepository.findById(id)
-                .orElseThrow(() -> {
-                    return new NotFoundException("User with id " + id + " not found");
-                });
+                .orElseThrow(() -> new NotFoundException("User with id " + id + " not found"));
 
-        if (Objects.equals(user.getUsername(), authentication.getName())) {
+        if (Objects.equals(user.getId(), authenticatedUser.getId())) {
             throw new InvalidStateTransitionException(
                     "Admin cannot delete their own account"
             );
         }
 
         if (user.getRole() == UserRole.ADMIN) {
-            throw new InvalidStateTransitionException(
+            throw new AccessDeniedException(
                     "Cannot delete Other admin"
             );
         }
@@ -233,7 +231,8 @@ public class UserServiceImpl implements IUserService {
                         "User cannot be deleted because it contains business data"
                 );
             }
-        } else {
+        }
+        if (user.getRole() == UserRole.STUDENT) {
             boolean hasEnrollment = enrollmentRepository.existsByStudent_Id(user.getId());
             boolean hasReview = reviewRepository.existsByStudent_Id(user.getId());
 
@@ -254,7 +253,71 @@ public class UserServiceImpl implements IUserService {
 
         userRepository.deleteById(id);
 
-        return toUserResponse(user);
+    }
+
+    @Override
+    @Transactional
+    public UserResponse updateUser(Long id, UserUpdateRequest request) {
+
+        User authenticatedUser = getAuthenticatedUser();
+
+        if (authenticatedUser.getRole() != UserRole.ADMIN && !Objects.equals(id, authenticatedUser.getId())) {
+            throw new AccessDeniedException("Only admin and user owner can update user");
+        }
+
+        User user = userRepository.findById(id)
+                .orElseThrow(() -> new NotFoundException("User with id " + id + " not found"));
+
+        if (!Objects.equals(request.getUsername(), user.getUsername()) && userRepository.existsByUsername(request.getUsername())) {
+
+            throw new DuplicateResourceException(
+                    "Username '" + request.getUsername() + "' already exists"
+            );
+
+        }
+
+        if (!Objects.equals(request.getEmail(), user.getEmail()) && userRepository.existsByEmail(request.getEmail())) {
+
+            throw new DuplicateResourceException(
+                    "Email '" + request.getEmail() + "' already exists"
+            );
+
+        }
+
+        user.setUsername(request.getUsername());
+        user.setEmail(request.getEmail());
+        user.setFullName(request.getFullName());
+
+        User savedUser = userRepository.save(user);
+
+        return toUserResponse(savedUser);
+
+    }
+
+    @Override
+    @Transactional
+    public UserResponse updateUserPassword(Long id, UpdateUserPasswordRequest request) {
+
+        User authenticatedUser = getAuthenticatedUser();
+
+        if (authenticatedUser.getRole() != UserRole.ADMIN && !Objects.equals(id, authenticatedUser.getId())) {
+            throw new AccessDeniedException("Only admin and user owner can update user");
+        }
+
+        User user = userRepository.findById(id)
+                .orElseThrow(() -> new NotFoundException("User with id " + id + " not found"));
+
+        if (!passwordEncoder.matches(request.getCurrentPassword(), user.getPasswordHash())){
+            throw new InvalidStateTransitionException(
+                    "Current password is not matches"
+            );
+        }
+
+        user.setPasswordHash(passwordEncoder.encode(request.getNewPassword()));
+
+        User savedUser = userRepository.save(user);
+
+        return toUserResponse(savedUser);
     }
 
     /**
@@ -275,6 +338,31 @@ public class UserServiceImpl implements IUserService {
                 .createdAt(user.getCreatedAt())
                 .updatedAt(user.getUpdatedAt())
                 .build();
+
+    }
+
+    /**
+     * Retrieves the currently authenticated user from the security context.
+     *
+     * @return the authenticated User entity
+     * @throws AuthException if authentication is missing or invalid
+     */
+    private User getAuthenticatedUser() {
+
+        Authentication authentication =
+                SecurityContextHolder.getContext().getAuthentication();
+
+        if (authentication == null || !authentication.isAuthenticated()) {
+            throw new AuthException("JWT verification failed: authentication is missing or unauthenticated");
+        }
+
+        if (!(authentication.getPrincipal() instanceof CustomUserDetails userDetails)) {
+            throw new AuthException(
+                    "JWT verification failed: invalid authentication principal"
+            );
+        }
+
+        return userDetails.getUser();
 
     }
 

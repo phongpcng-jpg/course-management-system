@@ -77,9 +77,7 @@ public class LessonServiceImpl implements ILessonService {
         }
 
         Lesson lesson = lessonRepository.findById(id)
-                .orElseThrow(() -> {
-                    return new NotFoundException("Lesson with id " + id + " not found");
-                });
+                .orElseThrow(() -> new NotFoundException("Lesson with id " + id + " not found"));
 
         if (!authentication.getName().equals(lesson.getCourse().getTeacher().getUsername()) && authentication.getAuthorities().stream()
                 .noneMatch(authority -> Objects.equals(authority.getAuthority(), "ROLE_ADMIN"))) {
@@ -144,9 +142,7 @@ public class LessonServiceImpl implements ILessonService {
         }
 
         Lesson lesson = lessonRepository.findById(id)
-                .orElseThrow(() -> {
-                    return new NotFoundException("Lesson with id " + id + " not found");
-                });
+                .orElseThrow(() -> new NotFoundException("Lesson with id " + id + " not found"));
 
         if (!authentication.getName().equals(lesson.getCourse().getTeacher().getUsername()) && authentication.getAuthorities().stream()
                 .noneMatch(authority -> Objects.equals(authority.getAuthority(), "ROLE_ADMIN"))) {
