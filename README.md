@@ -58,10 +58,10 @@
 | 23  | `/api/enrollments`                                            | POST   | STUDENT        | Enroll in a course                                                                   | ☑ | 2 |   | ☑ |
 | 24  | `/api/enrollments/{enrollment_id}`                            | GET    | STUDENT        | Retrieve enrollment details, including learning progress                             | ☑ | 2 |   | ☑ |
 | 25  | `/api/enrollments/{enrollment_id}/complete_lesson/{lesson_id}`| PUT    | STUDENT        | Mark a lesson as completed and update learning progress                              | ☑ | 2 |   | ☑ |
-| 26  | `/api/users/{user_id}`                                        | PUT    | OWNER, ADMIN   | Update a user's profile information                                                  | ☑ | 2 |   | ☐ |
-| 27  | `/api/users/{user_id}/password`                               | PUT    | OWNER, ADMIN   | Change a user's password                                                             | ☑ | 2 |   | ☐ |
-| 28  | `/api/courses?search={keyword}`                               | GET    | AUTH           | Search courses by keyword in the title or description                                | ☑ | 2 |   | ☐ |
-| 29  | `/api/courses?teacher_id={teacher_id}`                        | GET    | AUTH           | Filter courses by instructor                                                         | ☑ | 2 |   | ☐ |
+| 26  | `/api/users/{user_id}`                                        | PUT    | OWNER, ADMIN   | Update a user's profile information                                                  | ☑ | 2 |   | ☑ |
+| 27  | `/api/users/{user_id}/password`                               | PUT    | OWNER, ADMIN   | Change a user's password                                                             | ☑ | 2 |   | ☑ |
+| 28  | `/api/courses?search={keyword}`                               | GET    | AUTH           | Search courses by keyword in the title or description                                | ☑ | 2 |   | ☑ |
+| 29  | `/api/courses?teacher_id={teacher_id}`                        | GET    | AUTH           | Filter courses by instructor                                                         | ☑ | 2 |   | ☑ |
 | 30  | `/api/auth/logout`                                            | POST   | AUTH           | Log out and invalidate the authentication token                                      | ☐ |   | 2 | ☐ |
 | 31  | `/api/users?status={status}`                                  | GET    | ADMIN          | Filter users by account status (`active` / `inactive`)                               | ☐ |   | 3 | ☑ |
 | 32  | `/api/courses?status={status}`                                | GET    | AUTH           | Filter courses by status (ADMIN sees all; others see only `PUBLISHED`)               | ☐ |   | 3 | ☐ |
