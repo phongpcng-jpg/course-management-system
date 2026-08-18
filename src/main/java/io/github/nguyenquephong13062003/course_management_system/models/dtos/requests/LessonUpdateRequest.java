@@ -9,12 +9,19 @@ import jakarta.validation.constraints.Size;
 import lombok.*;
 import org.springframework.web.multipart.MultipartFile;
 
+/**
+ * DTO for updating an existing lesson.
+ */
 @NoArgsConstructor
 @AllArgsConstructor
 @Getter
 @Setter
 @Builder
 public class LessonUpdateRequest {
+
+    /**
+     * Updated title of the lesson.
+     */
     @NotBlank(message = "Lesson title must not be blank")
     @Size(max = 255, message = "Lesson title must not exceed 255 characters")
     @Schema(
@@ -23,6 +30,9 @@ public class LessonUpdateRequest {
     )
     private String title;
 
+    /**
+     * Updated video content of the lesson. This field is optional; if not provided, the existing video will remain unchanged.
+     */
     @FileExtension(
             allowedExtensions = {
                     ".mp4",
@@ -40,6 +50,9 @@ public class LessonUpdateRequest {
     )
     private MultipartFile content;
 
+    /**
+     * Updated text content of the lesson. This field is optional; if not provided, the existing text content will remain unchanged.
+     */
     @Size(
             max = 100000,
             message = "Text content must not exceed 100000 characters"
@@ -50,6 +63,9 @@ public class LessonUpdateRequest {
     )
     private String textContent;
 
+    /**
+     * Updated display order of the lesson. This field is required and must be a positive integer.
+     */
     @NotNull(message = "Order index must not be null")
     @Positive(message = "Order index must be greater than 0")
     @Schema(

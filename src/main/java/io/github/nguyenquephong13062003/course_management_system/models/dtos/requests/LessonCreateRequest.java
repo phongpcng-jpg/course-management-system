@@ -9,6 +9,9 @@ import jakarta.validation.constraints.Size;
 import lombok.*;
 import org.springframework.web.multipart.MultipartFile;
 
+/**
+ * DTO for creating a new lesson.
+ */
 @NoArgsConstructor
 @AllArgsConstructor
 @Getter
@@ -16,6 +19,9 @@ import org.springframework.web.multipart.MultipartFile;
 @Builder
 public class LessonCreateRequest {
 
+    /**
+     * Title of the lesson.
+     */
     @NotBlank(message = "Lesson title must not be blank")
     @Size(max = 255, message = "Lesson title must not exceed 255 characters")
     @Schema(
@@ -24,6 +30,9 @@ public class LessonCreateRequest {
     )
     private String title;
 
+    /**
+     * Video content of the lesson.
+     */
     @NotNull(message = "Lesson video must not be null")
     @FileExtension(
             allowedExtensions = {
@@ -42,6 +51,9 @@ public class LessonCreateRequest {
     )
     private MultipartFile content;
 
+    /**
+     * Text content of the lesson.
+     */
     @Size(
             max = 100000,
             message = "Text content must not exceed 100000 characters"
@@ -52,6 +64,9 @@ public class LessonCreateRequest {
     )
     private String textContent;
 
+    /**
+     * Display order of the lesson within the course.
+     */
     @NotNull(message = "Order index must not be null")
     @Positive(message = "Order index must be greater than 0")
     @Schema(

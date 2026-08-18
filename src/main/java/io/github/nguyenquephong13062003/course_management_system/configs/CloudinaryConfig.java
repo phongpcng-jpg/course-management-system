@@ -7,10 +7,19 @@ import org.springframework.context.annotation.Configuration;
 import com.cloudinary.Cloudinary;
 import com.cloudinary.utils.ObjectUtils;
 
+/**
+ * Configuration class for Cloudinary integration.
+ */
 @Configuration
 @EnableConfigurationProperties(CloudinaryProperties.class)
 public class CloudinaryConfig {
 
+    /**
+     * Creates a Cloudinary bean using the provided CloudinaryProperties.
+     *
+     * @param properties the CloudinaryProperties containing configuration values
+     * @return a configured Cloudinary instance
+     */
     @Bean
     public Cloudinary cloudinary(CloudinaryProperties properties) {
         return new Cloudinary(ObjectUtils.asMap(
@@ -19,4 +28,5 @@ public class CloudinaryConfig {
                 "api_secret", properties.getApiSecret()
         ));
     }
+    
 }

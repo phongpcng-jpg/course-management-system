@@ -69,6 +69,9 @@ public class CourseServiceImpl implements ICourseService {
      */
     private final IReviewRepository reviewRepository;
 
+    /**
+     * The UploadService instance used for handling file uploads.
+     */
     private final UploadService uploadService;
 
     @Override

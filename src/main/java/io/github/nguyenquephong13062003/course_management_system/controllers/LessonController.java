@@ -11,14 +11,26 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+/**
+ * Controller for handling lesson-related API requests.
+ */
 @RestController
 @RequestMapping("/api/lessons")
 @RequiredArgsConstructor
 @Slf4j
 public class LessonController {
 
+    /**
+     * Service for handling lesson-related business logic.
+     */
     private final ILessonService lessonService;
 
+    /**
+     * Endpoint to fetch the details of a published lesson by its ID.
+     *
+     * @param lessonId The ID of the lesson to fetch.
+     * @return A ResponseEntity containing the lesson details wrapped in an ApiResponse.
+     */
     @GetMapping("/{lesson_id}")
     public ResponseEntity<ApiResponse<LessonDetailResponse>> getPublishedLessonById(
             @PathVariable("lesson_id") Long lessonId
@@ -45,4 +57,5 @@ public class LessonController {
                 )
         );
     }
+    
 }

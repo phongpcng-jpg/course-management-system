@@ -20,14 +20,23 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Objects;
 
+/**
+ * Implementation of the ILessonService interface for managing Lesson entities.
+ */
 @Service
 @RequiredArgsConstructor
 @Slf4j
 @Transactional(readOnly = true)
 public class LessonServiceImpl implements ILessonService {
 
+    /**
+     * The repository for managing Lesson entities.
+     */
     private final ILessonRepository lessonRepository;
 
+    /**
+     * The service for handling file uploads.
+     */
     private final UploadService uploadService;
 
     @Override
@@ -112,6 +121,12 @@ public class LessonServiceImpl implements ILessonService {
 
     }
 
+    /**
+     * Converts a Lesson entity to a LessonDetailResponse DTO.
+     *
+     * @param lesson the Lesson entity to convert
+     * @return the corresponding LessonDetailResponse DTO
+     */
     private LessonDetailResponse toLessonDetailResponse(Lesson lesson) {
 
         return LessonDetailResponse.builder()

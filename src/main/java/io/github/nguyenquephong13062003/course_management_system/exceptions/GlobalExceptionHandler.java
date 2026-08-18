@@ -330,6 +330,11 @@ public class GlobalExceptionHandler {
 
     }
 
+    /**
+     * Handles CourseHasDependentDataException thrown by the application.
+     * @param ex The CourseHasDependentDataException that was thrown.
+     * @return A ResponseEntity containing an ApiResponse with error details.
+     */
     @ExceptionHandler(CourseHasDependentDataException.class)
     public ResponseEntity<ApiResponse<Void>> handleCourseHasDependentDataException(
             HttpServletRequest request,
@@ -355,6 +360,11 @@ public class GlobalExceptionHandler {
 
     }
 
+    /**
+     * Handles UploadCloudinaryException thrown by the application.
+     * @param ex The UploadCloudinaryException that was thrown.
+     * @return A ResponseEntity containing an ApiResponse with error details.
+     */
     @ExceptionHandler(UploadCloudinaryException.class)
     public ResponseEntity<ApiResponse<Void>> handleUploadCloudinaryFail(
             UploadCloudinaryException ex

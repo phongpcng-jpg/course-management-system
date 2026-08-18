@@ -7,9 +7,16 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.util.Arrays;
 
+/**
+ * FileExtensionValidator is a custom validator that checks if the uploaded file has an allowed extension.
+ * It implements the ConstraintValidator interface for the FileExtension annotation and MultipartFile type.
+ */
 public class FileExtensionValidator
         implements ConstraintValidator<FileExtension, MultipartFile> {
 
+    /**
+     * An array of allowed file extensions specified in the FileExtension annotation.
+     */
     private String[]  allowedExtensions;
 
     @Override

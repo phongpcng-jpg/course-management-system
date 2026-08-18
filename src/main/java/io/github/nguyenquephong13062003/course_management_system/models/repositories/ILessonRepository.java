@@ -30,6 +30,12 @@ public interface ILessonRepository extends JpaRepository<Lesson, Long> {
      */
     boolean existsByCourseId(Long courseId);
 
+    /**
+     * Retrieves a published lesson by its ID.
+     *
+     * @param lessonId The ID of the lesson to retrieve.
+     * @return An Optional containing the Lesson entity if found and published, or an empty Optional if not found or not published.
+     */
     Optional<Lesson> findBylessonIdAndIsPublishedTrue(Long lessonId);
     
 }

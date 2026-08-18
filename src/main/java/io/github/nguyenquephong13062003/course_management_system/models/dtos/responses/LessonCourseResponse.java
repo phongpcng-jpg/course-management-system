@@ -13,8 +13,14 @@ import lombok.*;
 @AllArgsConstructor
 public class LessonCourseResponse {
 
+    /**
+     * The id of the lesson
+     */
     private Long id;
 
+    /**
+     * The title of the lesson
+     */
     private String title;
 
 }

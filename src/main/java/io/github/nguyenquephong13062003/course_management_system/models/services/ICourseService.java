@@ -101,6 +101,13 @@ public interface ICourseService {
      */
     List<LessonResponse> getAllPublishedLessonByCourseId(Long id);
 
+    /**
+     * Creates a new lesson associated with a specific course identified by its ID based on the provided LessonCreateRequest.
+     *
+     * @param course_id The ID of the course to which the new lesson will be associated.
+     * @param request   The LessonCreateRequest containing the details of the lesson to be created.
+     * @return A LessonResponse representing the newly created lesson.
+     */
     LessonResponse createLesson(Long course_id, LessonCreateRequest request);
 
 }
