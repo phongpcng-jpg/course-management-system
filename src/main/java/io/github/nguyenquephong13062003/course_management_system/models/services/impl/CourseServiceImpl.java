@@ -326,12 +326,21 @@ public class CourseServiceImpl implements ICourseService {
             throw new InvalidStateTransitionException("Cannot create lesson for a course that is archived");
         }
 
+        if (lessonRepository.existsByCourse_IdAndOrderIndex(course_id, request.getOrderIndex())) {
+
+            throw new DuplicateResourceException(
+                    "Lesson with course_id '" + course_id + "' and orderIndex '" + request.getOrderIndex() + "' already exists"
+            );
+
+        }
+
         Lesson lesson = Lesson.builder()
                 .course(course)
                 .title(request.getTitle())
-                .contentUrl(request.getContent() != null ? uploadService.upload(
+                .contentUrl((request.getContent() == null || request.getContent().isEmpty())
+                        ? null : uploadService.upload(
                         request.getContent()
-                ) : null).textContent(request.getTextContent())
+                )).textContent(request.getTextContent())
                 .orderIndex(request.getOrderIndex())
                 .build();
 
