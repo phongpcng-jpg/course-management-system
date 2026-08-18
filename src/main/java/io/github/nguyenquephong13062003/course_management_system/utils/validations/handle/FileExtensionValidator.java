@@ -27,12 +27,8 @@ public class FileExtensionValidator
     @Override
     public boolean isValid(MultipartFile value, ConstraintValidatorContext context) {
 
-        if(value == null) {
+        if(value == null || value.isEmpty()) {
             return true;
-        }
-        
-        if(value.isEmpty()){
-            return false;
         }
 
         String fileName = value.getOriginalFilename();
