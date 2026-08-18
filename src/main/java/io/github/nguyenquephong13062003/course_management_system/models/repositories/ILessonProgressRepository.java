@@ -1,6 +1,9 @@
 package io.github.nguyenquephong13062003.course_management_system.models.repositories;
 
 import io.github.nguyenquephong13062003.course_management_system.models.entities.LessonProgress;
+
+import java.util.Optional;
+
 import org.springframework.data.jpa.repository.JpaRepository;
 
 /**
@@ -14,6 +17,38 @@ public interface ILessonProgressRepository extends JpaRepository<LessonProgress,
      * @param lessonId the ID of the lesson
      * @return the number of records deleted
      */
-    long deleteAllByLesson_lessonId(Long lessonId);
+    long deleteAllByLesson_LessonId(Long lessonId);
+
+    /**
+     * Retrieves a LessonProgress record based on the enrollment ID and lesson ID.
+     *
+     * @param enrollmentId the ID of the enrollment
+     * @param lessonId     the ID of the lesson
+     * @return an Optional containing the LessonProgress entity if found, or empty if not found
+     */
+    Optional<LessonProgress> findByEnrollmentIdAndLessonLessonId(
+        Long enrollmentId,
+        Long lessonId
+    );
+
+    /**
+     * Counts the number of completed lessons for a specific enrollment ID.
+     *
+     * @param enrollmentId the ID of the enrollment
+     * @return the count of completed lessons
+     */
+    long countByEnrollmentIdAndCompletedTrue(
+        Long enrollmentId
+    );
+
+    /**
+     * Counts the number of completed and published lessons for a specific enrollment ID.
+     *
+     * @param enrollmentId the ID of the enrollment
+     * @return the count of completed and published lessons
+     */
+    long countByEnrollmentIdAndCompletedTrueAndLessonIsPublishedTrue(
+        Long enrollmentId
+    );
 
 }

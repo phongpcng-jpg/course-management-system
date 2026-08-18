@@ -2,6 +2,8 @@ package io.github.nguyenquephong13062003.course_management_system.models.reposit
 
 import io.github.nguyenquephong13062003.course_management_system.models.entities.Lesson;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 
 import java.util.List;
 import java.util.Optional;
@@ -36,7 +38,7 @@ public interface ILessonRepository extends JpaRepository<Lesson, Long> {
      * @param lessonId The ID of the lesson to retrieve.
      * @return An Optional containing the Lesson entity if found and published, or an empty Optional if not found or not published.
      */
-    Optional<Lesson> findBylessonIdAndIsPublishedTrue(Long lessonId);
+    Optional<Lesson> findByLessonIdAndIsPublishedTrue(Long lessonId);
 
     /**
      * Checks if a lesson exists for a specific course and order index.
@@ -46,5 +48,64 @@ public interface ILessonRepository extends JpaRepository<Lesson, Long> {
      * @return true if a lesson exists with the specified course ID and order index, false otherwise.
      */
     Boolean existsByCourse_IdAndOrderIndex(Long courseId, Integer orderIndex);
+
+    /**
+     * Counts the number of published lessons for a specific course.
+     *
+     * @param courseId The ID of the course for which to count published lessons.
+     * @return The count of published lessons associated with the specified course.
+     */
+    long countByCourseIdAndIsPublishedTrue(Long courseId);
+
+    /**
+     * Retrieves a published lesson by its ID and associated course ID.
+     *
+     * @param lessonId The ID of the lesson to retrieve.
+     * @param courseId The ID of the course associated with the lesson.
+     * @return An Optional containing the Lesson entity if found and published, or an empty Optional if not found or not published.
+     */
+    Optional<Lesson> findByLessonIdAndCourseIdAndIsPublishedTrue(
+        Long lessonId,
+        Long courseId
+    );
+
+    /**
+     * Counts the number of published lessons for a specific course.
+     *
+     * @param courseId The ID of the course for which to count published lessons.
+     * @return The count of published lessons associated with the specified course.
+     */
+    @Query("""
+            SELECT COUNT(lp)
+            FROM LessonProgress lp
+            JOIN lp.lesson l
+            WHERE lp.enrollment.id = :enrollmentId
+              AND lp.completed = true
+              AND l.isPublished = true
+            """)
+    long countCompletedPublishedLessons(
+            @Param("enrollmentId") Long enrollmentId
+    );
+
+
+    /**
+     * Counts the number of published lessons for a specific course.
+     *
+     * @param courseId The ID of the course for which to count published lessons.
+     * @return The count of published lessons associated with the specified course.
+     */
+    long countByCourse_IdAndIsPublishedTrue(Long courseId);
+
+    /**
+     * Retrieves a published lesson by its ID and associated course ID.
+     *
+     * @param lessonId The ID of the lesson to retrieve.
+     * @param courseId The ID of the course associated with the lesson.
+     * @return An Optional containing the Lesson entity if found and published, or an empty Optional if not found or not published.
+     */
+    Optional<Lesson> findByLessonIdAndCourse_IdAndIsPublishedTrue(
+        Long lessonId,
+        Long courseId
+    );
     
 }

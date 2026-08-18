@@ -58,7 +58,7 @@ public class LessonServiceImpl implements ILessonService {
     @Override
     public LessonDetailResponse getPublishedLessonById(Long lessonId) {
 
-        Lesson lesson = lessonRepository.findBylessonIdAndIsPublishedTrue(lessonId)
+        Lesson lesson = lessonRepository.findByLessonIdAndIsPublishedTrue(lessonId)
                 .orElseThrow(
                         () -> new NotFoundException("Published lesson with id " + lessonId + " not found")
                 );
@@ -225,7 +225,7 @@ public class LessonServiceImpl implements ILessonService {
         String contentPublicId = lesson.getContentPublicId();
 
         long deletedProgressCount =
-                lessonProgressRepository.deleteAllByLesson_lessonId(lessonId);
+                lessonProgressRepository.deleteAllByLesson_LessonId(lessonId);
 
         log.debug(
                 "Deleted {} lesson progress records for lesson '{}'",
