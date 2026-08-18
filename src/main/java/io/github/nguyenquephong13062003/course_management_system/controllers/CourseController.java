@@ -4,6 +4,7 @@ import io.github.nguyenquephong13062003.course_management_system.models.constant
 import io.github.nguyenquephong13062003.course_management_system.models.dtos.requests.CourseCreateRequest;
 import io.github.nguyenquephong13062003.course_management_system.models.dtos.requests.CourseStatusUpdateRequest;
 import io.github.nguyenquephong13062003.course_management_system.models.dtos.requests.CourseUpdateRequest;
+import io.github.nguyenquephong13062003.course_management_system.models.dtos.requests.LessonCreateRequest;
 import io.github.nguyenquephong13062003.course_management_system.models.dtos.responses.CourseDetailResponse;
 import io.github.nguyenquephong13062003.course_management_system.models.dtos.responses.CourseResponse;
 import io.github.nguyenquephong13062003.course_management_system.models.dtos.responses.LessonResponse;
@@ -14,6 +15,7 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
@@ -315,6 +317,38 @@ public class CourseController {
                         lessons
                 )
         );
+    }
+
+    /**
+     * Handles POST requests to create a new lesson for a specific course.
+     * This endpoint is restricted to users with the 'ADMIN' role.
+     *
+     * @param courseId The ID of the course for which to create the lesson.
+     * @param request  The LessonCreateRequest object containing the details of the lesson to be created.
+     * @return A ResponseEntity containing an ApiResponse with a LessonResponse object representing the newly created lesson.
+     */
+    @PostMapping(
+            value = "/{course_id}/lessons",
+            consumes = MediaType.MULTIPART_FORM_DATA_VALUE
+    )
+    public ResponseEntity<ApiResponse<LessonResponse>> createLesson(
+            @PathVariable("course_id") Long courseId,
+            @Valid @ModelAttribute LessonCreateRequest request
+    ) {
+        log.info("Received request to create lesson. courseId={}", courseId);
+
+        LessonResponse response =
+                courseService.createLesson(courseId, request);
+
+        log.info("Lesson created successfully. courseId={}", courseId);
+
+        return ResponseEntity
+                .status(HttpStatus.CREATED)
+                .body(ApiResponse.success(
+                        HttpStatus.CREATED.value(),
+                        "Lesson created successfully",
+                        response
+                ));
     }
 
 }
