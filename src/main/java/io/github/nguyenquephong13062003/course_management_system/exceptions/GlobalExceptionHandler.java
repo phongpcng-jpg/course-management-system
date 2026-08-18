@@ -331,6 +331,36 @@ public class GlobalExceptionHandler {
     }
 
     /**
+     * Handles UserHasDependentDataException thrown by the application.
+     * @param ex The UserHasDependentDataException that was thrown.
+     * @return A ResponseEntity containing an ApiResponse with error details.
+     */
+    @ExceptionHandler(UserHasDependentDataException.class)
+    public ResponseEntity<ApiResponse<Void>> handleUserHasDependentDataException(
+            HttpServletRequest request,
+            HttpServletResponse response,
+            UserHasDependentDataException ex
+    ) {
+
+        log.warn(
+                "User has dependent data in request {} {}: {}",
+                request.getMethod(),
+                request.getRequestURI(),
+                ex.getMessage()
+        );
+
+        return  ResponseEntity.status(HttpStatus.CONFLICT).body(
+                ApiResponse.<Void>error(
+                        HttpStatus.CONFLICT.value(),
+                        "USER_HAS_DEPENDENT_DATA",
+                        ex.getMessage(),
+                        null
+                )
+        );
+
+    }
+
+    /**
      * Handles CourseHasDependentDataException thrown by the application.
      * @param ex The CourseHasDependentDataException that was thrown.
      * @return A ResponseEntity containing an ApiResponse with error details.
@@ -359,6 +389,7 @@ public class GlobalExceptionHandler {
         );
 
     }
+
 
     /**
      * Handles UploadCloudinaryException thrown by the application.
