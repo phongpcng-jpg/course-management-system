@@ -37,5 +37,14 @@ public interface ILessonRepository extends JpaRepository<Lesson, Long> {
      * @return An Optional containing the Lesson entity if found and published, or an empty Optional if not found or not published.
      */
     Optional<Lesson> findBylessonIdAndIsPublishedTrue(Long lessonId);
+
+    /**
+     * Checks if a lesson exists for a specific course and order index.
+     *
+     * @param courseId   The ID of the course to check for existing lessons.
+     * @param orderIndex The order index of the lesson to check for existence.
+     * @return true if a lesson exists with the specified course ID and order index, false otherwise.
+     */
+    Boolean existsByCourse_IdAndOrderIndex(Long courseId, Integer orderIndex);
     
 }
