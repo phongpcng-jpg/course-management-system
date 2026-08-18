@@ -777,6 +777,168 @@
         }
       },
       "response": []
+    },
+    {
+      "name": "18. Lesson Create",
+      "request": {
+        "auth": {
+          "type": "bearer",
+          "bearer": [
+            {
+              "key": "token",
+              "value": "",
+              "type": "string"
+            }
+          ]
+        },
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "formdata",
+          "formdata": [
+            {
+              "key": "title",
+              "value": "Introduction to Spring Boot",
+              "type": "text",
+              "uuid": "5880a5c3-4c08-4f11-8301-b18451749c1e"
+            },
+            {
+              "key": "content",
+              "type": "file",
+              "uuid": "00865c1e-f96e-4880-b51c-65385dd7066e",
+              "value": null
+            },
+            {
+              "key": "textContent",
+              "value": "In this lesson, we will learn the fundamentals of Spring Boot.",
+              "type": "text",
+              "uuid": "6846a73a-77aa-4ab6-83ee-81c7340bcaee"
+            },
+            {
+              "key": "orderIndex",
+              "value": "1",
+              "type": "text",
+              "uuid": "fda423c9-f4d1-4980-97f0-5884e609e35e"
+            }
+          ]
+        },
+        "url": {
+          "raw": "http://localhost:8080/api/courses/1/lessons",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "8080",
+          "path": [
+            "api",
+            "courses",
+            "1",
+            "lessons"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "19. Lesson Update",
+      "request": {
+        "auth": {
+          "type": "bearer",
+          "bearer": [
+            {
+              "key": "token",
+              "value": "",
+              "type": "string"
+            }
+          ]
+        },
+        "method": "PUT",
+        "header": [],
+        "body": {
+          "mode": "formdata",
+          "formdata": [
+            {
+              "key": "title",
+              "value": "Spring Boot Fundamentals",
+              "type": "text",
+              "uuid": "eae70b23-ee8b-4888-9c4e-127de808eca8"
+            },
+            {
+              "key": "content",
+              "type": "file",
+              "uuid": "a0947312-00c1-4010-8109-3a01c91a753e",
+              "value": null
+            },
+            {
+              "key": "textContent",
+              "value": "",
+              "type": "text",
+              "uuid": "548ea39e-832e-4f33-ac6a-7d11d711ac56"
+            },
+            {
+              "key": "orderIndex",
+              "value": "3",
+              "type": "text",
+              "uuid": "13fd0aaa-0ef2-4c3b-a7a9-134b9cdf5617"
+            }
+          ]
+        },
+        "url": {
+          "raw": "http://localhost:8080/api/lessons/1",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "8080",
+          "path": [
+            "api",
+            "lessons",
+            "1"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "20. Lesson Update Publish",
+      "request": {
+        "auth": {
+          "type": "bearer",
+          "bearer": [
+            {
+              "key": "token",
+              "value": "",
+              "type": "string"
+            }
+          ]
+        },
+        "method": "PUT",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n  \"isPublished\": true\r\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "http://localhost:8080/api/lessons/1/publish",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "8080",
+          "path": [
+            "api",
+            "lessons",
+            "1",
+            "publish"
+          ]
+        }
+      },
+      "response": []
     }
   ],
   "variable": [
