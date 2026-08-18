@@ -54,10 +54,10 @@
 | 19  | `/api/lessons/{lesson_id}`                                    | PUT    | TEACHER, ADMIN | Update lesson information                                                            | ☑ | 2 |   | ☑ |
 | 20  | `/api/lessons/{lesson_id}/publish`                            | PUT    | TEACHER, ADMIN | Update a lesson's publication status (`is_published`)                                | ☑ | 2 |   | ☑ |
 | 21  | `/api/lessons/{lesson_id}`                                    | DELETE | TEACHER, ADMIN | Delete a lesson                                                                      | ☑ | 2 |   | ☑ |
-| 22  | `/api/enrollments`                                            | GET    | STUDENT        | Retrieve all courses in which the student is enrolled                                | ☑ | 2 |   | ☐ |
-| 23  | `/api/enrollments`                                            | POST   | STUDENT        | Enroll in a course                                                                   | ☑ | 2 |   | ☐ |
-| 24  | `/api/enrollments/{enrollment_id}`                            | GET    | STUDENT        | Retrieve enrollment details, including learning progress                             | ☑ | 2 |   | ☐ |
-| 25  | `/api/enrollments/{enrollment_id}/complete_lesson/{lesson_id}`| PUT    | STUDENT        | Mark a lesson as completed and update learning progress                              | ☑ | 2 |   | ☐ |
+| 22  | `/api/enrollments`                                            | GET    | STUDENT        | Retrieve all courses in which the student is enrolled                                | ☑ | 2 |   | ☑ |
+| 23  | `/api/enrollments`                                            | POST   | STUDENT        | Enroll in a course                                                                   | ☑ | 2 |   | ☑ |
+| 24  | `/api/enrollments/{enrollment_id}`                            | GET    | STUDENT        | Retrieve enrollment details, including learning progress                             | ☑ | 2 |   | ☑ |
+| 25  | `/api/enrollments/{enrollment_id}/complete_lesson/{lesson_id}`| PUT    | STUDENT        | Mark a lesson as completed and update learning progress                              | ☑ | 2 |   | ☑ |
 | 26  | `/api/users/{user_id}`                                        | PUT    | OWNER, ADMIN   | Update a user's profile information                                                  | ☑ | 2 |   | ☐ |
 | 27  | `/api/users/{user_id}/password`                               | PUT    | OWNER, ADMIN   | Change a user's password                                                             | ☑ | 2 |   | ☐ |
 | 28  | `/api/courses?search={keyword}`                               | GET    | AUTH           | Search courses by keyword in the title or description                                | ☑ | 2 |   | ☐ |
