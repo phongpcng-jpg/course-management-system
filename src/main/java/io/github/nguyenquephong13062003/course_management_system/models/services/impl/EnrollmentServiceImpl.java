@@ -1,5 +1,6 @@
 package io.github.nguyenquephong13062003.course_management_system.models.services.impl;
 
+import io.github.nguyenquephong13062003.course_management_system.exceptions.AuthException;
 import io.github.nguyenquephong13062003.course_management_system.exceptions.DuplicateResourceException;
 import io.github.nguyenquephong13062003.course_management_system.exceptions.InvalidStateTransitionException;
 import io.github.nguyenquephong13062003.course_management_system.exceptions.NotFoundException;
@@ -17,6 +18,7 @@ import io.github.nguyenquephong13062003.course_management_system.models.reposito
 import io.github.nguyenquephong13062003.course_management_system.models.repositories.ILessonRepository;
 import io.github.nguyenquephong13062003.course_management_system.models.repositories.IUserRepository;
 import io.github.nguyenquephong13062003.course_management_system.models.services.IEnrollmentService;
+import io.github.nguyenquephong13062003.course_management_system.security.principal.CustomUserDetails;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
@@ -28,6 +30,8 @@ import java.util.Map;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -77,13 +81,13 @@ public class EnrollmentServiceImpl implements IEnrollmentService {
      * API 22:
      * Retrieves all enrollments belonging to the authenticated student.
      *
-     * @param studentId the ID of the authenticated student
      * @return the student's enrollments
      */
     @Override
     public List<EnrollmentResponse> getMyEnrollments(
-            Long studentId
     ) {
+
+        Long studentId = getAuthenticatedStudentId();
 
         log.debug(
                 "Fetching enrollments for studentId={}",
@@ -111,16 +115,16 @@ public class EnrollmentServiceImpl implements IEnrollmentService {
      * API 23:
      * Enrolls the authenticated student in a published course.
      *
-     * @param studentId the ID of the authenticated student
      * @param request   the enrollment request
      * @return the created enrollment
      */
     @Override
     @Transactional
     public EnrollmentResponse enrollCourse(
-            Long studentId,
             EnrollmentCreateRequest request
     ) {
+
+        Long studentId = getAuthenticatedStudentId();
 
         Long courseId = request.getCourseId();
 
@@ -185,15 +189,15 @@ public class EnrollmentServiceImpl implements IEnrollmentService {
      * Retrieves detailed enrollment information together with
      * the progress of all published lessons.
      *
-     * @param studentId    the ID of the authenticated student
      * @param enrollmentId the ID of the enrollment
      * @return detailed enrollment information
      */
     @Override
     public EnrollmentDetailResponse getEnrollmentDetail(
-            Long studentId,
             Long enrollmentId
     ) {
+
+        Long studentId = getAuthenticatedStudentId();
 
         log.debug(
                 "Fetching enrollment detail: studentId={}, enrollmentId={}",
@@ -218,7 +222,6 @@ public class EnrollmentServiceImpl implements IEnrollmentService {
      * Marks a published lesson as completed and recalculates
      * the enrollment progress.
      *
-     * @param studentId    the ID of the authenticated student
      * @param enrollmentId the ID of the enrollment
      * @param lessonId     the ID of the lesson
      * @return updated enrollment detail
@@ -226,10 +229,11 @@ public class EnrollmentServiceImpl implements IEnrollmentService {
     @Override
     @Transactional
     public EnrollmentDetailResponse completeLesson(
-            Long studentId,
             Long enrollmentId,
             Long lessonId
     ) {
+
+        Long studentId = getAuthenticatedStudentId();
 
         log.debug(
                 "Processing lesson completion: studentId={}, enrollmentId={}, lessonId={}",
@@ -544,6 +548,26 @@ public class EnrollmentServiceImpl implements IEnrollmentService {
                 .completionDate(enrollment.getCompletionDate())
                 .lessons(lessonProgresses)
                 .build();
+    }
+
+    private Long getAuthenticatedStudentId() {
+
+        Authentication authentication =
+                SecurityContextHolder.getContext().getAuthentication();
+
+        if (authentication == null || !authentication.isAuthenticated()) {
+            throw new AuthException("JWT verification failed: authentication is missing or unauthenticated");
+        }
+
+        CustomUserDetails userDetails =
+                (CustomUserDetails) authentication.getPrincipal();
+
+        if (userDetails == null) {
+            throw new AuthException("JWT verification failed: User details is missing or unauthenticated");
+        }
+
+        return userDetails.getUser().getId();
+
     }
     
 }
