@@ -45,8 +45,14 @@ public class LessonServiceImpl implements ILessonService {
      */
     private final UploadService uploadService;
 
+    /**
+     * The service for handling file deletions from Cloudinary.
+     */
     private final CloudinaryFileService cloudinaryFileService;
 
+    /**
+     * The repository for managing LessonProgress entities.
+     */
     private final ILessonProgressRepository lessonProgressRepository;
 
     @Override

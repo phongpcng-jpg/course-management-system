@@ -36,6 +36,11 @@ public interface ILessonService {
      */
     LessonDetailResponse updateLessonPublish(Long id, LessonUpdatePublishRequest request);
 
+    /**
+     * Deletes a specific lesson identified by its ID.
+     *
+     * @param lessonId The ID of the lesson to be deleted.
+     */
     void deleteLesson(Long lessonId);
 
 }
