@@ -11,6 +11,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 /**
@@ -71,6 +72,7 @@ public class LessonController {
             value = "/{lesson_id}",
             consumes = MediaType.MULTIPART_FORM_DATA_VALUE
     )
+    @PreAuthorize("hasRole('TEACHER') or hasRole('ADMIN')")
     public ResponseEntity<ApiResponse<LessonDetailResponse>> updateLesson(
             @PathVariable("lesson_id") Long lessonId,
             @Valid @ModelAttribute LessonUpdateRequest request
@@ -102,6 +104,7 @@ public class LessonController {
             value = "/{lesson_id}/publish",
             consumes = MediaType.MULTIPART_FORM_DATA_VALUE
     )
+    @PreAuthorize("hasRole('TEACHER') or hasRole('ADMIN')")
     public ResponseEntity<ApiResponse<LessonDetailResponse>> updateLessonPublish(
             @PathVariable("lesson_id") Long lessonId,
             @Valid @RequestBody LessonUpdatePublishRequest request
