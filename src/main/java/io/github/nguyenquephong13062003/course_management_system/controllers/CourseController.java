@@ -331,6 +331,7 @@ public class CourseController {
             value = "/{course_id}/lessons",
             consumes = MediaType.MULTIPART_FORM_DATA_VALUE
     )
+    @PreAuthorize("hasRole('TEACHER') or hasRole('ADMIN')")
     public ResponseEntity<ApiResponse<LessonResponse>> createLesson(
             @PathVariable("course_id") Long courseId,
             @Valid @ModelAttribute LessonCreateRequest request
