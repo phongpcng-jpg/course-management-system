@@ -36,4 +36,6 @@ public interface ILessonService {
      */
     LessonDetailResponse updateLessonPublish(Long id, LessonUpdatePublishRequest request);
 
+    void deleteLesson(Long lessonId);
+
 }

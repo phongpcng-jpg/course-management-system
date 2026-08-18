@@ -5,13 +5,16 @@ import io.github.nguyenquephong13062003.course_management_system.exceptions.Dupl
 import io.github.nguyenquephong13062003.course_management_system.exceptions.InvalidStateTransitionException;
 import io.github.nguyenquephong13062003.course_management_system.exceptions.NotFoundException;
 import io.github.nguyenquephong13062003.course_management_system.models.constants.CourseStatus;
+import io.github.nguyenquephong13062003.course_management_system.models.dtos.internals.CloudinaryUploadResult;
 import io.github.nguyenquephong13062003.course_management_system.models.dtos.requests.LessonUpdatePublishRequest;
 import io.github.nguyenquephong13062003.course_management_system.models.dtos.requests.LessonUpdateRequest;
 import io.github.nguyenquephong13062003.course_management_system.models.dtos.responses.LessonCourseResponse;
 import io.github.nguyenquephong13062003.course_management_system.models.dtos.responses.LessonDetailResponse;
 import io.github.nguyenquephong13062003.course_management_system.models.entities.Lesson;
+import io.github.nguyenquephong13062003.course_management_system.models.repositories.ILessonProgressRepository;
 import io.github.nguyenquephong13062003.course_management_system.models.repositories.ILessonRepository;
 import io.github.nguyenquephong13062003.course_management_system.models.services.ILessonService;
+import io.github.nguyenquephong13062003.course_management_system.models.services.deletes.CloudinaryFileService;
 import io.github.nguyenquephong13062003.course_management_system.models.services.uploads.UploadService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -41,6 +44,10 @@ public class LessonServiceImpl implements ILessonService {
      * The service for handling file uploads.
      */
     private final UploadService uploadService;
+
+    private final CloudinaryFileService cloudinaryFileService;
+
+    private final ILessonProgressRepository lessonProgressRepository;
 
     @Override
     public LessonDetailResponse getPublishedLessonById(Long lessonId) {
@@ -90,13 +97,20 @@ public class LessonServiceImpl implements ILessonService {
 
         }
 
+        String contentPublicId = null;
+
         lesson.setTitle(request.getTitle());
         if (request.getContent() != null && !request.getContent().isEmpty()) {
-            lesson.setContentUrl(
-                    uploadService.upload(
-                            request.getContent()
-                    )
-            );
+
+            CloudinaryUploadResult cloudinaryUploadResult =
+                    uploadService.upload(request.getContent());
+
+            if (lesson.getContentPublicId() != null) {
+                contentPublicId = lesson.getContentPublicId();
+            }
+
+            lesson.setContentUrl(cloudinaryUploadResult.getUrl());
+            lesson.setContentPublicId(cloudinaryUploadResult.getPublicId());
         }
         if (request.getTextContent() != null) {
             lesson.setTextContent(request.getTextContent());
@@ -104,6 +118,10 @@ public class LessonServiceImpl implements ILessonService {
         lesson.setOrderIndex(request.getOrderIndex());
 
         Lesson savedLesson = lessonRepository.save(lesson);
+
+        if (contentPublicId != null) {
+            cloudinaryFileService.delete(lesson.getContentPublicId());
+        }
 
         return toLessonDetailResponse(savedLesson);
 
@@ -140,6 +158,80 @@ public class LessonServiceImpl implements ILessonService {
         Lesson savedLesson = lessonRepository.save(lesson);
 
         return toLessonDetailResponse(savedLesson);
+
+    }
+
+    @Override
+    @Transactional
+    public void deleteLesson(Long lessonId) {
+
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+
+        if (authentication == null || !authentication.isAuthenticated()) {
+            throw new AuthException(
+                    "JWT verification failed: authentication is missing or unauthenticated"
+            );
+        }
+
+        Lesson lesson = lessonRepository.findById(lessonId)
+                .orElseThrow(
+                        () -> new NotFoundException(
+                                "Lesson with id " + lessonId + " not found"
+                        )
+                );
+
+        boolean isAdmin = authentication.getAuthorities().stream()
+                .anyMatch(authority ->
+                        Objects.equals(authority.getAuthority(), "ROLE_ADMIN")
+                );
+
+        boolean isCourseTeacher = authentication.getName()
+                .equals(lesson.getCourse().getTeacher().getUsername());
+
+        if (!isAdmin && !isCourseTeacher) {
+
+            throw new AccessDeniedException(
+                    "Only Admin and Teacher who is in charge of the course can delete this lesson"
+            );
+
+        }
+
+        if (Boolean.TRUE.equals(lesson.getIsPublished())) {
+            throw new InvalidStateTransitionException(
+                    "Cannot delete a published lesson"
+            );
+        }
+
+        CourseStatus courseStatus = lesson.getCourse().getStatus();
+
+        if (courseStatus == CourseStatus.PUBLISHED) {
+            throw new InvalidStateTransitionException(
+                    "Cannot delete a lesson from a published course"
+            );
+        }
+
+        if (courseStatus == CourseStatus.ARCHIVED) {
+            throw new InvalidStateTransitionException(
+                    "Cannot delete a lesson from an archived course"
+            );
+        }
+
+        String contentPublicId = lesson.getContentPublicId();
+
+        long deletedProgressCount =
+                lessonProgressRepository.deleteAllByLesson_lessonId(lessonId);
+
+        log.debug(
+                "Deleted {} lesson progress records for lesson '{}'",
+                deletedProgressCount,
+                lessonId
+        );
+
+        lessonRepository.delete(lesson);
+
+        if (contentPublicId != null) {
+            cloudinaryFileService.delete(contentPublicId);
+        }
 
     }
 

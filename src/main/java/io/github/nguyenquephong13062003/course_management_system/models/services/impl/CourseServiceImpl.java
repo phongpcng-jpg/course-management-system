@@ -3,6 +3,7 @@ package io.github.nguyenquephong13062003.course_management_system.models.service
 import io.github.nguyenquephong13062003.course_management_system.exceptions.*;
 import io.github.nguyenquephong13062003.course_management_system.models.constants.CourseStatus;
 import io.github.nguyenquephong13062003.course_management_system.models.constants.UserRole;
+import io.github.nguyenquephong13062003.course_management_system.models.dtos.internals.CloudinaryUploadResult;
 import io.github.nguyenquephong13062003.course_management_system.models.dtos.requests.CourseCreateRequest;
 import io.github.nguyenquephong13062003.course_management_system.models.dtos.requests.CourseStatusUpdateRequest;
 import io.github.nguyenquephong13062003.course_management_system.models.dtos.requests.CourseUpdateRequest;
@@ -334,13 +335,17 @@ public class CourseServiceImpl implements ICourseService {
 
         }
 
+        CloudinaryUploadResult cloudinaryUploadResult = (request.getContent() == null || request.getContent().isEmpty())
+                ? CloudinaryUploadResult.builder().build() : uploadService.upload(
+                request.getContent()
+        );
+
         Lesson lesson = Lesson.builder()
                 .course(course)
                 .title(request.getTitle())
-                .contentUrl((request.getContent() == null || request.getContent().isEmpty())
-                        ? null : uploadService.upload(
-                        request.getContent()
-                )).textContent(request.getTextContent())
+                .contentUrl(cloudinaryUploadResult.getUrl())
+                .contentPublicId(cloudinaryUploadResult.getPublicId())
+                .textContent(request.getTextContent())
                 .orderIndex(request.getOrderIndex())
                 .build();
 
