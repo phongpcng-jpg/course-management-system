@@ -77,19 +77,19 @@ public class CourseController {
             @RequestParam(name = "status", required = false)
             CourseStatus status,
 
-            @RequestParam(name = "teacherId", required = false)
+            @RequestParam(name = "teacher_id", required = false)
             Long teacherId,
 
-            @RequestParam(name = "priceMin", required = false)
+            @RequestParam(name = "price_min", required = false)
             BigDecimal priceMin,
 
-            @RequestParam(name = "priceMax", required = false)
+            @RequestParam(name = "price_max", required = false)
             BigDecimal priceMax,
 
-            @RequestParam(name = "durationHoursMin", required = false)
+            @RequestParam(name = "duration_hours_min", required = false)
             Integer durationHoursMin,
 
-            @RequestParam(name = "durationHoursMax", required = false)
+            @RequestParam(name = "duration_hours_max", required = false)
             Integer durationHoursMax
 
     ) {
