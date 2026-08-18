@@ -101,8 +101,7 @@ public class LessonController {
      * @return A ResponseEntity containing the updated lesson details wrapped in an ApiResponse.
      */
     @PutMapping(
-            value = "/{lesson_id}/publish",
-            consumes = MediaType.MULTIPART_FORM_DATA_VALUE
+            value = "/{lesson_id}/publish"
     )
     @PreAuthorize("hasRole('TEACHER') or hasRole('ADMIN')")
     public ResponseEntity<ApiResponse<LessonDetailResponse>> updateLessonPublish(
