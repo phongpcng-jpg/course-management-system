@@ -1,6 +1,7 @@
 package io.github.nguyenquephong13062003.course_management_system.models.services.impl;
 
 import io.github.nguyenquephong13062003.course_management_system.exceptions.AuthException;
+import io.github.nguyenquephong13062003.course_management_system.exceptions.DuplicateResourceException;
 import io.github.nguyenquephong13062003.course_management_system.exceptions.InvalidStateTransitionException;
 import io.github.nguyenquephong13062003.course_management_system.exceptions.NotFoundException;
 import io.github.nguyenquephong13062003.course_management_system.models.constants.CourseStatus;
@@ -78,8 +79,19 @@ public class LessonServiceImpl implements ILessonService {
             throw new InvalidStateTransitionException("Cannot update lesson for a course that is archived");
         }
 
+        if (
+                !Objects.equals(request.getOrderIndex(), lesson.getOrderIndex()) &&
+                lessonRepository.existsByCourse_IdAndOrderIndex(lesson.getCourse().getId(), request.getOrderIndex())
+        ) {
+
+            throw new DuplicateResourceException(
+                    "Lesson with course_id '" + lesson.getCourse().getId() + "' and orderIndex '" + request.getOrderIndex() + "' already exists"
+            );
+
+        }
+
         lesson.setTitle(request.getTitle());
-        if (request.getContent() != null) {
+        if (request.getContent() != null && !request.getContent().isEmpty()) {
             lesson.setContentUrl(
                     uploadService.upload(
                             request.getContent()
