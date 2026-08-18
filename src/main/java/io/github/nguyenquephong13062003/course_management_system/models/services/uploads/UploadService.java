@@ -3,6 +3,7 @@ package io.github.nguyenquephong13062003.course_management_system.models.service
 import com.cloudinary.Cloudinary;
 import com.cloudinary.utils.ObjectUtils;
 import io.github.nguyenquephong13062003.course_management_system.exceptions.UploadCloudinaryException;
+import io.github.nguyenquephong13062003.course_management_system.models.dtos.internals.CloudinaryUploadResult;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -22,14 +23,15 @@ public class UploadService {
      */
     private final Cloudinary cloudinary;
 
+
     /**
-     * Uploads a file to Cloudinary and returns the URL of the uploaded file.
+     * Uploads a file to Cloudinary and returns the upload result.
      *
-     * @param file The file to be uploaded.
-     * @return The URL of the uploaded file.
-     * @throws UploadCloudinaryException If an error occurs during the upload process.
+     * @param file the file to be uploaded
+     * @return a CloudinaryUploadResult containing the URL and public ID of the uploaded file
+     * @throws UploadCloudinaryException if an error occurs during the upload process
      */
-    public String upload(MultipartFile file) {
+    public CloudinaryUploadResult upload(MultipartFile file) {
         try {
             String originalFilename = file.getOriginalFilename();
 
@@ -48,7 +50,10 @@ public class UploadService {
                     file.getBytes(),uploadParams
             );
 
-            return uploadResult.get("url").toString();
+            return CloudinaryUploadResult.builder()
+                    .url(uploadResult.get("url").toString())
+                    .publicId(uploadResult.get("publicId").toString())
+                    .build();
 
         } catch (IOException e) {
             throw new UploadCloudinaryException(
