@@ -124,4 +124,43 @@ public class LessonController {
                 ));
     }
 
+    /**
+     * Endpoint to delete a lesson by its ID.
+     *
+     * <p>
+     * Only users with TEACHER or ADMIN role are allowed to access this endpoint.
+     * Additional ownership and lesson/course state validation is handled
+     * by the lesson service.
+     * </p>
+     *
+     * @param lessonId The ID of the lesson to delete.
+     * @return A ResponseEntity containing the deletion result wrapped in an ApiResponse.
+     */
+    @DeleteMapping("/{lesson_id}")
+    @PreAuthorize("hasRole('TEACHER') or hasRole('ADMIN')")
+    public ResponseEntity<ApiResponse<Void>> deleteLesson(
+            @PathVariable("lesson_id") Long lessonId
+    ) {
+
+        log.info(
+                "Received request to delete lesson. lessonId={}",
+                lessonId
+        );
+
+        lessonService.deleteLesson(lessonId);
+
+        log.info(
+                "Lesson deleted successfully. lessonId={}",
+                lessonId
+        );
+
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(ApiResponse.success(
+                        HttpStatus.OK.value(),
+                        "Lesson deleted successfully",
+                        null
+                ));
+    }
+
 }

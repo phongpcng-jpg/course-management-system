@@ -53,7 +53,7 @@
 | 18  | `/api/courses/{course_id}/lessons`                            | POST   | TEACHER, ADMIN | Add a new lesson to a course (teacher must be assigned to the course)                | ☑ | 2 |   | ☑ |
 | 19  | `/api/lessons/{lesson_id}`                                    | PUT    | TEACHER, ADMIN | Update lesson information                                                            | ☑ | 2 |   | ☑ |
 | 20  | `/api/lessons/{lesson_id}/publish`                            | PUT    | TEACHER, ADMIN | Update a lesson's publication status (`is_published`)                                | ☑ | 2 |   | ☑ |
-| 21  | `/api/lessons/{lesson_id}`                                    | DELETE | TEACHER, ADMIN | Delete a lesson                                                                      | ☑ | 2 |   | ☐ |
+| 21  | `/api/lessons/{lesson_id}`                                    | DELETE | TEACHER, ADMIN | Delete a lesson                                                                      | ☑ | 2 |   | ☑ |
 | 22  | `/api/enrollments`                                            | GET    | STUDENT        | Retrieve all courses in which the student is enrolled                                | ☑ | 2 |   | ☐ |
 | 23  | `/api/enrollments`                                            | POST   | STUDENT        | Enroll in a course                                                                   | ☑ | 2 |   | ☐ |
 | 24  | `/api/enrollments/{enrollment_id}`                            | GET    | STUDENT        | Retrieve enrollment details, including learning progress                             | ☑ | 2 |   | ☐ |
