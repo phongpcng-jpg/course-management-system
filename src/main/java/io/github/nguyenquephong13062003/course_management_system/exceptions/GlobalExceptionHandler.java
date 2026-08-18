@@ -229,9 +229,9 @@ public class GlobalExceptionHandler {
                 ex.getMessage()
         );
 
-        return  ResponseEntity.status(400).body(
+        return  ResponseEntity.status(409).body(
                 ApiResponse.<Void>error(
-                        400,
+                        409,
                         "DUPLICATE_RESOURCE",
                         ex.getMessage(),
                         null
