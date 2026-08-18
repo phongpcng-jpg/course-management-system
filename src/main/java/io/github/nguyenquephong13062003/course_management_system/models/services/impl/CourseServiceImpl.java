@@ -322,6 +322,10 @@ public class CourseServiceImpl implements ICourseService {
 
         }
 
+        if (course.getStatus() == CourseStatus.ARCHIVED) {
+            throw new InvalidStateTransitionException("Cannot create lesson for a course that is archived");
+        }
+
         Lesson lesson = Lesson.builder()
                 .course(course)
                 .title(request.getTitle())
