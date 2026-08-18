@@ -1,8 +1,10 @@
 package io.github.nguyenquephong13062003.course_management_system.controllers;
 
+import io.github.nguyenquephong13062003.course_management_system.models.dtos.requests.UpdateUserPasswordRequest;
 import io.github.nguyenquephong13062003.course_management_system.models.dtos.requests.UpdateUserRoleRequest;
 import io.github.nguyenquephong13062003.course_management_system.models.dtos.requests.UpdateUserStatusRequest;
 import io.github.nguyenquephong13062003.course_management_system.models.dtos.requests.UserRequest;
+import io.github.nguyenquephong13062003.course_management_system.models.dtos.requests.UserUpdateRequest;
 import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -247,6 +249,66 @@ public class UserController {
                         HttpStatus.OK.value(),
                         "User deleted successfully",
                         null
+                )
+        );
+    }
+
+    /**
+     * Updates the details of an existing user based on the provided request data.
+     * This endpoint is restricted to users with the 'ADMIN' role.
+     *
+     * @param id      The unique identifier of the user to update.
+     * @param request The request body containing the new user details.
+     * @return A ResponseEntity containing the updated user details wrapped in an ApiResponse.
+     */
+    @PutMapping("/{user_id}")
+    public ResponseEntity<ApiResponse<UserResponse>> updateUser(
+            @PathVariable("user_id") Long id,
+            @Valid @RequestBody UserUpdateRequest request
+    ) {
+
+        log.info("Updating user: userId={}, username={}, email={}, fullName={}",
+                id, request.getUsername(), request.getEmail(), request.getFullName());
+
+        UserResponse response = userService.updateUser(id, request);
+
+        log.info("User updated successfully: userId={}, username={}, email={}, fullName={}",
+                response.getId(), response.getUsername(), response.getEmail(), response.getFullName());
+
+        return ResponseEntity.ok(
+                ApiResponse.success(
+                        HttpStatus.OK.value(),
+                        "User updated successfully",
+                        response
+                )
+        );
+    }
+
+    /**
+     * Updates the password of an existing user based on the provided request data.
+     * This endpoint is restricted to users with the 'ADMIN' role.
+     *
+     * @param id      The unique identifier of the user to update.
+     * @param request The request body containing the new password information.
+     * @return A ResponseEntity containing the updated user details wrapped in an ApiResponse.
+     */
+    @PutMapping("/{user_id}/password")
+    public ResponseEntity<ApiResponse<UserResponse>> updateUserPassword(
+            @PathVariable("user_id") Long id,
+            @Valid @RequestBody UpdateUserPasswordRequest request
+    ) {
+
+        log.info("Updating user password: userId={}", id);
+
+        UserResponse response = userService.updateUserPassword(id, request);
+
+        log.info("User password updated successfully: userId={}", response.getId());
+
+        return ResponseEntity.ok(
+                ApiResponse.success(
+                        HttpStatus.OK.value(),
+                        "User password updated successfully",
+                        response
                 )
         );
     }
