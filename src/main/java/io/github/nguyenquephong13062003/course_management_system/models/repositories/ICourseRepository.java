@@ -94,4 +94,6 @@ public interface ICourseRepository extends JpaRepository<Course, Long> {
             @Param("durationHoursMax") Integer durationHoursMax,
             Pageable pageable
     );
+
+    boolean existsByTeacher_Id(Long teacherId);
 }

@@ -16,5 +16,7 @@ public interface IReviewRepository extends JpaRepository<Review, Long> {
      * @return true if a review exists for the specified course ID, false otherwise
      */
     boolean existsByCourseId(Long courseId);
+
+    boolean existsByStudent_Id(Long studentId);
     
 }
