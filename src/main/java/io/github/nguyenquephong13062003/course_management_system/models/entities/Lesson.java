@@ -79,8 +79,10 @@ public class Lesson {
     /**
      * The text content of the lesson.
      */
-    @Lob
-    @Column(name = "text_content")
+    @Column(
+            name = "text_content",
+            columnDefinition = "TEXT"
+    )
     private String textContent;
 
     /**
