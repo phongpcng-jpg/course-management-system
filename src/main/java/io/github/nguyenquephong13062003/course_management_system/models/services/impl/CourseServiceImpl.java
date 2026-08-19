@@ -347,7 +347,7 @@ public class CourseServiceImpl implements ICourseService {
         }
 
         CloudinaryUploadResult cloudinaryUploadResult = (request.getContent() == null || request.getContent().isEmpty())
-                ? CloudinaryUploadResult.builder().build() : uploadService.upload(
+                ? CloudinaryUploadResult.builder().build() : uploadService.uploadVideo(
                 request.getContent()
         );
 

@@ -749,7 +749,7 @@
           "formdata": [
             {
               "key": "title",
-              "value": "Introduction to Spring Boot",
+              "value": "Building Your First REST Controller",
               "type": "text",
               "uuid": "5880a5c3-4c08-4f11-8301-b18451749c1e"
             },
@@ -757,17 +757,17 @@
               "key": "content",
               "type": "file",
               "uuid": "00865c1e-f96e-4880-b51c-65385dd7066e",
-              "value": null
+              "src": "/E:/PhongBackUp/Rikkei/java/Jv260316_MD03/final/new2/course-management-system/videos/video04.mp4"
             },
             {
               "key": "textContent",
-              "value": "In this lesson, we will learn the fundamentals of Spring Boot.",
+              "value": "",
               "type": "text",
               "uuid": "6846a73a-77aa-4ab6-83ee-81c7340bcaee"
             },
             {
               "key": "orderIndex",
-              "value": "1",
+              "value": "5",
               "type": "text",
               "uuid": "fda423c9-f4d1-4980-97f0-5884e609e35e"
             }
@@ -875,7 +875,7 @@
           }
         },
         "url": {
-          "raw": "http://localhost:8080/api/lessons/5/publish",
+          "raw": "http://localhost:8080/api/lessons/6/publish",
           "protocol": "http",
           "host": [
             "localhost"
@@ -884,7 +884,7 @@
           "path": [
             "api",
             "lessons",
-            "5",
+            "6",
             "publish"
           ]
         }
@@ -907,7 +907,7 @@
         "method": "DELETE",
         "header": [],
         "url": {
-          "raw": "http://localhost:8080/api/lessons/5",
+          "raw": "http://localhost:8080/api/lessons/6",
           "protocol": "http",
           "host": [
             "localhost"
@@ -916,7 +916,7 @@
           "path": [
             "api",
             "lessons",
-            "5"
+            "6"
           ]
         }
       },
@@ -1676,7 +1676,7 @@
         "method": "GET",
         "header": [],
         "url": {
-          "raw": "http://localhost:8080/api/lessons/5/content-preview",
+          "raw": "http://localhost:8080/api/lessons/6/content-preview",
           "protocol": "http",
           "host": [
             "localhost"
@@ -1685,7 +1685,7 @@
           "path": [
             "api",
             "lessons",
-            "5",
+            "6",
             "content-preview"
           ]
         }

@@ -114,7 +114,7 @@ public class LessonServiceImpl implements ILessonService {
         if (request.getContent() != null && !request.getContent().isEmpty()) {
 
             CloudinaryUploadResult cloudinaryUploadResult =
-                    uploadService.upload(request.getContent());
+                    uploadService.uploadVideo(request.getContent());
 
             if (lesson.getContentPublicId() != null) {
                 contentPublicId = lesson.getContentPublicId();
