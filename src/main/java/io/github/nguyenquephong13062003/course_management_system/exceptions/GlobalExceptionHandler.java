@@ -80,10 +80,10 @@ public class GlobalExceptionHandler {
             errors
         );
 
-        return ResponseEntity.status(422).body(
+        return ResponseEntity.status(400).body(
             ApiResponse.<Void>error(
-                422,
-                "VALIDATION_FAILED",
+                400,
+                "INVALID_INPUT_DATA",
                 "Validation failed",
                 errors
             )
@@ -113,7 +113,7 @@ public class GlobalExceptionHandler {
         return ResponseEntity.status(404).body(
             ApiResponse.<Void>error(
                 404,
-                "NOT_FOUND",
+                "RESOURCE_NOT_FOUND",
                 ex.getMessage(),
                 null
             )
@@ -143,7 +143,7 @@ public class GlobalExceptionHandler {
         return ResponseEntity.status(404).body(
             ApiResponse.<Void>error(
                 404,
-                "USER_NOT_FOUND",
+                "RESOURCE_NOT_FOUND",
                 ex.getMessage(),
                 null
             )
@@ -170,10 +170,10 @@ public class GlobalExceptionHandler {
             ex.getMessage()
         );
 
-        return ResponseEntity.status(400).body(
+        return ResponseEntity.status(401).body(
             ApiResponse.<Void>error(
-                400,
-                "BAD_REQUEST",
+                401,
+                "BAD_CREDENTIALS",
                 ex.getMessage(),
                 null
             )
@@ -229,9 +229,9 @@ public class GlobalExceptionHandler {
                 ex.getMessage()
         );
 
-        return  ResponseEntity.status(409).body(
+        return  ResponseEntity.status(400).body(
                 ApiResponse.<Void>error(
-                        409,
+                        400,
                         "DUPLICATE_RESOURCE",
                         ex.getMessage(),
                         null

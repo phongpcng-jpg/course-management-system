@@ -176,7 +176,7 @@ public class LessonController {
      * @param lessonId the ID of the lesson
      * @return a response containing the lesson content preview information
      */
-    @GetMapping("/{lesson_id}/content-preview")
+    @GetMapping("/{lesson_id}/content_preview")
     public ResponseEntity<ApiResponse<LessonContentPreviewResponse>> getContentPreview(
             @PathVariable("lesson_id") Long lessonId
     ) {

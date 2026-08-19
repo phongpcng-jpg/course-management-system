@@ -92,7 +92,6 @@ public class SecurityConfig {
         return http
                 .csrf(csrf -> csrf.disable())
                 .authorizeHttpRequests(url -> url
-                        // TODO: Add public endpoints here
                         .requestMatchers("/api/users").hasAuthority("ROLE_ADMIN")
                         .requestMatchers("/api/auth/login").permitAll()
                         .anyRequest().authenticated()

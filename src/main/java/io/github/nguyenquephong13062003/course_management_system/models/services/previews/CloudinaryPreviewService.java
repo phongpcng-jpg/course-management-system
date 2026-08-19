@@ -2,6 +2,8 @@ package io.github.nguyenquephong13062003.course_management_system.models.service
 
 import com.cloudinary.Cloudinary;
 import com.cloudinary.Transformation;
+
+import io.github.nguyenquephong13062003.course_management_system.exceptions.InvalidInputDataException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -34,7 +36,7 @@ public class CloudinaryPreviewService {
     public String generateVideoPreviewUrl(String publicId) {
 
         if (publicId == null || publicId.isBlank()) {
-            throw new IllegalArgumentException(
+            throw new InvalidInputDataException(
                     "Cloudinary public ID must not be null or blank"
             );
         }

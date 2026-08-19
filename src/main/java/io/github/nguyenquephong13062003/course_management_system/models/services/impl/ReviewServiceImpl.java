@@ -1,6 +1,8 @@
 package io.github.nguyenquephong13062003.course_management_system.models.services.impl;
 
 import io.github.nguyenquephong13062003.course_management_system.exceptions.AuthException;
+import io.github.nguyenquephong13062003.course_management_system.exceptions.DuplicateResourceException;
+import io.github.nguyenquephong13062003.course_management_system.exceptions.InvalidInputDataException;
 import io.github.nguyenquephong13062003.course_management_system.exceptions.NotFoundException;
 import io.github.nguyenquephong13062003.course_management_system.models.constants.EnrollmentStatus;
 import io.github.nguyenquephong13062003.course_management_system.models.dtos.requests.ReviewRequest;
@@ -85,7 +87,7 @@ public class ReviewServiceImpl implements IReviewService {
                     courseId
             );
 
-            throw new AccessDeniedException(
+            throw new InvalidInputDataException(
                     "Student has not enrolled in this course"
             );
         }
@@ -103,7 +105,7 @@ public class ReviewServiceImpl implements IReviewService {
                     courseId
             );
 
-            throw new IllegalStateException(
+            throw new DuplicateResourceException(
                     "Student has already reviewed this course"
             );
         }
@@ -146,7 +148,7 @@ public class ReviewServiceImpl implements IReviewService {
 
         Review review = reviewRepository.findById(reviewId)
                 .orElseThrow(() ->
-                        new RuntimeException(
+                        new NotFoundException(
                                 "Review not found"
                         )
                 );
@@ -180,7 +182,7 @@ public class ReviewServiceImpl implements IReviewService {
 
         Review review = reviewRepository.findById(reviewId)
                 .orElseThrow(() ->
-                        new RuntimeException(
+                        new NotFoundException(
                                 "Review not found"
                         )
                 );

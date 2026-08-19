@@ -107,7 +107,7 @@ public class CourseServiceImpl implements ICourseService {
             if (status == null) {
                 status = CourseStatus.PUBLISHED;
             } else if (status != CourseStatus.PUBLISHED) {
-                throw new InvalidStateTransitionException(
+                throw new AccessDeniedException(
                         "ADMIN sees all but others see only `PUBLISHED`"
                 );
             }
@@ -151,8 +151,29 @@ public class CourseServiceImpl implements ICourseService {
     @Override
     public CourseDetailResponse getCourseDetail(Long id) {
 
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+
+        if (authentication == null || !authentication.isAuthenticated()) {
+            throw new AuthException("JWT verification failed: authentication is missing or unauthenticated");
+        }
+
+        if (!(authentication.getPrincipal() instanceof CustomUserDetails userDetails)) {
+            throw new AuthException(
+                    "JWT verification failed: invalid authentication principal"
+            );
+        }
+
         Course course = courseRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException("Course with id " + id + " not found"));
+
+        if (
+                userDetails.getUser().getRole() != UserRole.ADMIN
+                        && course.getStatus() != CourseStatus.PUBLISHED
+        ) {
+            throw new AccessDeniedException(
+                    "ADMIN sees all but others see only `PUBLISHED`"
+            );
+        }
 
         List<Lesson> lessons = lessonRepository.findByCourse_IdAndIsPublishedTrueOrderByOrderIndexAsc(id);
 
@@ -243,6 +264,22 @@ public class CourseServiceImpl implements ICourseService {
 
         Course course = courseRepository.findById(courseId)
                 .orElseThrow(() -> new NotFoundException("Course with id " + courseId + " not found"));
+
+        if (
+                (course.getStatus() == CourseStatus.DRAFT && request.getStatus() != CourseStatus.PUBLISHED)
+                        || (course.getStatus() == CourseStatus.PUBLISHED && request.getStatus() == CourseStatus.PUBLISHED)
+                        || course.getStatus() == CourseStatus.ARCHIVED
+        ) {
+
+            log.warn(
+                    "Invalid state transition for course id={}: {} → {}",
+                    courseId,
+                    course.getStatus(),
+                    request.getStatus()
+            );
+
+            throw new InvalidStateTransitionException("Can only update status as DRAFT → PUBLISHED → ARCHIVED or PUBLISHED → DRAFT");
+        }
 
         course.setStatus(request.getStatus());
 

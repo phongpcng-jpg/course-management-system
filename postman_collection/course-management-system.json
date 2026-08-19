@@ -1435,7 +1435,7 @@
         "method": "GET",
         "header": [],
         "url": {
-          "raw": "http://localhost:8080/api/reports/top-courses",
+          "raw": "http://localhost:8080/api/reports/top_courses",
           "protocol": "http",
           "host": [
             "localhost"
@@ -1444,7 +1444,7 @@
           "path": [
             "api",
             "reports",
-            "top-courses"
+            "top_courses"
           ]
         }
       },
@@ -1466,7 +1466,7 @@
         "method": "GET",
         "header": [],
         "url": {
-          "raw": "http://localhost:8080/api/reports/students/15/progress",
+          "raw": "http://localhost:8080/api/reports/student_progress/15",
           "protocol": "http",
           "host": [
             "localhost"
@@ -1475,9 +1475,8 @@
           "path": [
             "api",
             "reports",
-            "students",
-            "15",
-            "progress"
+            "student_progress",
+            "15"
           ]
         }
       },
@@ -1499,7 +1498,7 @@
         "method": "GET",
         "header": [],
         "url": {
-          "raw": "http://localhost:8080/api/reports/teachers/14/courses-overview",
+          "raw": "http://localhost:8080/api/reports/teacher_courses_overview/14",
           "protocol": "http",
           "host": [
             "localhost"
@@ -1508,9 +1507,8 @@
           "path": [
             "api",
             "reports",
-            "teachers",
-            "14",
-            "courses-overview"
+            "teacher_courses_overview",
+            "14"
           ]
         }
       },
@@ -1676,7 +1674,7 @@
         "method": "GET",
         "header": [],
         "url": {
-          "raw": "http://localhost:8080/api/lessons/6/content-preview",
+          "raw": "http://localhost:8080/api/lessons/6/content_preview",
           "protocol": "http",
           "host": [
             "localhost"
@@ -1686,7 +1684,7 @@
             "api",
             "lessons",
             "6",
-            "content-preview"
+            "content_preview"
           ]
         }
       },

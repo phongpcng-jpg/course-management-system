@@ -56,6 +56,7 @@ public interface ICourseRepository extends JpaRepository<Course, Long> {
             :keyword IS NULL
             OR :keyword = ''
             OR LOWER(c.title) LIKE LOWER(CONCAT('%', :keyword, '%'))
+            OR LOWER(c.description) LIKE LOWER(CONCAT('%', :keyword, '%'))
         )
         AND (
             :status IS NULL

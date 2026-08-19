@@ -213,12 +213,6 @@ public class LessonServiceImpl implements ILessonService {
 
         CourseStatus courseStatus = lesson.getCourse().getStatus();
 
-        if (courseStatus == CourseStatus.PUBLISHED) {
-            throw new InvalidStateTransitionException(
-                    "Cannot delete a lesson from a published course"
-            );
-        }
-
         if (courseStatus == CourseStatus.ARCHIVED) {
             throw new InvalidStateTransitionException(
                     "Cannot delete a lesson from an archived course"

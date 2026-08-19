@@ -37,7 +37,7 @@ public class ReportController {
      * @param limit maximum number of courses to return
      * @return top courses report
      */
-    @GetMapping("/top-courses")
+    @GetMapping("/top_courses")
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<ApiResponse<List<TopCourseReportResponse>>> getTopCourses(
             @RequestParam(defaultValue = "10")
@@ -74,7 +74,7 @@ public class ReportController {
      * @param studentId the student identifier
      * @return student progress report
      */
-    @GetMapping("/students/{studentId}/progress")
+    @GetMapping("/student_progress/{studentId}")
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<ApiResponse<StudentProgressReportResponse>> getStudentProgress(
             @PathVariable Long studentId
@@ -108,7 +108,7 @@ public class ReportController {
      * @param teacherId the teacher identifier
      * @return teacher courses overview report
      */
-    @GetMapping("/teachers/{teacherId}/courses-overview")
+    @GetMapping("/teacher_courses_overview/{teacherId}")
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<ApiResponse<TeacherCoursesOverviewResponse>> getTeacherCoursesOverview(
             @PathVariable Long teacherId

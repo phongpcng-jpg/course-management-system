@@ -1,5 +1,6 @@
 package io.github.nguyenquephong13062003.course_management_system.models.services.impl;
 
+import io.github.nguyenquephong13062003.course_management_system.exceptions.InvalidInputDataException;
 import io.github.nguyenquephong13062003.course_management_system.exceptions.NotFoundException;
 import io.github.nguyenquephong13062003.course_management_system.models.constants.CourseStatus;
 import io.github.nguyenquephong13062003.course_management_system.models.constants.EnrollmentStatus;
@@ -69,7 +70,7 @@ public class ReportServiceImpl implements IReportService {
         log.debug("Generating top courses report with limit={}", limit);
 
         if (limit <= 0) {
-            throw new IllegalArgumentException(
+            throw new InvalidInputDataException(
                     "Limit must be greater than zero"
             );
         }
