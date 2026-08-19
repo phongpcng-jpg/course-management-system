@@ -1,16 +1,15 @@
 package io.github.nguyenquephong13062003.course_management_system.controllers;
 
 import io.github.nguyenquephong13062003.course_management_system.models.constants.CourseStatus;
-import io.github.nguyenquephong13062003.course_management_system.models.dtos.requests.CourseCreateRequest;
-import io.github.nguyenquephong13062003.course_management_system.models.dtos.requests.CourseStatusUpdateRequest;
-import io.github.nguyenquephong13062003.course_management_system.models.dtos.requests.CourseUpdateRequest;
-import io.github.nguyenquephong13062003.course_management_system.models.dtos.requests.LessonCreateRequest;
+import io.github.nguyenquephong13062003.course_management_system.models.dtos.requests.*;
 import io.github.nguyenquephong13062003.course_management_system.models.dtos.responses.CourseDetailResponse;
 import io.github.nguyenquephong13062003.course_management_system.models.dtos.responses.CourseResponse;
 import io.github.nguyenquephong13062003.course_management_system.models.dtos.responses.LessonResponse;
+import io.github.nguyenquephong13062003.course_management_system.models.dtos.responses.ReviewResponse;
 import io.github.nguyenquephong13062003.course_management_system.models.dtos.wrappers.ApiResponse;
 import io.github.nguyenquephong13062003.course_management_system.models.dtos.wrappers.PageResponse;
 import io.github.nguyenquephong13062003.course_management_system.models.services.ICourseService;
+import io.github.nguyenquephong13062003.course_management_system.models.services.IReviewService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -37,6 +36,11 @@ public class CourseController {
      * The ICourseService instance used for course-related operations.
      */
     private final ICourseService courseService;
+
+    /**
+     * The IReviewService instance used for review-related operations.
+     */
+    private final IReviewService reviewService;
 
     /**
      * Handles GET requests to retrieve a paginated list of courses based on the provided filtering and sorting criteria.
@@ -350,6 +354,80 @@ public class CourseController {
                         "Lesson created successfully",
                         response
                 ));
+    }
+
+    /**
+     * Handles GET requests to retrieve all reviews of a course.
+     *
+     * @param courseId the ID of the course
+     * @return a response containing the course reviews
+     */
+    @GetMapping("/{course_id}/reviews")
+    public ResponseEntity<ApiResponse<List<ReviewResponse>>> getCourseReviews(
+            @PathVariable("course_id") Long courseId
+    ) {
+
+        log.info(
+                "Received request to get reviews for courseId={}",
+                courseId
+        );
+
+        List<ReviewResponse> response =
+                reviewService.getCourseReviews(courseId);
+
+        log.info(
+                "Successfully fetched {} reviews for courseId={}",
+                response.size(),
+                courseId
+        );
+
+        return ResponseEntity.ok(
+                ApiResponse.success(
+                        HttpStatus.OK.value(),
+                        "Course reviews fetched successfully",
+                        response
+                )
+        );
+    }
+
+    /**
+     * Handles POST requests to create a review for a course.
+     *
+     * @param courseId the ID of the course
+     * @param request  the review request
+     * @return a response containing the created review
+     */
+    @PostMapping("/{course_id}/reviews")
+    @PreAuthorize("hasRole('STUDENT')")
+    public ResponseEntity<ApiResponse<ReviewResponse>> createCourseReview(
+            @PathVariable("course_id") Long courseId,
+            @Valid @RequestBody ReviewRequest request
+    ) {
+
+        log.info(
+                "Received create review request. courseId={}, rating={}",
+                courseId,
+                request.getRating()
+        );
+
+        ReviewResponse response =
+                reviewService.createReview(courseId, request);
+
+        log.info(
+                "Review created successfully. reviewId={}, courseId={}",
+                response.getId(),
+                courseId
+        );
+
+        return ResponseEntity
+                .status(HttpStatus.CREATED)
+                .body(
+                        ApiResponse.success(
+                                HttpStatus.CREATED.value(),
+                                "Review created successfully",
+                                response
+                        )
+                );
     }
 
 }

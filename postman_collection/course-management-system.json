@@ -157,7 +157,7 @@
           "bearer": [
             {
               "key": "token",
-              "value": "{{supabase_service_role_api_key_04dr}}",
+              "value": "",
               "type": "string"
             }
           ]
@@ -714,7 +714,7 @@
         "method": "GET",
         "header": [],
         "url": {
-          "raw": "http://localhost:8080/api/lessons/1",
+          "raw": "http://localhost:8080/api/lessons/5",
           "protocol": "http",
           "host": [
             "localhost"
@@ -723,7 +723,7 @@
           "path": [
             "api",
             "lessons",
-            "1"
+            "5"
           ]
         }
       },
@@ -955,6 +955,16 @@
     {
       "name": "23. Student Make Enrollment",
       "request": {
+        "auth": {
+          "type": "bearer",
+          "bearer": [
+            {
+              "key": "token",
+              "value": "",
+              "type": "string"
+            }
+          ]
+        },
         "method": "POST",
         "header": [],
         "body": {
@@ -984,6 +994,16 @@
     {
       "name": "24. Student Enrollment",
       "request": {
+        "auth": {
+          "type": "bearer",
+          "bearer": [
+            {
+              "key": "token",
+              "value": "",
+              "type": "string"
+            }
+          ]
+        },
         "method": "GET",
         "header": [],
         "url": {
@@ -1005,10 +1025,20 @@
     {
       "name": "25 Enrollment Complete",
       "request": {
+        "auth": {
+          "type": "bearer",
+          "bearer": [
+            {
+              "key": "token",
+              "value": "",
+              "type": "string"
+            }
+          ]
+        },
         "method": "PUT",
         "header": [],
         "url": {
-          "raw": "http://localhost:8080/api/enrollments/1/complete_lesson/10",
+          "raw": "http://localhost:8080/api/enrollments/1/complete_lesson/5",
           "protocol": "http",
           "host": [
             "localhost"
@@ -1019,7 +1049,7 @@
             "enrollments",
             "1",
             "complete_lesson",
-            "10"
+            "5"
           ]
         }
       },
@@ -1082,7 +1112,7 @@
         "header": [],
         "body": {
           "mode": "raw",
-          "raw": "{\r\n    \"currentPassword\": \"Student@123\",\r\n    \"newPassword\": \"Student@1234\"\r\n}",
+          "raw": "{\r\n    \"currentPassword\": \"Student@1234\",\r\n    \"newPassword\": \"Student@123\"\r\n}",
           "options": {
             "raw": {
               "language": "json"
@@ -1090,7 +1120,7 @@
           }
         },
         "url": {
-          "raw": "http://localhost:8080/api/users/18/password",
+          "raw": "http://localhost:8080/api/users/15/password",
           "protocol": "http",
           "host": [
             "localhost"
@@ -1099,7 +1129,7 @@
           "path": [
             "api",
             "users",
-            "18",
+            "15",
             "password"
           ]
         }
@@ -1122,7 +1152,7 @@
         "method": "GET",
         "header": [],
         "url": {
-          "raw": "http://localhost:8080/api/courses/search=Ad",
+          "raw": "http://localhost:8080/api/courses?search=Sp",
           "protocol": "http",
           "host": [
             "localhost"
@@ -1130,8 +1160,13 @@
           "port": "8080",
           "path": [
             "api",
-            "courses",
-            "search=Ad"
+            "courses"
+          ],
+          "query": [
+            {
+              "key": "search",
+              "value": "Sp"
+            }
           ]
         }
       },
@@ -1153,7 +1188,7 @@
         "method": "GET",
         "header": [],
         "url": {
-          "raw": "http://localhost:8080/api/courses/teacher_id=18",
+          "raw": "http://localhost:8080/api/courses?teacher_id=14",
           "protocol": "http",
           "host": [
             "localhost"
@@ -1161,8 +1196,13 @@
           "port": "8080",
           "path": [
             "api",
-            "courses",
-            "teacher_id=18"
+            "courses"
+          ],
+          "query": [
+            {
+              "key": "teacher_id",
+              "value": "14"
+            }
           ]
         }
       },
@@ -1326,7 +1366,7 @@
         "header": [],
         "body": {
           "mode": "raw",
-          "raw": "{\r\n  \"userId\": 15,\r\n  \"message\": \"Khóa học Java Spring Boot đã được cập nhật nội dung mới.\",\r\n  \"type\": \"LESSON_UPDATED\",\r\n  \"targetUrl\": \"/api/v1/courses/10\"\r\n}",
+          "raw": "{\r\n  \"userId\": 14,\r\n  \"message\": \"Khóa học Java Spring Boot đã được cập nhật nội dung mới.\",\r\n  \"type\": \"LESSON_UPDATED\",\r\n  \"targetUrl\": \"/api/v1/courses/10\"\r\n}",
           "options": {
             "raw": {
               "language": "json"
@@ -1373,6 +1413,247 @@
           "path": [
             "api",
             "notifications",
+            "1"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "37. Popular Courses",
+      "request": {
+        "auth": {
+          "type": "bearer",
+          "bearer": [
+            {
+              "key": "token",
+              "value": "",
+              "type": "string"
+            }
+          ]
+        },
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "http://localhost:8080/api/reports/top-courses",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "8080",
+          "path": [
+            "api",
+            "reports",
+            "top-courses"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "38. Progress Report",
+      "request": {
+        "auth": {
+          "type": "bearer",
+          "bearer": [
+            {
+              "key": "token",
+              "value": "",
+              "type": "string"
+            }
+          ]
+        },
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "http://localhost:8080/api/reports/students/15/progress",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "8080",
+          "path": [
+            "api",
+            "reports",
+            "students",
+            "15",
+            "progress"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "39. Overview Report",
+      "request": {
+        "auth": {
+          "type": "bearer",
+          "bearer": [
+            {
+              "key": "token",
+              "value": "",
+              "type": "string"
+            }
+          ]
+        },
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "http://localhost:8080/api/reports/teachers/14/courses-overview",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "8080",
+          "path": [
+            "api",
+            "reports",
+            "teachers",
+            "14",
+            "courses-overview"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "40. Course Reviews",
+      "request": {
+        "auth": {
+          "type": "bearer",
+          "bearer": [
+            {
+              "key": "token",
+              "value": "",
+              "type": "string"
+            }
+          ]
+        },
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "http://localhost:8080/api/courses/1/reviews",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "8080",
+          "path": [
+            "api",
+            "courses",
+            "1",
+            "reviews"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "41. Create Review",
+      "request": {
+        "auth": {
+          "type": "bearer",
+          "bearer": [
+            {
+              "key": "token",
+              "value": "",
+              "type": "string"
+            }
+          ]
+        },
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n  \"rating\": 5,\r\n  \"comment\": \"Khóa học được trình bày rất rõ ràng, nội dung dễ hiểu và hữu ích. Các bài học được sắp xếp hợp lý, giúp tôi dễ dàng theo dõi và áp dụng kiến thức.\"\r\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "http://localhost:8080/api/courses/1/reviews",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "8080",
+          "path": [
+            "api",
+            "courses",
+            "1",
+            "reviews"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "42. Update review",
+      "request": {
+        "auth": {
+          "type": "bearer",
+          "bearer": [
+            {
+              "key": "token",
+              "value": "",
+              "type": "string"
+            }
+          ]
+        },
+        "method": "PUT",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n  \"rating\": 4,\r\n  \"comment\": \"Nội dung khóa học khá đầy đủ và dễ hiểu. Tôi đánh giá cao cách trình bày và các ví dụ thực tế.\"\r\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "http://localhost:8080/api/reviews/1",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "8080",
+          "path": [
+            "api",
+            "reviews",
+            "1"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "43. Delete Review",
+      "request": {
+        "auth": {
+          "type": "bearer",
+          "bearer": [
+            {
+              "key": "token",
+              "value": "",
+              "type": "string"
+            }
+          ]
+        },
+        "method": "DELETE",
+        "header": [],
+        "url": {
+          "raw": "http://localhost:8080/api/reviews/1",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "8080",
+          "path": [
+            "api",
+            "reviews",
             "1"
           ]
         }

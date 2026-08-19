@@ -72,10 +72,10 @@
 | 37  | `/api/reports/top_courses`                                    | GET    | ADMIN          | Retrieve the most popular courses based on enrollment count                          | ☐ |   | 2 | ☑ |
 | 38  | `/api/reports/student_progress/{student_id}`                  | GET    | ADMIN          | Retrieve a learning progress report for a specific student                           | ☐ |   | 3 | ☑ |
 | 39  | `/api/reports/teacher_courses_overview/{teacher_id}`          | GET    | ADMIN          | Retrieve an overview report of a teacher's courses                                   | ☐ |   | 3 | ☑ |
-| 40  | `/api/courses/{course_id}/reviews`                            | GET    | AUTH           | Retrieve reviews and comments for a course                                           | ☐ |   | 2 | ☐ |
-| 41  | `/api/courses/{course_id}/reviews`                            | POST   | STUDENT        | Submit a review or comment for a completed course                                    | ☐ |   | 3 | ☐ |
-| 42  | `/api/reviews/{review_id}`                                    | PUT    | OWNER, ADMIN   | Update a review or comment                                                           | ☐ |   | 2 | ☐ |
-| 43  | `/api/reviews/{review_id}`                                    | DELETE | OWNER, ADMIN   | Delete a review or comment                                                           | ☐ |   | 3 | ☐ |
+| 40  | `/api/courses/{course_id}/reviews`                            | GET    | AUTH           | Retrieve reviews and comments for a course                                           | ☐ |   | 2 | ☑ |
+| 41  | `/api/courses/{course_id}/reviews`                            | POST   | STUDENT        | Submit a review or comment for a completed course                                    | ☐ |   | 3 | ☑ |
+| 42  | `/api/reviews/{review_id}`                                    | PUT    | OWNER, ADMIN   | Update a review or comment                                                           | ☐ |   | 2 | ☑ |
+| 43  | `/api/reviews/{review_id}`                                    | DELETE | OWNER, ADMIN   | Delete a review or comment                                                           | ☐ |   | 3 | ☑ |
 | 44  | `/api/lessons/{lesson_id}/content_preview`                    | GET    | AUTH           | Retrieve a lesson preview (e.g., a short excerpt of the lesson content)              | ☐ |   | 2 | ☐ |
 
 ---

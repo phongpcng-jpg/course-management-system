@@ -1,8 +1,10 @@
 package io.github.nguyenquephong13062003.course_management_system.models.repositories;
 
+import io.github.nguyenquephong13062003.course_management_system.models.constants.EnrollmentStatus;
 import io.github.nguyenquephong13062003.course_management_system.models.dtos.responses.StudentCourseProgressResponse;
 import io.github.nguyenquephong13062003.course_management_system.models.entities.Enrollment;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 
@@ -82,6 +84,20 @@ public interface IEnrollmentRepository extends JpaRepository<Enrollment, Long> {
             """)
     List<StudentCourseProgressResponse> findStudentCourseProgress(
             @Param("studentId") Long studentId
+    );
+
+    /**
+     * Checks whether a student has an active or completed enrollment
+     * for a specific course.
+     *
+     * @param studentId the student identifier
+     * @param courseId  the course identifier
+     * @return true if the student is enrolled or has completed the course
+     */
+    boolean existsByStudentIdAndCourseIdAndStatusIn(
+            Long studentId,
+            Long courseId,
+            Collection<EnrollmentStatus> statuses
     );
 
 }
