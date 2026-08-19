@@ -1,7 +1,10 @@
 package io.github.nguyenquephong13062003.course_management_system.models.repositories;
 
+import io.github.nguyenquephong13062003.course_management_system.models.dtos.internals.EnrollmentCompletedLessonCountResponse;
 import io.github.nguyenquephong13062003.course_management_system.models.entities.LessonProgress;
 
+import java.util.Collection;
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -56,7 +59,7 @@ public interface ILessonProgressRepository extends JpaRepository<LessonProgress,
     /**
      * Counts the number of published lessons for a specific course.
      *
-     * @param courseId The ID of the course for which to count published lessons.
+     * @param enrollmentId The ID of the course for which to count published lessons.
      * @return The count of published lessons associated with the specified course.
      */
     @Query("""
@@ -69,6 +72,28 @@ public interface ILessonProgressRepository extends JpaRepository<LessonProgress,
             """)
     long countCompletedPublishedLessons(
             @Param("enrollmentId") Long enrollmentId
+    );
+
+    /**
+     * Counts completed published lessons for each specified enrollment.
+     *
+     * @param enrollmentIds the enrollment identifiers
+     * @return completed published lesson counts grouped by enrollment
+     */
+    @Query("""
+            SELECT new io.github.nguyenquephong13062003.course_management_system.models.dtos.internals.EnrollmentCompletedLessonCountResponse(
+                lp.enrollment.id,
+                COUNT(lp.id)
+            )
+            FROM LessonProgress lp
+            JOIN lp.lesson l
+            WHERE lp.enrollment.id IN :enrollmentIds
+              AND lp.completed = true
+              AND l.isPublished = true
+            GROUP BY lp.enrollment.id
+            """)
+    List<EnrollmentCompletedLessonCountResponse> countCompletedPublishedLessonsByEnrollmentIds(
+            @Param("enrollmentIds") Collection<Long> enrollmentIds
     );
 
 }

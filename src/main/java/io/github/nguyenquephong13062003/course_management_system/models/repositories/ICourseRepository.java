@@ -2,6 +2,8 @@ package io.github.nguyenquephong13062003.course_management_system.models.reposit
 
 import io.github.nguyenquephong13062003.course_management_system.models.constants.CourseStatus;
 import io.github.nguyenquephong13062003.course_management_system.models.dtos.responses.CourseResponse;
+import io.github.nguyenquephong13062003.course_management_system.models.dtos.responses.TeacherCourseOverviewItem;
+import io.github.nguyenquephong13062003.course_management_system.models.dtos.responses.TopCourseReportResponse;
 import io.github.nguyenquephong13062003.course_management_system.models.entities.Course;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -10,6 +12,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
 import java.math.BigDecimal;
+import java.util.List;
 
 /**
  * Repository interface for managing Course entities.
@@ -96,4 +99,49 @@ public interface ICourseRepository extends JpaRepository<Course, Long> {
     );
 
     boolean existsByTeacher_Id(Long teacherId);
+
+    /**
+     * Retrieves the most popular courses based on enrollment count.
+     *
+     * @param pageable pagination information used to limit the number of results
+     * @return a list of top course report responses
+     */
+    @Query("""
+            SELECT new io.github.nguyenquephong13062003.course_management_system.models.dtos.responses.TopCourseReportResponse(
+                c.id,
+                c.title,
+                t.id,
+                t.fullName,
+                COUNT(e.id)
+            )
+            FROM Course c
+            JOIN c.teacher t
+            LEFT JOIN Enrollment e ON e.course = c
+            GROUP BY c.id, c.title, t.id, t.fullName
+            ORDER BY COUNT(e.id) DESC, c.id ASC
+            """)
+    List<TopCourseReportResponse> findTopCourses(Pageable pageable);
+
+    /**
+     * Retrieves an overview of all courses belonging to a teacher.
+     *
+     * @param teacherId the teacher identifier
+     * @return a list of teacher course overview items
+     */
+    @Query("""
+            SELECT new io.github.nguyenquephong13062003.course_management_system.models.dtos.responses.TeacherCourseOverviewItem(
+                c.id,
+                c.title,
+                c.status,
+                COUNT(e.id)
+            )
+            FROM Course c
+            LEFT JOIN Enrollment e ON e.course = c
+            WHERE c.teacher.id = :teacherId
+            GROUP BY c.id, c.title, c.status
+            ORDER BY c.id ASC
+            """)
+    List<TeacherCourseOverviewItem> findTeacherCoursesOverview(
+            @Param("teacherId") Long teacherId
+    );
 }

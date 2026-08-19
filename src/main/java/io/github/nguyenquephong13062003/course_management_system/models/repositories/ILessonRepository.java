@@ -1,8 +1,12 @@
 package io.github.nguyenquephong13062003.course_management_system.models.repositories;
 
+import io.github.nguyenquephong13062003.course_management_system.models.dtos.internals.CourseLessonCountResponse;
 import io.github.nguyenquephong13062003.course_management_system.models.entities.Lesson;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 
@@ -86,6 +90,26 @@ public interface ILessonRepository extends JpaRepository<Lesson, Long> {
     Optional<Lesson> findByLessonIdAndCourse_IdAndIsPublishedTrue(
         Long lessonId,
         Long courseId
+    );
+
+    /**
+     * Counts published lessons for each specified course.
+     *
+     * @param courseIds the course identifiers
+     * @return published lesson counts grouped by course
+     */
+    @Query("""
+            SELECT new io.github.nguyenquephong13062003.course_management_system.models.dtos.internals.CourseLessonCountResponse(
+                l.course.id,
+                COUNT(l.lessonId)
+            )
+            FROM Lesson l
+            WHERE l.course.id IN :courseIds
+              AND l.isPublished = true
+            GROUP BY l.course.id
+            """)
+    List<CourseLessonCountResponse> countPublishedLessonsByCourseIds(
+            @Param("courseIds") Collection<Long> courseIds
     );
     
 }

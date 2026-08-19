@@ -1,11 +1,14 @@
 package io.github.nguyenquephong13062003.course_management_system.models.repositories;
 
+import io.github.nguyenquephong13062003.course_management_system.models.dtos.responses.StudentCourseProgressResponse;
 import io.github.nguyenquephong13062003.course_management_system.models.entities.Enrollment;
 
 import java.util.List;
 import java.util.Optional;
 
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 
 /**
  * Repository interface for managing Enrollment entities.
@@ -56,5 +59,29 @@ public interface IEnrollmentRepository extends JpaRepository<Enrollment, Long> {
     );
 
     boolean existsByStudent_Id(Long studentId);
+
+    /**
+     * Retrieves all course enrollments belonging to a student.
+     *
+     * @param studentId the student identifier
+     * @return a list of student course progress responses
+     */
+    @Query("""
+            SELECT new io.github.nguyenquephong13062003.course_management_system.models.dtos.responses.StudentCourseProgressResponse(
+                c.id,
+                c.title,
+                e.id,
+                e.status,
+                e.progressPercentage,
+                e.completionDate
+            )
+            FROM Enrollment e
+            JOIN e.course c
+            WHERE e.student.id = :studentId
+            ORDER BY e.enrollmentDate DESC, e.id DESC
+            """)
+    List<StudentCourseProgressResponse> findStudentCourseProgress(
+            @Param("studentId") Long studentId
+    );
 
 }

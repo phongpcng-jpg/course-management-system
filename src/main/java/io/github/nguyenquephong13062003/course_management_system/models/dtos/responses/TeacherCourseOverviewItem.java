@@ -37,4 +37,20 @@ public class TeacherCourseOverviewItem {
      * The total number of published lessons in the course.
      */
     private Long publishedLessonCount;
+
+    /**
+     * Constructor used by the teacher courses overview query.
+     */
+    public TeacherCourseOverviewItem(
+            Long courseId,
+            String title,
+            CourseStatus status,
+            Long enrollmentCount
+    ) {
+        this.courseId = courseId;
+        this.title = title;
+        this.status = status;
+        this.enrollmentCount = enrollmentCount;
+        this.publishedLessonCount = 0L;
+    }
 }

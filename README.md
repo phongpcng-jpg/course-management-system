@@ -69,9 +69,9 @@
 | 34  | `/api/notifications/{notification_id}/read`                   | PUT    | AUTH           | Mark a notification as read                                                          | ☐ |   | 3 | ☑ |
 | 35  | `/api/notifications`                                          | POST   | ADMIN          | Create a notification for users                                                      | ☐ |   | 3 | ☑ |
 | 36  | `/api/notifications/{notification_id}`                        | DELETE | ADMIN          | Delete a notification                                                                | ☐ |   | 3 | ☑ |
-| 37  | `/api/reports/top_courses`                                    | GET    | ADMIN          | Retrieve the most popular courses based on enrollment count                          | ☐ |   | 2 | ☐ |
-| 38  | `/api/reports/student_progress/{student_id}`                  | GET    | ADMIN          | Retrieve a learning progress report for a specific student                           | ☐ |   | 3 | ☐ |
-| 39  | `/api/reports/teacher_courses_overview/{teacher_id}`          | GET    | ADMIN          | Retrieve an overview report of a teacher's courses                                   | ☐ |   | 3 | ☐ |
+| 37  | `/api/reports/top_courses`                                    | GET    | ADMIN          | Retrieve the most popular courses based on enrollment count                          | ☐ |   | 2 | ☑ |
+| 38  | `/api/reports/student_progress/{student_id}`                  | GET    | ADMIN          | Retrieve a learning progress report for a specific student                           | ☐ |   | 3 | ☑ |
+| 39  | `/api/reports/teacher_courses_overview/{teacher_id}`          | GET    | ADMIN          | Retrieve an overview report of a teacher's courses                                   | ☐ |   | 3 | ☑ |
 | 40  | `/api/courses/{course_id}/reviews`                            | GET    | AUTH           | Retrieve reviews and comments for a course                                           | ☐ |   | 2 | ☐ |
 | 41  | `/api/courses/{course_id}/reviews`                            | POST   | STUDENT        | Submit a review or comment for a completed course                                    | ☐ |   | 3 | ☐ |
 | 42  | `/api/reviews/{review_id}`                                    | PUT    | OWNER, ADMIN   | Update a review or comment                                                           | ☐ |   | 2 | ☐ |

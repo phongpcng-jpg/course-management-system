@@ -55,4 +55,15 @@ public class StudentCourseProgressResponse {
      * The date and time when the student completed the course.
      */
     private LocalDateTime completionDate;
+
+    public StudentCourseProgressResponse(Long courseId, String courseTitle, Long enrollmentId, EnrollmentStatus enrollmentStatus, BigDecimal progressPercentage, LocalDateTime completionDate) {
+        this.courseId = courseId;
+        this.courseTitle = courseTitle;
+        this.enrollmentId = enrollmentId;
+        this.enrollmentStatus = enrollmentStatus;
+        this.progressPercentage = progressPercentage;
+        this.totalPublishedLessons = 0L;
+        this.completedLessons = 0L;
+        this.completionDate = completionDate;
+    }
 }
