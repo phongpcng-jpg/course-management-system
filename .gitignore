@@ -45,3 +45,7 @@ out/
 logs/
 *.log
 *.log.gz
+
+#### Video files ###
+*.mp4
+videos/
