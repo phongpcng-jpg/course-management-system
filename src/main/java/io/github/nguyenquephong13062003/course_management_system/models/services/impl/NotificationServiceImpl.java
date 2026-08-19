@@ -2,11 +2,15 @@ package io.github.nguyenquephong13062003.course_management_system.models.service
 
 import io.github.nguyenquephong13062003.course_management_system.exceptions.AuthException;
 import io.github.nguyenquephong13062003.course_management_system.exceptions.NotFoundException;
+import io.github.nguyenquephong13062003.course_management_system.models.constants.UserRole;
 import io.github.nguyenquephong13062003.course_management_system.models.dtos.requests.NotificationCreateRequest;
 import io.github.nguyenquephong13062003.course_management_system.models.dtos.responses.NotificationResponse;
 import io.github.nguyenquephong13062003.course_management_system.models.dtos.wrappers.PageResponse;
+import io.github.nguyenquephong13062003.course_management_system.models.entities.Course;
+import io.github.nguyenquephong13062003.course_management_system.models.entities.Lesson;
 import io.github.nguyenquephong13062003.course_management_system.models.entities.Notification;
 import io.github.nguyenquephong13062003.course_management_system.models.entities.User;
+import io.github.nguyenquephong13062003.course_management_system.models.repositories.IEnrollmentRepository;
 import io.github.nguyenquephong13062003.course_management_system.models.repositories.INotificationRepository;
 import io.github.nguyenquephong13062003.course_management_system.models.repositories.IUserRepository;
 import io.github.nguyenquephong13062003.course_management_system.models.services.INotificationService;
@@ -20,6 +24,8 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+
 /**
  * Implementation of notification-related business operations.
  */
@@ -31,6 +37,7 @@ public class NotificationServiceImpl implements INotificationService {
 
     private final INotificationRepository notificationRepository;
     private final IUserRepository userRepository;
+    private final IEnrollmentRepository enrollmentRepository;
 
     /**
      * Retrieves notifications belonging to the current authenticated user.
@@ -215,6 +222,79 @@ public class NotificationServiceImpl implements INotificationService {
         log.debug(
                 "Notification deleted successfully, notificationId={}",
                 notificationId
+        );
+    }
+
+    @Override
+    @Transactional
+    public void notifyNewCourse(Course course) {
+
+        List<User> students =
+                userRepository.findAllByRoleAndActiveTrue(UserRole.STUDENT);
+
+        List<Notification> notifications = students.stream()
+                .map(student -> Notification.builder()
+                        .user(student)
+                        .message("The new course has been published.: " + course.getTitle())
+                        .type("NEW_COURSE")
+                        .targetUrl("/api/courses/" + course.getId())
+                        .isRead(false)
+                        .build())
+                .toList();
+
+        notificationRepository.saveAll(notifications);
+
+        log.info(
+                "Created NEW_COURSE notifications for courseId={}, recipientCount={}",
+                course.getId(),
+                notifications.size()
+        );
+    }
+
+    @Override
+    @Transactional
+    public void notifyLessonUpdated(Lesson lesson) {
+
+        List<User> students =
+                enrollmentRepository.findStudentsByCourseId(lesson.getCourse().getId());
+
+        List<Notification> notifications = students.stream()
+                .map(student -> Notification.builder()
+                        .user(student)
+                        .message("The lesson has been updated: " + lesson.getTitle())
+                        .type("LESSON_UPDATED")
+                        .targetUrl("/api/lessons/" + lesson.getLessonId())
+                        .isRead(false)
+                        .build())
+                .toList();
+
+        notificationRepository.saveAll(notifications);
+
+        log.info(
+                "Created LESSON_UPDATED notifications for lessonId={}, recipientCount={}",
+                lesson.getLessonId(),
+                notifications.size()
+        );
+    }
+
+    @Override
+    @Transactional
+    public void notifyEnrollmentConfirmed(User student, Course course) {
+
+        Notification notification = Notification.builder()
+                .user(student)
+                .message("Đăng ký khóa học thành công: " + course.getTitle())
+                .type("ENROLLMENT_CONFIRMED")
+                .targetUrl("/api/courses/" + course.getId())
+                .isRead(false)
+                .build();
+
+        notificationRepository.save(notification);
+
+        log.info(
+                "Created ENROLLMENT_CONFIRMED notification for studentId={}, courseId={}",
+                student.getId(),
+                course.getId()
         );
     }
 

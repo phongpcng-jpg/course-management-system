@@ -18,6 +18,7 @@ import io.github.nguyenquephong13062003.course_management_system.models.entities
 import io.github.nguyenquephong13062003.course_management_system.models.entities.User;
 import io.github.nguyenquephong13062003.course_management_system.models.repositories.*;
 import io.github.nguyenquephong13062003.course_management_system.models.services.ICourseService;
+import io.github.nguyenquephong13062003.course_management_system.models.services.INotificationService;
 import io.github.nguyenquephong13062003.course_management_system.models.services.uploads.UploadService;
 import io.github.nguyenquephong13062003.course_management_system.security.principal.CustomUserDetails;
 import lombok.RequiredArgsConstructor;
@@ -75,6 +76,8 @@ public class CourseServiceImpl implements ICourseService {
      * The UploadService instance used for handling file uploads.
      */
     private final UploadService uploadService;
+
+    private final INotificationService notificationService;
 
     @Override
     public PageResponse<CourseResponse> getAllCourse(
@@ -284,6 +287,10 @@ public class CourseServiceImpl implements ICourseService {
         course.setStatus(request.getStatus());
 
         Course savedCourse = courseRepository.save(course);
+
+        if (savedCourse.getStatus() == CourseStatus.PUBLISHED) {
+            notificationService.notifyNewCourse(savedCourse);
+        }
 
         return toCourseResponse(savedCourse);
     }

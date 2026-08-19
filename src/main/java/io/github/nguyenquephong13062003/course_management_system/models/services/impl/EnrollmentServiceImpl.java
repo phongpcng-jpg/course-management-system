@@ -18,6 +18,7 @@ import io.github.nguyenquephong13062003.course_management_system.models.reposito
 import io.github.nguyenquephong13062003.course_management_system.models.repositories.ILessonRepository;
 import io.github.nguyenquephong13062003.course_management_system.models.repositories.IUserRepository;
 import io.github.nguyenquephong13062003.course_management_system.models.services.IEnrollmentService;
+import io.github.nguyenquephong13062003.course_management_system.models.services.INotificationService;
 import io.github.nguyenquephong13062003.course_management_system.security.principal.CustomUserDetails;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -76,6 +77,8 @@ public class EnrollmentServiceImpl implements IEnrollmentService {
      * Repository for managing user entities.
      */
     private final IUserRepository userRepository;
+
+    private final INotificationService notificationService;
 
     /**
      * API 22:
@@ -173,6 +176,11 @@ public class EnrollmentServiceImpl implements IEnrollmentService {
 
         Enrollment savedEnrollment =
                 enrollmentRepository.save(enrollment);
+
+        notificationService.notifyEnrollmentConfirmed(
+                savedEnrollment.getStudent(),
+                savedEnrollment.getCourse()
+        );
 
         log.debug(
                 "Enrollment created successfully: enrollmentId={}, studentId={}, courseId={}",

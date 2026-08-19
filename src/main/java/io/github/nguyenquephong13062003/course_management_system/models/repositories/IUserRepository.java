@@ -98,4 +98,5 @@ public interface IUserRepository extends JpaRepository<User,Long> {
         Pageable pageable
     );
 
+    List<User> findAllByRoleAndActiveTrue(UserRole userRole);
 }

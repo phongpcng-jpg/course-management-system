@@ -15,6 +15,7 @@ import io.github.nguyenquephong13062003.course_management_system.models.entities
 import io.github.nguyenquephong13062003.course_management_system.models.repositories.ILessonProgressRepository;
 import io.github.nguyenquephong13062003.course_management_system.models.repositories.ILessonRepository;
 import io.github.nguyenquephong13062003.course_management_system.models.services.ILessonService;
+import io.github.nguyenquephong13062003.course_management_system.models.services.INotificationService;
 import io.github.nguyenquephong13062003.course_management_system.models.services.deletes.CloudinaryFileService;
 import io.github.nguyenquephong13062003.course_management_system.models.services.previews.CloudinaryPreviewService;
 import io.github.nguyenquephong13062003.course_management_system.models.services.uploads.UploadService;
@@ -61,6 +62,8 @@ public class LessonServiceImpl implements ILessonService {
      * Service responsible for generating Cloudinary content preview URLs.
      */
     private final CloudinaryPreviewService cloudinaryPreviewService;
+
+    private final INotificationService notificationService;
 
     @Override
     public LessonDetailResponse getPublishedLessonById(Long lessonId) {
@@ -110,6 +113,12 @@ public class LessonServiceImpl implements ILessonService {
 
         String contentPublicId = null;
 
+        boolean contentChanged =
+                !Objects.equals(lesson.getTitle(), request.getTitle())
+                        || !Objects.equals(lesson.getTextContent(), request.getTextContent())
+                        || (request.getContent() != null && !request.getContent().isEmpty())
+                        || !Objects.equals(lesson.getOrderIndex(), request.getOrderIndex());
+
         lesson.setTitle(request.getTitle());
         if (request.getContent() != null && !request.getContent().isEmpty()) {
 
@@ -132,6 +141,10 @@ public class LessonServiceImpl implements ILessonService {
 
         if (contentPublicId != null) {
             cloudinaryFileService.delete(contentPublicId);
+        }
+
+        if (savedLesson.getIsPublished() && contentChanged) {
+            notificationService.notifyLessonUpdated(savedLesson);
         }
 
         return toLessonDetailResponse(savedLesson);
@@ -162,9 +175,15 @@ public class LessonServiceImpl implements ILessonService {
             throw new InvalidStateTransitionException("Cannot update lesson for a course that is archived");
         }
 
+        boolean wasPublished = Boolean.TRUE.equals(lesson.getIsPublished());
+
         lesson.setIsPublished(request.getIsPublished());
 
         Lesson savedLesson = lessonRepository.save(lesson);
+
+        if (!wasPublished && savedLesson.getIsPublished()) {
+            notificationService.notifyLessonUpdated(savedLesson);
+        }
 
         return toLessonDetailResponse(savedLesson);
 

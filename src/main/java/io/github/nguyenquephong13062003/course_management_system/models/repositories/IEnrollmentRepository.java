@@ -8,6 +8,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 
+import io.github.nguyenquephong13062003.course_management_system.models.entities.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -100,4 +101,10 @@ public interface IEnrollmentRepository extends JpaRepository<Enrollment, Long> {
             Collection<EnrollmentStatus> statuses
     );
 
+    @Query("""
+        SELECT DISTINCT e.student
+        FROM Enrollment e
+        WHERE e.course.id = :courseId
+    """)
+    List<User> findStudentsByCourseId(@Param("courseId") Long courseId);
 }

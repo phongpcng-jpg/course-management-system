@@ -3,6 +3,9 @@ package io.github.nguyenquephong13062003.course_management_system.models.service
 import io.github.nguyenquephong13062003.course_management_system.models.dtos.requests.NotificationCreateRequest;
 import io.github.nguyenquephong13062003.course_management_system.models.dtos.responses.NotificationResponse;
 import io.github.nguyenquephong13062003.course_management_system.models.dtos.wrappers.PageResponse;
+import io.github.nguyenquephong13062003.course_management_system.models.entities.Course;
+import io.github.nguyenquephong13062003.course_management_system.models.entities.Lesson;
+import io.github.nguyenquephong13062003.course_management_system.models.entities.User;
 import org.springframework.data.domain.Pageable;
 
 /**
@@ -48,4 +51,11 @@ public interface INotificationService {
      * @param notificationId the ID of the notification to delete.
      */
     void deleteNotification(Long notificationId);
+
+    void notifyNewCourse(Course course);
+
+    void notifyLessonUpdated(Lesson lesson);
+
+    void notifyEnrollmentConfirmed(User student, Course course);
+
 }
