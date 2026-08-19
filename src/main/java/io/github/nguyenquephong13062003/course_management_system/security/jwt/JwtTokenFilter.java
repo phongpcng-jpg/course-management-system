@@ -22,55 +22,116 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 /**
- * JwtTokenFilter is a custom filter that intercepts incoming HTTP requests to validate JWT tokens.
- * It extracts the token from the request header, validates it, and sets the authentication context if valid.
+ * JWT authentication filter.
+ *
+ * <p>This filter extracts and validates the JWT from the Authorization header.
+ * When authentication fails, the failure reason is stored in the request so
+ * that JwtEntryPoint can return the correct error code.</p>
  */
 @Slf4j
 @Component
 @RequiredArgsConstructor
 public class JwtTokenFilter extends OncePerRequestFilter {
 
-    /**
-     * JWTUtils is a utility class for handling JWT operations such as token extraction and validation.
-     */
-    private final JWTUtils jwtUtils;
+    private static final String AUTHORIZATION_HEADER = "Authorization";
+    private static final String BEARER_PREFIX = "Bearer ";
 
-    /**
-     * CustomUserDetailsService is a service that loads user-specific data.
-     */
+    private final JWTUtils jwtUtils;
     private final CustomUserDetailsService userDetailsService;
 
     @Override
-    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
-        
+    protected void doFilterInternal(
+            HttpServletRequest request,
+            HttpServletResponse response,
+            FilterChain filterChain
+    ) throws ServletException, IOException {
+
         try {
             String token = getTokenFromRequest(request);
-            if(token != null) {
-                Claims claims = jwtUtils.extractAllClaims(token);
-                String username = jwtUtils.extractUsername(claims);
-                UserDetails userDetails = userDetailsService.loadUserByUsername(username);
-                if(jwtUtils.validateToken(claims,userDetails)) {
-                    Authentication authentication = new UsernamePasswordAuthenticationToken(userDetails,null,userDetails.getAuthorities());
-                    SecurityContextHolder.getContext().setAuthentication(authentication);
+
+            if (token == null) {
+                if (hasInvalidAuthorizationHeader(request)) {
+                    markJwtError(
+                            request,
+                            JwtAuthenticationError.INVALID_JWT_TOKEN
+                    );
                 }
+
+                filterChain.doFilter(request, response);
+                return;
+            }
+
+            Claims claims = jwtUtils.extractAllClaims(token);
+
+            String username = jwtUtils.extractUsername(claims);
+
+            UserDetails userDetails =
+                    userDetailsService.loadUserByUsername(username);
+
+            if (jwtUtils.validateToken(claims, userDetails)) {
+
+                Authentication authentication =
+                        new UsernamePasswordAuthenticationToken(
+                                userDetails,
+                                null,
+                                userDetails.getAuthorities()
+                        );
+
+                SecurityContextHolder
+                        .getContext()
+                        .setAuthentication(authentication);
+
+                log.debug(
+                        "JWT authentication successful for request: {} {}",
+                        request.getMethod(),
+                        request.getRequestURI()
+                );
+            } else {
+                markJwtError(
+                        request,
+                        JwtAuthenticationError.INVALID_JWT_TOKEN
+                );
+
+                log.warn(
+                        "JWT validation failed for request: {} {}",
+                        request.getMethod(),
+                        request.getRequestURI()
+                );
             }
 
         } catch (ExpiredJwtException e) {
+
+            markJwtError(
+                    request,
+                    JwtAuthenticationError.EXPIRED_JWT_TOKEN
+            );
+
             log.warn(
-                    "JWT token has expired for request: {} {}",
+                    "Expired JWT token for request: {} {}",
                     request.getMethod(),
                     request.getRequestURI()
             );
 
         } catch (JwtException e) {
+
+            markJwtError(
+                    request,
+                    JwtAuthenticationError.INVALID_JWT_TOKEN
+            );
+
             log.warn(
-                    "Invalid JWT token for request: {} {} - {}",
+                    "Invalid JWT token for request: {} {}",
                     request.getMethod(),
-                    request.getRequestURI(),
-                    e.getMessage()
+                    request.getRequestURI()
             );
 
         } catch (UsernameNotFoundException e) {
+
+            markJwtError(
+                    request,
+                    JwtAuthenticationError.INVALID_JWT_TOKEN
+            );
+
             log.warn(
                     "User from JWT token was not found for request: {} {}",
                     request.getMethod(),
@@ -78,28 +139,69 @@ public class JwtTokenFilter extends OncePerRequestFilter {
             );
 
         } catch (Exception e) {
+
+            markJwtError(
+                    request,
+                    JwtAuthenticationError.INVALID_JWT_TOKEN
+            );
+
             log.error(
                     "Unexpected error while processing JWT authentication",
                     e
             );
         }
 
-        filterChain.doFilter(request,response);
-
+        filterChain.doFilter(request, response);
     }
 
     /**
-     * Extracts the JWT token from the Authorization header of the HTTP request.
-     * @param request The incoming HTTP request.
-     * @return The JWT token if present, otherwise null.
+     * Extracts JWT from Authorization header.
      */
     private String getTokenFromRequest(HttpServletRequest request) {
-        String header = request.getHeader("Authorization");
-        // Token: Bearer édasdsadasdaskfjsdasdl3
-        if (header != null && header.startsWith("Bearer ")) {
-            return header.substring(7);
+
+        String header = request.getHeader(AUTHORIZATION_HEADER);
+
+        if (header == null || header.isBlank()) {
+            return null;
         }
-        return null;
+
+        if (!header.startsWith(BEARER_PREFIX)) {
+            return null;
+        }
+
+        String token = header.substring(BEARER_PREFIX.length()).trim();
+
+        return token.isEmpty() ? null : token;
     }
 
+    /**
+     * Checks whether an Authorization header exists but is not a valid
+     * Bearer token representation.
+     */
+    private boolean hasInvalidAuthorizationHeader(
+            HttpServletRequest request
+    ) {
+
+        String header = request.getHeader(AUTHORIZATION_HEADER);
+
+        return header != null
+                && !header.isBlank()
+                && !header.startsWith(BEARER_PREFIX);
+    }
+
+    /**
+     * Stores the JWT authentication failure reason in the current request.
+     */
+    private void markJwtError(
+            HttpServletRequest request,
+            JwtAuthenticationError error
+    ) {
+
+        request.setAttribute(
+                JwtSecurityConstants.JWT_ERROR_ATTRIBUTE,
+                error
+        );
+
+        SecurityContextHolder.clearContext();
+    }
 }

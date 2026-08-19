@@ -7,6 +7,8 @@ import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.stereotype.Component;
 
 import io.github.nguyenquephong13062003.course_management_system.models.dtos.wrappers.ApiResponse;
+import io.github.nguyenquephong13062003.course_management_system.security.jwt.JwtAuthenticationError;
+import io.github.nguyenquephong13062003.course_management_system.security.jwt.JwtSecurityConstants;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -14,46 +16,74 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 /**
- * A custom implementation of the AuthenticationEntryPoint interface that handles authentication failures.
+ * Handles authentication failures caused by missing or invalid JWT
+ * authentication.
  */
 @Slf4j
 @Component
 @RequiredArgsConstructor
 public class JwtEntryPoint implements AuthenticationEntryPoint {
 
-    /**
-     * The SecurityErrorResponseWriter used for writing error responses.
-     */
     private final SecurityErrorResponseWriter responseWriter;
 
-    /**
-     * Handles authentication failures by logging the event and writing an error response.
-     *
-     * @param request       The HttpServletRequest that resulted in an AuthenticationException.
-     * @param response      The HttpServletResponse to write to.
-     * @param authException The AuthenticationException that caused the failure.
-     * @throws IOException      If an input or output exception occurs.
-     * @throws ServletException If a servlet exception occurs.
-     */
     @Override
-    public void commence(HttpServletRequest request, HttpServletResponse response, AuthenticationException authException) throws IOException, ServletException {
+    public void commence(
+            HttpServletRequest request,
+            HttpServletResponse response,
+            AuthenticationException authException
+    ) throws IOException, ServletException {
+
+        JwtAuthenticationError jwtError =
+                getJwtAuthenticationError(request);
+
+        String errorCode = jwtError.name();
+
+        String message = switch (jwtError) {
+            case EXPIRED_JWT_TOKEN ->
+                    "JWT token has expired";
+
+            case INVALID_JWT_TOKEN ->
+                    "JWT token is invalid";
+        };
+
         log.warn(
-            "Authentication failed for request {} {}: {}",
-            request.getMethod(),
-            request.getRequestURI(),
-            authException.getMessage()
+                "JWT authentication failed: method={}, uri={}, errorCode={}",
+                request.getMethod(),
+                request.getRequestURI(),
+                errorCode
         );
-        
+
         responseWriter.write(
-            response,
-            "UNAUTHORIZED",
-            HttpServletResponse.SC_UNAUTHORIZED,
-            ApiResponse.<Void>error(
+                response,
+                "UNAUTHORIZED",
                 HttpServletResponse.SC_UNAUTHORIZED,
-                "AUTHENTICATION_FAILED",
-                authException.getMessage(),
-                null
-            )
+                ApiResponse.<Void>error(
+                        HttpServletResponse.SC_UNAUTHORIZED,
+                        errorCode,
+                        message,
+                        null
+                )
         );
+    }
+
+    /**
+     * Reads the JWT authentication failure reason stored by JwtTokenFilter.
+     *
+     * <p>If the request reaches the entry point without an explicitly
+     * recorded JWT error, it is treated as an invalid JWT.</p>
+     */
+    private JwtAuthenticationError getJwtAuthenticationError(
+            HttpServletRequest request
+    ) {
+
+        Object attribute = request.getAttribute(
+                JwtSecurityConstants.JWT_ERROR_ATTRIBUTE
+        );
+
+        if (attribute instanceof JwtAuthenticationError jwtError) {
+            return jwtError;
+        }
+
+        return JwtAuthenticationError.INVALID_JWT_TOKEN;
     }
 }
