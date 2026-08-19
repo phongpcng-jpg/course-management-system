@@ -2,6 +2,7 @@ package io.github.nguyenquephong13062003.course_management_system.controllers;
 
 import io.github.nguyenquephong13062003.course_management_system.models.dtos.requests.LessonUpdatePublishRequest;
 import io.github.nguyenquephong13062003.course_management_system.models.dtos.requests.LessonUpdateRequest;
+import io.github.nguyenquephong13062003.course_management_system.models.dtos.responses.LessonContentPreviewResponse;
 import io.github.nguyenquephong13062003.course_management_system.models.dtos.responses.LessonDetailResponse;
 import io.github.nguyenquephong13062003.course_management_system.models.dtos.wrappers.ApiResponse;
 import io.github.nguyenquephong13062003.course_management_system.models.services.ILessonService;
@@ -161,6 +162,45 @@ public class LessonController {
                         "Lesson deleted successfully",
                         null
                 ));
+    }
+
+    /**
+     * Endpoint to retrieve the preview content of a published lesson.
+     *
+     * <p>
+     * The endpoint returns a Cloudinary transformation URL for the first
+     * 30 seconds of the lesson video. The video itself is delivered directly
+     * from Cloudinary to the client.
+     * </p>
+     *
+     * @param lessonId the ID of the lesson
+     * @return a response containing the lesson content preview information
+     */
+    @GetMapping("/{lesson_id}/content-preview")
+    public ResponseEntity<ApiResponse<LessonContentPreviewResponse>> getContentPreview(
+            @PathVariable("lesson_id") Long lessonId
+    ) {
+
+        log.info(
+                "Received request to get lesson content preview: lessonId={}",
+                lessonId
+        );
+
+        LessonContentPreviewResponse response =
+                lessonService.getContentPreview(lessonId);
+
+        log.info(
+                "Successfully generated lesson content preview: lessonId={}",
+                lessonId
+        );
+
+        return ResponseEntity.ok(
+                ApiResponse.success(
+                        HttpStatus.OK.value(),
+                        "Lesson content preview retrieved successfully",
+                        response
+                )
+        );
     }
 
 }

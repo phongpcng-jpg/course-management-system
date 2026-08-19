@@ -8,6 +8,7 @@ import io.github.nguyenquephong13062003.course_management_system.models.constant
 import io.github.nguyenquephong13062003.course_management_system.models.dtos.internals.CloudinaryUploadResult;
 import io.github.nguyenquephong13062003.course_management_system.models.dtos.requests.LessonUpdatePublishRequest;
 import io.github.nguyenquephong13062003.course_management_system.models.dtos.requests.LessonUpdateRequest;
+import io.github.nguyenquephong13062003.course_management_system.models.dtos.responses.LessonContentPreviewResponse;
 import io.github.nguyenquephong13062003.course_management_system.models.dtos.responses.LessonCourseResponse;
 import io.github.nguyenquephong13062003.course_management_system.models.dtos.responses.LessonDetailResponse;
 import io.github.nguyenquephong13062003.course_management_system.models.entities.Lesson;
@@ -15,6 +16,7 @@ import io.github.nguyenquephong13062003.course_management_system.models.reposito
 import io.github.nguyenquephong13062003.course_management_system.models.repositories.ILessonRepository;
 import io.github.nguyenquephong13062003.course_management_system.models.services.ILessonService;
 import io.github.nguyenquephong13062003.course_management_system.models.services.deletes.CloudinaryFileService;
+import io.github.nguyenquephong13062003.course_management_system.models.services.previews.CloudinaryPreviewService;
 import io.github.nguyenquephong13062003.course_management_system.models.services.uploads.UploadService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -54,6 +56,11 @@ public class LessonServiceImpl implements ILessonService {
      * The repository for managing LessonProgress entities.
      */
     private final ILessonProgressRepository lessonProgressRepository;
+
+    /**
+     * Service responsible for generating Cloudinary content preview URLs.
+     */
+    private final CloudinaryPreviewService cloudinaryPreviewService;
 
     @Override
     public LessonDetailResponse getPublishedLessonById(Long lessonId) {
@@ -124,7 +131,7 @@ public class LessonServiceImpl implements ILessonService {
         Lesson savedLesson = lessonRepository.save(lesson);
 
         if (contentPublicId != null) {
-            cloudinaryFileService.delete(lesson.getContentPublicId());
+            cloudinaryFileService.delete(contentPublicId);
         }
 
         return toLessonDetailResponse(savedLesson);
@@ -235,6 +242,73 @@ public class LessonServiceImpl implements ILessonService {
             cloudinaryFileService.delete(contentPublicId);
         }
 
+    }
+
+    @Override
+    public LessonContentPreviewResponse getContentPreview(Long lessonId) {
+
+        log.debug(
+                "Processing lesson content preview request: lessonId={}",
+                lessonId
+        );
+
+        Lesson lesson = lessonRepository
+                .findByLessonIdAndIsPublishedTrue(lessonId)
+                .orElseThrow(
+                        () -> new NotFoundException(
+                                "Published lesson with id " + lessonId + " not found"
+                        )
+                );
+
+        if (lesson.getCourse().getStatus() != CourseStatus.PUBLISHED) {
+
+            log.debug(
+                    "Lesson preview rejected because course is not published: " +
+                            "lessonId={}, courseId={}, courseStatus={}",
+                    lessonId,
+                    lesson.getCourse().getId(),
+                    lesson.getCourse().getStatus()
+            );
+
+            throw new NotFoundException(
+                    "Published lesson with id " + lessonId + " not found"
+            );
+        }
+
+        String contentPublicId = lesson.getContentPublicId();
+
+        if (contentPublicId == null || contentPublicId.isBlank()) {
+
+            log.warn(
+                    "Lesson has no Cloudinary content available for preview: lessonId={}",
+                    lessonId
+            );
+
+            throw new NotFoundException(
+                    "No preview content found for lesson with id " + lessonId
+            );
+        }
+
+        String previewUrl =
+                cloudinaryPreviewService.generateVideoPreviewUrl(
+                        contentPublicId
+                );
+
+        log.debug(
+                "Cloudinary preview URL generated successfully: lessonId={}",
+                lessonId
+        );
+
+        return LessonContentPreviewResponse.builder()
+                .lessonId(lesson.getLessonId())
+                .title(lesson.getTitle())
+                .contentType("VIDEO")
+                .previewUrl(previewUrl)
+                .maxPreviewDurationSeconds(
+                        (long) cloudinaryPreviewService.getPreviewMaxPreviewDurationSeconds()
+                )
+                .previewAvailable(true)
+                .build();
     }
 
     /**

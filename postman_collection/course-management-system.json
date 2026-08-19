@@ -1659,6 +1659,38 @@
         }
       },
       "response": []
+    },
+    {
+      "name": "44. Content Preview",
+      "request": {
+        "auth": {
+          "type": "bearer",
+          "bearer": [
+            {
+              "key": "token",
+              "value": "",
+              "type": "string"
+            }
+          ]
+        },
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "http://localhost:8080/api/lessons/5/content-preview",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "8080",
+          "path": [
+            "api",
+            "lessons",
+            "5",
+            "content-preview"
+          ]
+        }
+      },
+      "response": []
     }
   ],
   "variable": [

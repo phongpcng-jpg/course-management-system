@@ -2,6 +2,7 @@ package io.github.nguyenquephong13062003.course_management_system.models.service
 
 import io.github.nguyenquephong13062003.course_management_system.models.dtos.requests.LessonUpdatePublishRequest;
 import io.github.nguyenquephong13062003.course_management_system.models.dtos.requests.LessonUpdateRequest;
+import io.github.nguyenquephong13062003.course_management_system.models.dtos.responses.LessonContentPreviewResponse;
 import io.github.nguyenquephong13062003.course_management_system.models.dtos.responses.LessonDetailResponse;
 
 /**
@@ -42,5 +43,13 @@ public interface ILessonService {
      * @param lessonId The ID of the lesson to be deleted.
      */
     void deleteLesson(Long lessonId);
+
+    /**
+     * Generates a preview URL for the content of a published lesson.
+     *
+     * @param lessonId the ID of the lesson
+     * @return the lesson content preview information
+     */
+    LessonContentPreviewResponse getContentPreview(Long lessonId);
 
 }
